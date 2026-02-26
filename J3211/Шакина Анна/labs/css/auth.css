@@ -1,0 +1,145 @@
+.auth-page{
+    min-height: 100vh;
+    background:
+            radial-gradient(1000px 600px at 10% 10%, rgba(101,207,106,.35), transparent 60%),
+            radial-gradient(900px 500px at 90% 20%, rgba(18,117,0,.25), transparent 55%),
+            linear-gradient(180deg, #effaf0, #dff4e1);
+}
+
+.auth-shell{
+    max-width: clamp(340px, 48vw, 560px);
+}
+
+.auth-card{
+    position: relative;
+    border-radius: 30px;
+    overflow: hidden;
+    background: rgba(255,255,255,.82);
+    backdrop-filter: blur(10px);
+}
+
+.auth-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+            linear-gradient(135deg, rgba(16,89,0,.10), transparent 40%),
+            radial-gradient(700px 300px at 50% -10%, rgba(101,207,106,.25), transparent 60%);
+    pointer-events:none;
+}
+
+.auth-head{
+    position: relative;
+    padding: 18px 18px 8px;
+}
+
+.auth-body{
+    position: relative;
+    padding: 15px 20px 30px;
+}
+
+.auth-tabs{
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding: 6px;
+    border-radius: 999px;
+    background: rgba(16,89,0,.08);
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+}
+
+.auth-tab{
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 10px 12px;
+    border-radius: 50px;
+    cursor: pointer;
+    user-select: none;
+    font-weight: 600;
+    color: rgba(6,32,0,.75);
+    transition: color .2s ease;
+}
+
+.auth-indicator{
+    position: absolute;
+    inset: 6px;
+    width: calc(50% - 6px);
+    border-radius: 50px;
+    background: #105900;
+    box-shadow: 0 10px 25px rgba(6,32,0,.18);
+    transform: translateX(0);
+    transition: transform .35s ease;
+}
+
+
+.auth-toggle{
+    position:absolute;
+    opacity:0;
+    pointer-events:none;
+}
+
+.auth-panels{
+    display: flex;
+    width: 200%;
+    transform: translateX(0);
+    transition: transform .45s cubic-bezier(.2,.8,.2,1);
+}
+
+.auth-panel{
+    width: 50%;
+    padding-top: 8px;
+}
+
+.auth-panel form{
+    max-width: clamp(200px, 30vw, 420px);
+    margin: 0 auto;
+}
+
+#tabSignup:checked ~ .auth-head .auth-indicator{
+    transform: translateX(100%);
+}
+
+#tabSignup:checked ~ .auth-body .auth-panels{
+    transform: translateX(-50%);
+}
+
+#tabLogin:checked ~ .auth-head .auth-tab[for="tabLogin"]{
+    color: rgba(255,255,255,.95);
+}
+
+#tabSignup:checked ~ .auth-head .auth-tab[for="tabSignup"]{
+    color: rgba(255,255,255,.95);
+}
+
+.auth-card .form-control{
+    border-radius: 16px;
+    border-color: rgba(16,89,0,.18);
+}
+
+.auth-card .form-control:focus{
+    border-color: rgba(18,117,0,.55);
+    box-shadow: 0 0 0 .25rem rgba(101,207,106,.22);
+}
+
+.auth-btn{
+    border-radius: 16px;
+    background: #105900;
+    border: none;
+    box-shadow: 0 14px 30px rgba(6,32,0,.18);
+    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+    font-weight: 500;
+}
+
+.auth-btn:hover{
+    background: #127500;
+    transform: translateY(-0.5px);
+    box-shadow: 0 18px 40px rgba(6,32,0,.22);
+}
+
+@media (max-width: 420px){
+    .auth-tabs{ max-width: 100%; }
+}
