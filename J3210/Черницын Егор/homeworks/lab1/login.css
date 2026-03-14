@@ -1,0 +1,14 @@
+.card-custom {
+    background-color: #F97300; /* Твой оранжевый фон */
+    color: #ffffff; /* Белый текст, чтобы хорошо читалось */
+    border: none; /* Убираем стандартную серую рамку (по желанию) */
+}
+
+.text-custom {
+    color: #740707 !important;
+}
+
+.btn-custom {
+    background-color: #740707 !important;
+    color: #ffffff;
+}
