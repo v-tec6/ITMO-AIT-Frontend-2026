@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
             id: "0",
             title: "Новогодняя дискотека",
             date: "2025-12-25",
-            image: "../img/carousel1.png",
+            image: "img/carousel1.png",
             description: "Праздничный вечер с музыкой, конкурсами и танцевальной программой для школьников.",
             goal: "fun",
             place: "assembly"
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
             id: "1",
             title: "Нормативы ГТО",
             date: "2025-11-10",
-            image: "../img/carousel2.png",
+            image: "img/carousel2.png",
             description: "Проверка физической подготовки, выполнение нормативов.",
             goal: "sport",
             place: "stadium"
@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
             id: "2",
             title: "Кинопоказ",
             date: "2025-10-15",
-            image: "../img/carousel3.png",
+            image: "img/carousel3.png",
             description: "Совместный просмотр фильма в уютной атмосфере школьного актового зала.",
             goal: "fun",
             place: "assembly"
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
             id: "3",
             title: "Олимпиадный практикум",
             date: "2025-10-20",
-            image: "../img/carousel4.png",
+            image: "img/carousel4.png",
             description: "Подготовка к предметным олимпиадам с разбором сложных заданий и мини-практикой.",
             goal: "study",
             place: "classroom"
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
             id: "4",
             title: "Линейка ко Дню знаний",
             date: "2025-09-01",
-            image: "../img/carousel5.png",
+            image: "img/carousel5.png",
             description: "Торжественное школьное мероприятие с поздравлениями, выступлениями и награждением.",
             goal: "ceremony",
             place: "yard"
@@ -81,6 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const allEvents = getDisplayEvents();
 
+    seedEventsIfEmpty(allEvents);
     renderCarousel(getTopEvents(allEvents));
     renderEvents(sortByDate(allEvents));
     bindFilters();
@@ -161,7 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function getDisplayEvents() {
         const storedEvents = getStoredEvents()
-            .map(normalizeEvent)
+            .map((e, i) => normalizeEvent(e, i))
             .filter(Boolean);
 
         return storedEvents.length ? storedEvents : fallbackEvents.map(normalizeEvent).filter(Boolean);
@@ -178,6 +179,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    function seedEventsIfEmpty(events) {
+        try {
+            const raw = localStorage.getItem("events");
+            const parsed = raw ? JSON.parse(raw) : null;
+
+            if (!Array.isArray(parsed) || parsed.length === 0) {
+                localStorage.setItem("events", JSON.stringify(events));
+            }
+        } catch {
+            localStorage.setItem("events", JSON.stringify(events));
+        }
+    }
+
     function normalizeEvent(event, index = 0) {
         if (!event || typeof event !== "object") {
             return null;
@@ -186,7 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const title = String(event.title || "").trim() || "Без названия";
         const description =
             String(event.description || "").trim() || "Описание мероприятия пока не добавлено.";
-        const image = String(event.image || "").trim() || "../img/carousel1.png";
+        const image = String(event.image || "").trim() || "img/carousel1.png";
         const date = normalizeDate(event.date);
         const goal = normalizeGoal(event.goal || event.category || event.purpose);
         const place = normalizePlace(event.place);
@@ -210,6 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function clearActiveOptions(optionList) {
         optionList.forEach((item) => item.classList.remove("active-option"));
     }
+
     function normalizeDate(rawDate) {
         if (!rawDate) {
             return "";
@@ -341,10 +356,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 "beforeend",
                 `
                     <div class="carousel-item ${isActive}">
-                        <img src="${escapeHtml(event.image)}" class="d-block w-100" alt="${escapeHtml(event.title)}">
-                        <div class="carousel-caption">
-                            <h2>${escapeHtml(event.title)}</h2>
-                        </div>
+                        <a class="carousel-slide-link" href="event.html?id=${encodeURIComponent(event.id)}" aria-label="Открыть мероприятие ${escapeHtml(event.title)}">
+                            <img src="${escapeHtml(event.image)}" class="d-block w-100" alt="${escapeHtml(event.title)}">
+                            <div class="carousel-caption">
+                                <div class="carousel-caption-card">
+                                    <h2>${escapeHtml(event.title)}</h2>
+                                </div>
+                            </div>
+                        </a>
                     </div>
                 `
             );
@@ -367,29 +386,31 @@ document.addEventListener("DOMContentLoaded", () => {
             eventsGrid.insertAdjacentHTML(
                 "beforeend",
                 `
-                    <div class="col-12 col-md-6 col-xl-4">
-                        <article class="event-card-custom">
-                            <div class="event-card-image-wrap">
-                                <img
-                                    src="${escapeHtml(event.image)}"
-                                    alt="${escapeHtml(event.title)}"
-                                    class="event-card-image"
-                                >
-                                <span class="event-card-badge">${escapeHtml(getGoalLabel(event.goal))}</span>
-                            </div>
-
-                            <div class="event-card-body">
-                                <h3 class="event-card-title">${escapeHtml(event.title)}</h3>
-                                <p class="event-card-text">${escapeHtml(event.description)}</p>
-
-                                <div class="event-card-meta">
-                                    <span class="event-meta-pill">${escapeHtml(getPlaceLabel(event.place))}</span>
-                                    <span class="event-meta-pill">${escapeHtml(formatDate(event.date))}</span>
-                                </div>
-                            </div>
-                        </article>
+        <div class="col-12 col-md-6 col-xl-4">
+            <a class="event-card-link" href="event.html?id=${encodeURIComponent(event.id)}">
+                <article class="event-card-custom">
+                    <div class="event-card-image-wrap">
+                        <img
+                            src="${escapeHtml(event.image)}"
+                            alt="${escapeHtml(event.title)}"
+                            class="event-card-image"
+                        >
+                        <span class="badge text-bg-light border rounded-pill goal-badge position-absolute top-0 start-0 m-3">${escapeHtml(getGoalLabel(event.goal))}</span>
                     </div>
-                `
+
+                    <div class="event-card-body">
+                        <h3 class="event-card-title">${escapeHtml(event.title)}</h3>
+                        <p class="event-card-text">${escapeHtml(event.description)}</p>
+
+                        <div class="event-card-meta">
+                            <span class="event-meta-pill">${escapeHtml(getPlaceLabel(event.place))}</span>
+                            <span class="event-meta-pill">${escapeHtml(formatDate(event.date))}</span>
+                        </div>
+                    </div>
+                </article>
+            </a>
+        </div>
+    `
             );
         });
     }
@@ -439,3 +460,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .replace(/'/g, "&#039;");
     }
 });
+
+
+
