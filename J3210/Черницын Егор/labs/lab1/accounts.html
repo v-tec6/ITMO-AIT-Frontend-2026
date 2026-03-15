@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои счета - MFF</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg shadow-sm bg-white">
+    <div class="container">
+        <a class="navbar-brand text-custom fw-bold d-flex align-items-center gap-2" href="dash.html">
+            <img style="transform: translateY(-2px);"  src="imgs/1.png" alt="Логотип MFF" width="35">
+            <span class="fs-3 fw-bolder" >MFF</span>
+            <img style="transform: translateY(-2px);" src="imgs/2.png" alt="Логотип MFF" width="35">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="dash.html">Главная</a></li>
+                <li class="nav-item"><a class="nav-link" href="transact.html">Транзакции</a></li>
+                <li class="nav-item"><a class="nav-link active" href="accounts.html">Счета</a></li>
+            </ul>
+            <div class="d-flex">
+                <a href="login.html" class="btn btn-outline-custom btn-sm">Выйти</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>Мои счета</h3>
+        <button class="btn btn-custom rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#addAccountModal">
+            + Добавить счёт
+        </button>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0 rounded-4 h-100 p-2" style="background-color: #740707;">
+                <div class="card-body d-flex flex-column text-white">
+                    <div class="d-flex justify-content-between align-items-start mb-4">
+                        <span class="small fw-bold text-uppercase opacity-75" style="letter-spacing: 1px;">Дебетовая карта</span>
+                        <span class="fw-bold">T-Bank</span>
+                    </div>
+
+                    <h2 class="fw-bolder mb-1 mt-auto">276,300 ₽</h2>
+                    <p class="mb-4 opacity-75 font-monospace">•••• •••• •••• 4567</p>
+
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-light btn-sm rounded-pill px-3 py-2 fw-bold text-dark w-50">Пополнить</button>
+                        <a href="transact.html" class="btn btn-outline-light btn-sm rounded-pill px-3 py-2 fw-bold w-50">История</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0 rounded-4 h-100 p-2 bg-dark">
+                <div class="card-body d-flex flex-column text-white">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="small fw-bold text-uppercase opacity-75" style="letter-spacing: 1px;">Накопительный</span>
+                        <div class="d-flex flex-column text-end">
+                            <span class="fw-bold mb-2">T-Bank</span>
+                            <span class="badge bg-success rounded-pill">+ 15% годовых</span>
+                        </div>
+                    </div>
+                    <h2 class="fw-bolder mb-1 mt-auto">80,000 ₽</h2>
+                    <p class="mb-4 opacity-75">Цель: не указана</p>
+
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-light btn-sm rounded-pill px-3 py-2 fw-bold text-dark w-50">Перевести</button>
+                        <a href="transact.html" class="btn btn-outline-light btn-sm rounded-pill px-3 py-2 fw-bold w-50">История</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0 rounded-4 h-100 p-2" style="background-color: #ededed">
+                <div class="card-body d-flex flex-column" style="color: #333333;">
+                    <div class="d-flex justify-content-between align-items-start mb-4">
+                        <span class="text-muted small fw-bold text-uppercase" style="letter-spacing: 1px;">Наличные</span>
+                        <span>💵</span>
+                    </div>
+
+                    <h2 class="fw-bolder mb-1 mt-auto">20,000 ₽</h2>
+                    <p class="text-muted mb-4">Кошелек</p>
+
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-secondary btn-sm rounded-pill px-3 py-2 fw-bold w-50">Записать расход</button>
+                        <a href="transact.html" class="btn btn-outline-secondary btn-sm rounded-pill px-3 py-2 fw-bold w-50">История</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="addAccountModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+
+            <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold" style="color: #333333;">Новый счет</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold text-uppercase mb-1" style="letter-spacing: 1px;">Название</label>
+                        <input type="text" class="form-control bg-light border-0" placeholder="Например: Заначка">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold text-uppercase mb-1" style="letter-spacing: 1px;">Тип счета</label>
+                        <select class="form-select bg-light border-0">
+                            <option>Дебетовая карта</option>
+                            <option>Кредитная карта</option>
+                            <option>Накопительный счет</option>
+                            <option>Наличные</option>
+                        </select>
+                    </div>
+
+                    <div class="row g-2 mb-4">
+                        <div class="col-8">
+                            <label class="form-label text-muted small fw-bold text-uppercase mb-1" style="letter-spacing: 1px;">Начальный баланс</label>
+                            <input type="number" class="form-control form-control-lg bg-light border-0" placeholder="0.00">
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label text-muted small fw-bold text-uppercase mb-1" style="letter-spacing: 1px;">Валюта</label>
+                            <select class="form-select bg-light border-0">
+                                <option>₽ RUB</option>
+                                <option>$ USD</option>
+                                <option>€ EUR</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-custom w-100 py-3 rounded-pill fw-bold" data-bs-dismiss="modal">
+                        Сохранить счет
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

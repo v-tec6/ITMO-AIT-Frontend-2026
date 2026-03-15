@@ -1,0 +1,60 @@
+.navbar{
+    background: #f3f3f3;
+}
+
+.nav-link {
+    margin-right: 1em !important;
+    border: 1px solid transparent;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem !important;
+
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #6c757d !important;
+}
+
+.nav-link:hover {
+    color: #740707 !important;
+    border-color: #740707;
+}
+
+/* Активная страница (которая открыта сейчас) */
+.nav-link.active {
+    color: #740707 !important;
+    border-color: #740707 !important;
+}
+
+.navbar-collapse{
+    justify-content: flex-end;
+}
+.navbar-toggler{
+    background:#fff !important;
+}
+
+.text-custom {
+    color: #740707 !important;
+}
+
+.btn-custom {
+    background-color: #740707 !important;
+    color: #ffffff;
+}
+
+.btn-outline-custom {
+    color: #740707;
+}
+
+.btn-outline-custom {
+    color: #740707;
+    border: 1px solid #740707;
+    background-color: transparent;
+}
+
+.btn-outline-custom:hover {
+    color: #ffffff;                   /* Текст становится белым */
+    background-color: #740707;        /* Фон заливается алым */
+    border-color: #740707;            /* Рамка остается алой */
+}
