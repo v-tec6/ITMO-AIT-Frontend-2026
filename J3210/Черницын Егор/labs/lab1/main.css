@@ -43,6 +43,11 @@
     color: #ffffff;
 }
 
+.btn-custom:hover {
+    background-color: #5b0606 !important;
+    color: #ffffff !important;
+}
+
 .btn-outline-custom {
     color: #740707;
 }
