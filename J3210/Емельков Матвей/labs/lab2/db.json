@@ -1,0 +1,34 @@
+{
+  "users":[
+    {
+      "id": "1",
+      "email": "name@yandex.ru",
+      "password": "123",
+      "name": "Иван Иванов"
+    }
+  ],
+  "stats": {
+    "totalExperiments": 15,
+    "totalModels": 4
+  },
+  "experiments":[
+    {
+      "id": "1",
+      "name": "Face_Reid",
+      "model": "ResNet-18",
+      "metricName": "Accuracy",
+      "metricValue": 92.3,
+      "date": "27.02.2026 16:18",
+      "status": "success"
+    },
+    {
+      "id": "2",
+      "name": "Cats Detection 1",
+      "model": "YOLOv8_Detection",
+      "metricName": "Roc-Auc",
+      "metricValue": 0.872,
+      "date": "26.02.2026 17:56",
+      "status": "process"
+    }
+  ]
+}
