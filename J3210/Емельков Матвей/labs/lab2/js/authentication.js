@@ -35,3 +35,46 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+const registerForm = document.getElementById("registerForm");
+
+if (registerForm) {
+    registerForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const nameEl = document.getElementById("regName");
+        const emailEl = document.getElementById("regEmail");
+        const passEl = document.getElementById("regPassword");
+
+        if (!nameEl || !emailEl || !passEl) {
+            console.error("Один из элементов формы не найден! Проверьте ID в HTML.");
+            return;
+        }
+
+        const newUser = {
+            name: nameEl.value.trim(),
+            email: emailEl.value.trim(),
+            password: passEl.value.trim()
+        };
+
+        console.log("Данные для регистрации:", newUser);
+
+        try {
+            const checkRes = await axios.get(`http://localhost:3000/users?email=${newUser.email}`);
+
+            if (checkRes.data.length > 0) {
+                alert("Пользователь с таким email уже существует!");
+                return;
+            }
+
+            await axios.post('http://localhost:3000/users', newUser);
+
+            alert("Регистрация успешна!");
+            window.location.href = "login.html";
+
+        } catch (error) {
+            console.error("Ошибка при регистрации:", error);
+            alert("Не удалось сохранить пользователя. Проверьте, запущен ли json-server.");
+        }
+    });
+}

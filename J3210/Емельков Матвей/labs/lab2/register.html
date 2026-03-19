@@ -19,25 +19,25 @@
             <p class="auth-card__subtitle">Создание аккаунта</p>
         </header>
 
-        <form action="index.html">
+        <form id="registerForm" action="index.html">
             <div class="mb-3">
-                <label for="name" class="form-label">Имя и Фамилия</label>
-                <input type="text" class="form-control" id="name" placeholder="Иван Иванов" required>
+                <label for="regName" class="form-label">Имя и Фамилия</label>
+                <input type="text" class="form-control" id="regName" placeholder="Иван Иванов" required>
             </div>
 
             <div class="mb-3">
-                <label for="group" class="form-label">Учебная группа</label>
-                <input type="text" class="form-control" id="group" placeholder="Например, J3210" required>
+                <label for="regGroup" class="form-label">Учебная группа</label>
+                <input type="text" class="form-control" id="regGroup" placeholder="Например, J3210" required>
             </div>
 
             <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" placeholder="name@yandex.ru" required>
+                <label for="regEmail" class="form-label">Email</label>
+                <input type="email" class="form-control" id="regEmail"  placeholder="name@yandex.ru" required>
             </div>
 
             <div class="mb-3">
-                <label for="password" class="form-label">Пароль</label>
-                <input type="password" class="form-control" id="password" placeholder="********" required>
+                <label for="regPassword" class="form-label">Пароль</label>
+                <input type="password" class="form-control" id="regPassword" placeholder="********" required>
             </div>
 
             <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
@@ -50,6 +50,9 @@
     </section>
 
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="js/authentication.js"></script>
 
 </body>
 </html>
