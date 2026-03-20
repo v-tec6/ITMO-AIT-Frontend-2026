@@ -32,6 +32,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (btnSaveModel) {
         btnSaveModel.addEventListener("click", createNewModel);
     }
+
+    const btnDeleteProfile = document.getElementById("btnDeleteProfile");
+    if (btnDeleteProfile) {
+        btnDeleteProfile.addEventListener("click", deleteUserProfile);
+    }
 });
 
 async function fetchAndRenderDashboard() {
@@ -234,6 +239,34 @@ async function createNewExperiment() {
 
     } catch (e) {
         console.error("Ошибка:", e);
+    }
+}
+
+async function deleteUserProfile() {
+    const userStr = localStorage.getItem("currentUser");
+    if (!userStr) return;
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+
+    if (!confirm("ВНИМАНИЕ! Это необратимое действие. Удалить профиль и все данные?")) return;
+
+    try {
+        const [expRes, modelsRes] = await Promise.all([
+            axios.get(`${API_URL}/experiments?userId=${user.id}`),
+            axios.get(`${API_URL}/models?userId=${user.id}`)
+        ]);
+
+        const deletePromises = [
+            ...modelsRes.data.map(m => axios.delete(`${API_URL}/models/${m.id}`)),
+            ...expRes.data.map(e => axios.delete(`${API_URL}/experiments/${e.id}`))
+        ];
+
+        await Promise.all(deletePromises);
+        await axios.delete(`${API_URL}/users/${user.id}`);
+        localStorage.removeItem("currentUser");
+        window.location.href = "login.html";
+    } catch (e) {
+        console.error("Ошибка удаления:", e);
+        alert("Не удалось удалить профиль.");
     }
 }
 
