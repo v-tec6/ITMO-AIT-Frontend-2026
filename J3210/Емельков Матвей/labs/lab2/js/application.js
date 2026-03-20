@@ -39,13 +39,13 @@ async function fetchAndRenderDashboard() {
     if (!user) return;
 
     try {
-        const [modelsRes, expRes] = await Promise.all([
-            axios.get(`${API_URL}/models`),
-            axios.get(`${API_URL}/experiments`)
+        const [expRes, modelsRes] = await Promise.all([
+            axios.get(`${API_URL}/experiments?userId=${user.id}`),
+            axios.get(`${API_URL}/models?userId=${user.id}`)
         ]);
 
-        const models = modelsRes.data.filter(m => String(m.userId) === String(user.id));
-        const experiments = expRes.data.filter(e => String(e.userId) === String(user.id));
+        const models = modelsRes.data;
+        const experiments = expRes.data;
 
         const searchTableBody = document.getElementById("searchTableBody");
         if (searchTableBody) {
@@ -80,8 +80,8 @@ async function fetchAndRenderDashboard() {
             experiments.slice().reverse().slice(0, EXP_TO_SHOW_ON_MAIN_PAGE).forEach(exp => {
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
-                <td><a href="experiment_details.html" class="text-decoration-none text-truncate btn-min-width">${exp.name}</a></td>
-                <td><span class="badge bg-secondary text-truncate btn-min-width">${exp.model}</span></td>
+                <td><a href="experiment_details.html" class="text-decoration-none">${exp.name}</a></td>
+                <td><span class="badge bg-secondary">${exp.model}</span></td>
                 <td>${exp.metricName || 'Accuracy'}</td>
                 <td>${exp.metricValue || '0'}</td>
                 <td>${exp.date}</td>
@@ -170,12 +170,7 @@ async function createNewModel() {
 
     try {
         await axios.post(`${API_URL}/models`, newModel);
-
-        const modalEl = document.getElementById('registerModelModal');
-        if (modalEl) {
-            bootstrap.Modal.getInstance(modalEl).hide();
-        }
-
+        bootstrap.Modal.getInstance(document.getElementById('registerModelModal')).hide();
         nameInput.value = "";
         alert("Модель успешно зарегистрирована!");
         await fetchAndRenderDashboard();
@@ -201,8 +196,8 @@ async function createNewExperiment() {
 
     try {
         const [expRes, modelsRes] = await Promise.all([
-            axios.get(`${API_URL}/experiments`),
-            axios.get(`${API_URL}/models`)
+            axios.get(`${API_URL}/experiments?userId=${user.id}`),
+            axios.get(`${API_URL}/models?userId=${user.id}`)
         ]);
 
         const userExp = expRes.data.filter(e => String(e.userId) === String(user.id));
@@ -232,10 +227,7 @@ async function createNewExperiment() {
         };
 
         await axios.post(`${API_URL}/experiments`, newExp);
-
-        const modal = bootstrap.Modal.getInstance(document.getElementById('newExperimentModal'));
-        if (modal) modal.hide();
-
+        bootstrap.Modal.getInstance(document.getElementById('newExperimentModal')).hide();
         nameInput.value = "";
         modelInput.value = "";
         await fetchAndRenderDashboard();

@@ -1,7 +1,7 @@
 {
   "users": [
     {
-      "id": "1",
+      "id": "e92f",
       "email": "name@yandex.ru",
       "password": "123",
       "name": "Иван Иванов"
@@ -21,12 +21,12 @@
     {
       "id": "1",
       "name": "ResNet-18",
-      "userId": "1"
+      "userId": "e92f"
     },
     {
       "id": "2",
       "name": "YOLOv8_Detection",
-      "userId": "1"
+      "userId": "e92f"
     },
     {
       "id": "c636",
@@ -46,7 +46,7 @@
       "date": "27.02.2026",
       "duration": "16:18",
       "status": "success",
-      "userId": "1"
+      "userId": "e92f"
     },
     {
       "id": "2",
@@ -57,7 +57,7 @@
       "date": "26.02.2026",
       "duration": "17:56",
       "status": "process",
-      "userId": "1"
+      "userId": "e92f"
     },
     {
       "id": "2768",
@@ -68,7 +68,7 @@
       "date": "19.03.2026, 22:49:15",
       "duration": "-",
       "status": "process",
-      "userId": "1"
+      "userId": "e92f"
     },
     {
       "id": "3dea",
@@ -79,7 +79,7 @@
       "date": "19.03.2026, 23:05:49",
       "duration": "-",
       "status": "process",
-      "userId": "1"
+      "userId": "e92f"
     },
     {
       "id": "8f86",
@@ -100,7 +100,7 @@
       "metricValue": "39.59",
       "date": "20.03.2026, 10:42:28",
       "status": "process",
-      "userId": "1"
+      "userId": "e92f"
     },
     {
       "id": "f2df",
@@ -110,7 +110,7 @@
       "metricValue": "42.67",
       "date": "20.03.2026, 10:42:39",
       "status": "process",
-      "userId": "1"
+      "userId": "e92f"
     },
     {
       "id": "462e",
@@ -123,4 +123,6 @@
       "status": "process",
       "userId": "e76a"
     }
-  ]}
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
