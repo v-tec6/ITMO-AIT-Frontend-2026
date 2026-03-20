@@ -5,13 +5,38 @@
       "email": "name@yandex.ru",
       "password": "123",
       "name": "Иван Иванов"
+    },
+    {
+      "id": "e76a",
+      "name": "Кирилл Иванов",
+      "email": "kirill@yandex.ru",
+      "password": "1234"
     }
   ],
   "stats": {
     "totalExperiments": 15,
     "totalModels": 4
   },
-  "experiments":[
+  "models": [
+    {
+      "id": "1",
+      "name": "ResNet-18",
+      "userId": "1"
+    },
+    {
+      "id": "2",
+      "name": "YOLOv8_Detection",
+      "userId": "1"
+    },
+    {
+      "id": "c636",
+      "name": "UNet",
+      "framework": "pytorch",
+      "date": "20.03.2026",
+      "userId": "e76a"
+    }
+  ],
+  "experiments": [
     {
       "id": "1",
       "name": "Face_Reid",
@@ -20,7 +45,8 @@
       "metricValue": 92.3,
       "date": "27.02.2026",
       "duration": "16:18",
-      "status": "success"
+      "status": "success",
+      "userId": "1"
     },
     {
       "id": "2",
@@ -30,6 +56,71 @@
       "metricValue": 0.872,
       "date": "26.02.2026",
       "duration": "17:56",
-      "status": "process"
+      "status": "process",
+      "userId": "1"
+    },
+    {
+      "id": "2768",
+      "name": "test_exp",
+      "model": "ResNet-18",
+      "metricName": "Accuracy",
+      "metricValue": "11.19",
+      "date": "19.03.2026, 22:49:15",
+      "duration": "-",
+      "status": "process",
+      "userId": "1"
+    },
+    {
+      "id": "3dea",
+      "name": "test_exp_2",
+      "model": "YOLOv8_Detection",
+      "metricName": "Accuracy",
+      "metricValue": "71.50",
+      "date": "19.03.2026, 23:05:49",
+      "duration": "-",
+      "status": "process",
+      "userId": "1"
+    },
+    {
+      "id": "8f86",
+      "name": "test_exp_3",
+      "model": "UNet",
+      "metricName": "Accuracy",
+      "metricValue": "26.60",
+      "date": "20.03.2026, 10:19:18",
+      "duration": "-",
+      "status": "process",
+      "userId": "e76a"
+    },
+    {
+      "id": "f4f5",
+      "name": "test_exp_4",
+      "model": "ResNet-18",
+      "metricName": "Accuracy",
+      "metricValue": "39.59",
+      "date": "20.03.2026, 10:42:28",
+      "status": "process",
+      "userId": "1"
+    },
+    {
+      "id": "f2df",
+      "name": "test_exp_5",
+      "model": "YOLOv8_Detection",
+      "metricName": "Accuracy",
+      "metricValue": "42.67",
+      "date": "20.03.2026, 10:42:39",
+      "status": "process",
+      "userId": "1"
+    },
+    {
+      "id": "462e",
+      "name": "test_exp_6",
+      "model": "UNet",
+      "metricName": "Accuracy",
+      "metricValue": "85.39",
+      "date": "20.03.2026",
+      "duration": "0 min",
+      "status": "process",
+      "userId": "e76a"
     }
   ]}

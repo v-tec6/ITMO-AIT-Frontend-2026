@@ -35,19 +35,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function fetchAndRenderDashboard() {
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    if (!user) return;
+
     try {
         const [modelsRes, expRes] = await Promise.all([
             axios.get(`${API_URL}/models`),
             axios.get(`${API_URL}/experiments`)
         ]);
 
-        const models = modelsRes.data;
-        const experiments = expRes.data;
+        const models = modelsRes.data.filter(m => String(m.userId) === String(user.id));
+        const experiments = expRes.data.filter(e => String(e.userId) === String(user.id));
 
         const searchTableBody = document.getElementById("searchTableBody");
         if (searchTableBody) {
             searchTableBody.innerHTML = "";
-            experiments.reverse().forEach(exp => {
+            experiments.slice().reverse().forEach(exp => {
                 searchTableBody.innerHTML += `
                 <tr>
                     <td><a href="experiment_details.html" class="text-decoration-none text-truncate btn-min-width">${exp.name}</a></td>
@@ -151,6 +154,7 @@ async function fetchAndRenderDashboard() {
 async function createNewModel() {
     const nameInput = document.getElementById("newModelName");
     const frameworkInput = document.getElementById("newModelFramework");
+    const user = JSON.parse(localStorage.getItem("currentUser"));
 
     if (!nameInput || !nameInput.value.trim()) {
         alert("Заполните название модели!");
@@ -160,7 +164,8 @@ async function createNewModel() {
     const newModel = {
         name: nameInput.value.trim(),
         framework: frameworkInput ? frameworkInput.value : "unknown",
-        date: new Date().toLocaleDateString()
+        date: new Date().toLocaleDateString(),
+        userId: user.id
     };
 
     try {
@@ -182,6 +187,7 @@ async function createNewModel() {
 async function createNewExperiment() {
     const nameInput = document.getElementById("newExpName");
     const modelInput = document.getElementById("newExpModel");
+    const user = JSON.parse(localStorage.getItem("currentUser"));
 
     if (!nameInput || !modelInput) return;
 
@@ -199,13 +205,16 @@ async function createNewExperiment() {
             axios.get(`${API_URL}/models`)
         ]);
 
-        const isDuplicate = expRes.data.some(e => e.name.toLowerCase() === name.toLowerCase());
+        const userExp = expRes.data.filter(e => String(e.userId) === String(user.id));
+        const userModels = modelsRes.data.filter(m => String(m.userId) === String(user.id));
+
+        const isDuplicate = userExp.some(e => e.name.toLowerCase() === name.toLowerCase());
         if (isDuplicate) {
             alert("Эксперимент с таким названием уже существует!");
             return;
         }
 
-        const modelExists = modelsRes.data.some(m => m.name === modelName);
+        const modelExists = userModels.some(m => m.name === modelName);
         if (!modelExists) {
             alert(`Модель "${modelName}" не найдена в реестре! Проверьте правильность написания.`);
             return;
@@ -218,7 +227,8 @@ async function createNewExperiment() {
             metricValue: (Math.random() * 100).toFixed(2),
             date: new Date().toLocaleDateString(),
             duration: "0 min",
-            status: "process"
+            status: "process",
+            userId: user.id
         };
 
         await axios.post(`${API_URL}/experiments`, newExp);
