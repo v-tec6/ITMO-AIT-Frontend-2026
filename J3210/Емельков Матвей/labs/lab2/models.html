@@ -31,16 +31,16 @@
                 </nav>
 
                 <footer class="sidebar__footer dropdown">
-                    <a href="#" class="sidebar__link dropdown-toggle text-decoration-none text-truncate" id="userName" data-bs-toggle="dropdown" aria-expanded="false">
-                        Иван Иванов
+                    <a href="#" class="sidebar__link dropdown-toggle text-decoration-none text-truncate" id="userNameDisplay" data-bs-toggle="dropdown" aria-expanded="false">
+                        Загрузка...
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="userName">
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="userNameDisplay">
                         <li>
                             <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#settingsModal">
                                 Настройки
                             </a>
                         </li>
-                        <li><a class="dropdown-item text-danger" href="login.html">Выйти</a></li>
+                        <li><a class="dropdown-item text-danger" href="#" id="logoutBtn">Выйти</a></li>
                     </ul>
                 </footer>
             </div>
@@ -58,101 +58,7 @@
                 Управление версиями моделей и их статусами.
             </p>
 
-            <div class="card mb-3 shadow-sm border-0">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="mb-0 text-primary">ResNet-18</h5>
-                        <small class="text-muted">Последнее обновление: 27.02.2026</small>
-                    </div>
-
-                    <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#model1">
-                        Показать версии
-                    </button>
-                </div>
-
-                <div class="collapse show" id="model1">
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-striped align-middle mb-0">
-                                <thead class="table-light">
-                                <tr>
-                                    <th class="col-version ps-4">Версия</th>
-                                    <th class="col-stage">Стадия</th>
-                                    <th class="col-metrics">Метрики</th>
-                                    <th class="col-action">Действия</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                <tr>
-                                    <td class="ps-4">
-                                        <div class="table-truncate" title="v2">
-                                            v2
-                                        </div>
-                                    </td>
-                                    <td><span class="badge bg-success">Production</span></td>
-                                    <td>Acc: 0.95</td>
-                                    <td><a href="#" class="text-decoration-none">Скачать</a></td>
-                                </tr>
-
-                                <tr>
-                                    <td class="ps-4">
-                                        <div class="table-truncate" title="v1">
-                                            v1
-                                        </div>
-                                    </td>
-                                    <td><span class="badge bg-warning text-dark">Staging</span></td>
-                                    <td>Acc: 0.92</td>
-                                    <td><a href="#" class="text-decoration-none">Детали</a></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card mb-3 shadow-sm border-0">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="mb-0 text-primary">YOLOv8_Detection</h5>
-                        <small class="text-muted">Последнее обновление: 15.02.2026</small>
-                    </div>
-                    <button class="btn btn-outline-secondary btn-sm collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#model2" aria-expanded="false">
-                        Показать версии
-                    </button>
-                </div>
-
-                <div class="collapse" id="model2">
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-striped align-middle mb-0">
-                                <thead class="table-light">
-                                <tr>
-                                    <th class="col-version ps-4">Версия</th>
-                                    <th class="col-stage">Стадия</th>
-                                    <th class="col-metrics">Метрики</th>
-                                    <th class="col-action">Действия</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="ps-4">
-                                        <div class="table-truncate" title="very_very_long_version_name_of_the_yolo_model">
-                                            very_very_long_version_name_of_the_yolo_model
-                                        </div>
-                                    </td>
-                                    <td><span class="badge bg-secondary">None</span></td>
-                                    <td>RocAuc: 0.831</td>
-                                    <td><a href="#" class="text-decoration-none">Развернуть</a></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+            <div id="modelsContainer"></div>
         </main>
     </div>
 
@@ -167,13 +73,13 @@
                 <div class="modal-body">
                     <form>
                         <div class="mb-3">
-                            <label for="modelName" class="form-label">Название модели</label>
-                            <input type="text" class="form-control" id="modelName" placeholder="Например, CV_model" required>
+                            <label for="newModelName" class="form-label">Название модели</label>
+                            <input type="text" class="form-control" id="newModelName" placeholder="Например, CV_model" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="modelFramework" class="form-label">Библиотека / Фреймворк</label>
-                            <select class="form-select" id="modelFramework" required>
+                            <label for="newModelFramework" class="form-label">Библиотека / Фреймворк</label>
+                            <select class="form-select" id="newModelFramework" required>
                                 <option value="" disabled selected>Выберите библиотеку...</option>
                                 <option value="pytorch">PyTorch</option>
                                 <option value="tensorflow">TensorFlow</option>
@@ -213,7 +119,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Зарегистрировать</button>
+                    <button type="button" id="btnSaveModel" class="btn btn-primary">Зарегистрировать</button>
                 </div>
             </div>
         </div>
@@ -252,6 +158,8 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/application.js"></script>
 </body>
 </html>
