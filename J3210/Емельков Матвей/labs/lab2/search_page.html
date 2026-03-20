@@ -33,7 +33,7 @@
                 </nav>
 
                 <footer class="sidebar__footer dropdown">
-                    <a href="#" class="sidebar__link dropdown-toggle text-decoration-none text-truncate" id="userName" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a href="#" class="sidebar__link dropdown-toggle text-decoration-none text-truncate" id="userNameDisplay" data-bs-toggle="dropdown" aria-expanded="false">
                         Иван Иванов
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="userName">
@@ -100,51 +100,11 @@
                                 <th>Дата</th>
                                 <th>Длительность</th>
                                 <th>Статус</th>
+                                <th></th>
                             </tr>
                         </thead>
 
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <a href="experiment_details.html" class="text-decoration-none text-truncate btn-min-width" title="Face_Reid">
-                                        Face_Reid
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="models.html" class="badge bg-secondary text-decoration-none text-truncate btn-min-width" title="ResNet_18">
-                                        ResNet_18
-                                    </a>
-                                </td>
-                                <td>Accuracy</td>
-                                <td>92.3</td>
-                                <td>27.02.2026 16:18</td>
-                                <td>
-                                    <span class="text-decoration-none">7 min 17 s</span>
-                                </td>
-                                <td>
-                                    <span class="badge bg-success">OK</span>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>
-                                    <!--Тоже пока что на одну карточку ссылаемся-->
-                                    <a href="experiment_details.html" class="text-decoration-none text-truncate btn-min-width" title="Cats Detection 1">
-                                        Cats Detection 1
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="models.html" class="badge bg-secondary text-decoration-none text-truncate btn-min-width" title="YOLOv8_Detection">
-                                        YOLOv8_Detection
-                                    </a>
-                                </td>
-                                <td>Roc-Auc</td>
-                                <td>0.872</td>
-                                <td>26.02.2026 17:56</td>
-                                <td>-</td>
-                                <td><span class="badge bg-warning">In process</span></td>
-                            </tr>
-                        </tbody>
+                        <tbody id="searchTableBody"></tbody>
 
                     </table>
                 </div>
@@ -163,20 +123,20 @@
                 <div class="modal-body">
                     <form>
                         <div class="mb-3">
-                            <label for="expName" class="form-label">Название эксперимента</label>
-                            <input type="text" class="form-control" id="expName" placeholder="Experiment_N">
+                            <label for="newExpName" class="form-label">Название эксперимента</label>
+                            <input type="text" class="form-control" id="newExpName" placeholder="Experiment_N">
                         </div>
 
                         <div class="mb-3">
-                            <label for="expModels" class="form-label">Модель</label>
-                            <input type="text" class="form-control" id="expModels" placeholder="Например: ResNet_18">
+                            <label for="newExpModel" class="form-label">Модель</label>
+                            <input type="text" class="form-control" id="newExpModel" placeholder="Например: ResNet_18">
                         </div>
 
-                        <footer class="model-footer">
+                        <footer class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                 Отмена
                             </button>
-                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                            <button type="button" id="btnSaveExperiment" class="btn btn-primary" data-bs-dismiss="modal">
                                 Создать
                             </button>
                         </footer>
@@ -219,6 +179,8 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/application.js"></script>
 </body>
 </html>
