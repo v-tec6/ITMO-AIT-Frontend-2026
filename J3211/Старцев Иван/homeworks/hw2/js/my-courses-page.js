@@ -42,49 +42,86 @@
         items: [getEmptyLesson()]
     });
 
-    const getLessonHtml = (lesson) => `
+    const getLessonHtml = (lesson, lessonIndex = 0) => `
         <div class="border rounded p-3" data-lesson-item>
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="small text-muted">Урок</span>
-                <button type="button" class="btn btn-sm btn-outline-danger" data-remove-lesson>
-                    <i class="bi bi-trash"></i>
+                <h5 class="h6 mb-0" data-lesson-heading>Урок ${lessonIndex + 1}</h5>
+                <button type="button" class="btn btn-sm btn-outline-danger" data-remove-lesson aria-label="Удалить урок">
+                    <i class="bi bi-trash" aria-hidden="true"></i>
                 </button>
             </div>
+    
             <div class="mb-2">
-                <label class="form-label">Название урока</label>
-                <input type="text" class="form-control" data-lesson-title value="${lesson.title}" required>
+                <label class="form-label w-100">
+                    <span class="d-block mb-1">Название урока</span>
+                    <input type="text" class="form-control" data-lesson-title value="${lesson.title}" required>
+                </label>
             </div>
+    
             <div>
-                <label class="form-label">Контент урока</label>
-                <textarea class="form-control" rows="3" data-lesson-content required>${lesson.content}</textarea>
+                <label class="form-label w-100 mb-0">
+                    <span class="d-block mb-1">Контент урока</span>
+                    <textarea class="form-control" rows="3" data-lesson-content required>${lesson.content}</textarea>
+                </label>
             </div>
         </div>
     `;
 
-    const getSectionHtml = (section) => `
+    const getSectionHtml = (section, sectionIndex = 0) => `
         <div class="card" data-program-section>
             <div class="card-body">
                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
-                    <label class="form-label mb-0">Раздел</label>
-                    <button type="button" class="btn btn-sm btn-outline-danger" data-remove-section>
-                        <i class="bi bi-trash"></i> Удалить раздел
+                    <h4 class="h6 mb-0" data-section-heading>Раздел ${sectionIndex + 1}</h4>
+                    <button type="button" class="btn btn-sm btn-outline-danger" data-remove-section aria-label="Удалить раздел">
+                        <i class="bi bi-trash" aria-hidden="true"></i> Удалить раздел
                     </button>
                 </div>
+    
                 <div class="mb-3">
-                    <input type="text" class="form-control" data-section-title value="${section.title}" required>
+                    <label class="form-label w-100 mb-0">
+                        <span class="d-block mb-1">Название раздела</span>
+                        <input type="text" class="form-control" data-section-title value="${section.title}" required>
+                    </label>
                 </div>
                 <div class="d-grid gap-2" data-lessons-container>
-                    ${section.items.map((lesson) => getLessonHtml(lesson)).join("")}
+                    ${section.items.map((lesson, lessonIndex) => getLessonHtml(lesson, lessonIndex)).join("")}
                 </div>
                 <button type="button" class="btn btn-sm btn-outline-primary mt-2" data-add-lesson>
-                    <i class="bi bi-plus-circle"></i> Добавить урок
+                    <i class="bi bi-plus-circle" aria-hidden="true"></i> Добавить урок
                 </button>
             </div>
         </div>
     `;
 
+    const renumberProgram = () => {
+        programSections.querySelectorAll("[data-program-section]").forEach((sectionElement, sectionIndex) => {
+            const sectionHeading = sectionElement.querySelector("[data-section-heading]");
+            const sectionTitleInput = sectionElement.querySelector("[data-section-title]");
+            if (sectionHeading) {
+                sectionHeading.textContent = `Раздел ${sectionIndex + 1}`;
+            }
+            if (sectionTitleInput && /^Раздел \d+$/.test(sectionTitleInput.value.trim())) {
+                sectionTitleInput.value = `Раздел ${sectionIndex + 1}`;
+            }
+            sectionElement.querySelectorAll("[data-lesson-item]").forEach((lessonElement, lessonIndex) => {
+                const lessonHeading = lessonElement.querySelector("[data-lesson-heading]");
+                const lessonTitleInput = lessonElement.querySelector("[data-lesson-title]");
+                if (lessonHeading) {
+                    lessonHeading.textContent = `Урок ${lessonIndex + 1}`;
+                }
+                if (lessonTitleInput && /^Урок \d+$/.test(lessonTitleInput.value.trim())) {
+                    lessonTitleInput.value = `Урок ${lessonIndex + 1}`;
+                }
+            });
+        });
+    };
+
+
+
     const renderProgram = (program) => {
-        programSections.innerHTML = program.map((section) => getSectionHtml(section)).join("");
+        programSections.innerHTML = program.map((section, sectionIndex) => getSectionHtml(section, sectionIndex)).join("");
+        renumberProgram();
+        bindProgramControls();
     };
 
     const getMyCourses = () => courses.filter((course) => currentUser.createdCourseIds.includes(course.id));
@@ -103,8 +140,8 @@
             const students = getCourseStudents(course.id);
 
             return `
-                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                    <div class="card h-100">
+                <li class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                    <article class="card h-100">
                         <img src="${course.image}" class="card-img-top" alt="${course.title}">
                         <div class="card-body">
                             <h3 class="h6 mb-2">${course.title}</h3>
@@ -121,8 +158,8 @@
                                 </button>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </article>
+                </li>
             `;
         }).join("");
     };
@@ -138,6 +175,7 @@
         courseForm.reset();
         modalTitle.textContent = "Создать курс";
         renderProgram([getEmptySection()]);
+        bindEditCourseButtons();
     };
 
     const fillForm = (course) => {
@@ -170,49 +208,63 @@
         hideMessage();
         resetForm();
     });
-    container.addEventListener("click", (event) => {
-        const button = event.target.closest("[data-edit-course-id]");
-        if (!button) {
-            return;
-        }
-        hideMessage();
-        fillForm(courses.find((course) => course.id === Number(button.dataset.editCourseId)));
-    });
+
     addSectionButton.addEventListener("click", () => {
-        const sectionNumber = programSections.querySelectorAll("[data-program-section]").length + 1;
-        programSections.insertAdjacentHTML("beforeend", getSectionHtml(getEmptySection(`Раздел ${sectionNumber}`)));
+        const sectionNumber = programSections.querySelectorAll("[data-program-section]").length;
+        programSections.insertAdjacentHTML("beforeend", getSectionHtml(getEmptySection(`Раздел ${sectionNumber + 1}`), sectionNumber));
+        bindSectionControls(programSections.lastElementChild);
+        renumberProgram();
     });
+    const bindEditCourseButtons = () => {
+        container.querySelectorAll("[data-edit-course-id]").forEach((button) => {
+            button.addEventListener("click", () => {
+                hideMessage();
+                fillForm(courses.find((course) => course.id === Number(button.dataset.editCourseId)));
+            });
+        });
+    };
 
-    programSections.addEventListener("click", (event) => {
-        const sectionElement = event.target.closest("[data-program-section]");
-
-        if (!sectionElement) {
+    const bindLessonRemoveButton = (lessonElement, sectionElement) => {
+        const removeLessonButton = lessonElement.querySelector("[data-remove-lesson]");
+        if (!removeLessonButton) {
             return;
         }
-        if (event.target.closest("[data-add-lesson]")) {
-            const lessonsContainer = sectionElement.querySelector("[data-lessons-container]");
-            const lessonNumber = lessonsContainer.querySelectorAll("[data-lesson-item]").length + 1;
-            lessonsContainer.insertAdjacentHTML("beforeend", getLessonHtml(getEmptyLesson(`Урок ${lessonNumber}`)));
-            return;
-        }
-
-        if (event.target.closest("[data-remove-section]")) {
-            if (programSections.querySelectorAll("[data-program-section]").length === 1) {
-                return;
-            }
-            sectionElement.remove();
-            return;
-        }
-
-        if (event.target.closest("[data-remove-lesson]")) {
+        removeLessonButton.addEventListener("click", () => {
             const lessons = sectionElement.querySelectorAll("[data-lesson-item]");
             if (lessons.length === 1) {
                 return;
             }
-            event.target.closest("[data-lesson-item]").remove();
-        }
-    });
+            lessonElement.remove();
+            renumberProgram();
+        });
+    };
 
+    const bindSectionControls = (sectionElement) => {
+        const addLessonButton = sectionElement.querySelector("[data-add-lesson]");
+        const removeSectionButton = sectionElement.querySelector("[data-remove-section]");
+        const lessonsContainer = sectionElement.querySelector("[data-lessons-container]");
+        sectionElement.querySelectorAll("[data-lesson-item]").forEach((lessonElement) => {
+            bindLessonRemoveButton(lessonElement, sectionElement);
+        });
+        addLessonButton.addEventListener("click", () => {
+            const lessonNumber = lessonsContainer.querySelectorAll("[data-lesson-item]").length;
+            lessonsContainer.insertAdjacentHTML("beforeend", getLessonHtml(getEmptyLesson(`Урок ${lessonNumber + 1}`), lessonNumber));
+            renumberProgram();
+            bindLessonRemoveButton(lessonsContainer.lastElementChild, sectionElement);
+        });
+        removeSectionButton.addEventListener("click", () => {
+            if (programSections.querySelectorAll("[data-program-section]").length === 1) {
+                return;
+            }
+            sectionElement.remove();
+            renumberProgram();
+        });
+    };
+    const bindProgramControls = () => {
+        programSections.querySelectorAll("[data-program-section]").forEach((sectionElement) => {
+            bindSectionControls(sectionElement);
+        });
+    };
     courseForm.addEventListener("submit", async (event) => {
         event.preventDefault();
         hideMessage();
