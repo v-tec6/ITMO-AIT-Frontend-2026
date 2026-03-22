@@ -47,7 +47,7 @@
                 <article class="card h-100">
                     <img src="${course.image}" class="card-img-top" alt="${course.title}">
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">${course.title}</h5>
+                        <h2 class="h5 card-title">${course.title}</h2>
                         <p class="card-text text-muted small mb-2">${course.description}</p>
                         <p class="card-text mb-1"><strong>Автор:</strong> ${getAuthorName(course)}</p>
                         <p class="card-text mb-1"><strong>Уровень:</strong> ${course.level}</p>

@@ -153,6 +153,7 @@
     const loadPage = async () => {
         course = await window.api.getCourse(courseId);
         users = await window.api.getUsers();
+        document.title = "Курс" + (course.title ? `: ${course.title}` : "");
         await render();
     };
 

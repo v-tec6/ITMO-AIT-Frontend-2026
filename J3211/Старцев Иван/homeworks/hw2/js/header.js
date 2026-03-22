@@ -33,7 +33,7 @@
 
                     ${user ? `
                         <div class="dropdown order-lg-last ms-2">
-                            <button class="btn p-0" type="button" data-bs-toggle="dropdown" data-bs-auto-close="true" data-bs-display="static" aria-expanded="false">
+                            <button class="btn p-0" type="button" data-bs-toggle="dropdown" data-bs-auto-close="true" data-bs-display="static" aria-expanded="false" aria-label="открыть меню профиля">
                                 <img src="${user.avatar}" alt="${user.name}" class="rounded-circle object-fit-cover" width="40" height="40">
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end shadow-sm rounded-3 p-2">

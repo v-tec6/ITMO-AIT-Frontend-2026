@@ -57,6 +57,11 @@
             window.auth.updateCurrentUser(currentUser);
             render();
             showMessage("success", "Профиль обновлен.");
+            const modal = window.bootstrap.Modal.getInstance(document.getElementById("editProfileModal"));
+
+            if (modal) {
+                modal.hide();
+            }
         } catch {showMessage("danger", "Не удалось сохранить измненеия.");}
     });
 

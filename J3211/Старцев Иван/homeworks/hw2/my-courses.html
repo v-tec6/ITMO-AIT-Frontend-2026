@@ -26,24 +26,31 @@
         <div class="col-12 col-md-4">
             <div class="card">
                 <div class="card-body">
-                    <p class="text-muted mb-1">Создано курсов</p>
-                    <p class="h3 mb-0" id="statCoursesCount">0</p>
+                    <dl class="mb-2">
+                        <dt class="text-muted mb-1">Создано курсов</dt>
+                        <dd class="h3 mb-0" id="statCoursesCount">0</dd>
+                    </dl>
+
                 </div>
             </div>
         </div>
         <div class="col-12 col-md-4">
             <div class="card">
                 <div class="card-body">
-                    <p class="text-muted mb-1">Учеников на курсах</p>
-                    <p class="h3 mb-0" id="statStudentsCount">0</p>
+                    <dl class="mb-2">
+                        <dt class="text-muted mb-1">Учеников на курсах</dt>
+                        <dd class="h3 mb-0" id="statStudentsCount">0</dd>
+                    </dl>
                 </div>
             </div>
         </div>
         <div class="col-12 col-md-4">
             <div class="card">
                 <div class="card-body">
-                    <p class="text-muted mb-1">Выручка</p>
-                    <p class="h3 mb-0" id="statRevenue">0 ₽</p>
+                    <dl class="mb-2">
+                        <dt class="text-muted mb-1">Выручка</dt>
+                        <dd class="h3 mb-0" id="statRevenue">0 ₽</dd>
+                    </dl>
                 </div>
             </div>
         </div>
@@ -63,7 +70,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
             </div>
             <div class="modal-body">
-                <form id="courseForm">
+                <form id="courseForm" method="post">
                     <div class="row g-3">
                         <div class="col-12">
                             <label for="courseTitleInput" class="form-label">Название</label>

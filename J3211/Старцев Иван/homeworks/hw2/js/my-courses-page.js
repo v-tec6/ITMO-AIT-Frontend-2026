@@ -144,7 +144,7 @@
                     <article class="card h-100">
                         <img src="${course.image}" class="card-img-top" alt="${course.title}">
                         <div class="card-body">
-                            <h3 class="h6 mb-2">${course.title}</h3>
+                            <h2 class="h6 mb-2">${course.title}</h2>
                             <p class="small text-muted mb-1">${currentUser.name}</p>
                             <p class="small mb-1">Рейтинг: <strong>${getCourseRating(course).toFixed(1)} / 5</strong></p>
                             <p class="small mb-1">Цена: <strong>${course.price} ₽</strong></p>

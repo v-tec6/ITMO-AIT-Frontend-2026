@@ -29,10 +29,11 @@
                             </button>
                         </div>
 
+                        <div class="mb-4">
+                            <img id="profileAvatar" class="rounded-circle object-fit-cover" width="96" height="96" alt="" src="">
+                        </div>
+
                         <dl class="row g-4">
-                            <div class="col-12">
-                                <img id="profileAvatar" class="rounded-circle object-fit-cover" width="96" height="96" alt="" src="">
-                            </div>
                             <div class="col-12 col-md-6">
                                 <dt class="small mb-1">Имя</dt>
                                 <dd class="fs-5 fw-bold mb-0" id="profileName"></dd>
@@ -51,8 +52,10 @@
                     <div class="col-12">
                         <div class="card border-0 shadow-lg rounded-4">
                             <div class="card-body p-4">
-                                <p class="text-muted mb-2">Курсы в обучении</p>
-                                <p class="display-6 fw-bold mb-2" id="learningCount">0</p>
+                                <dl class="mb-2">
+                                    <dt class="text-muted mb-2">Курсы в обучении</dt>
+                                    <dd class="display-6 fw-bold mb-2" id="learningCount">0</dd>
+                                </dl>
                                 <a href="my-learning.html" class="btn btn-sm btn-outline-primary">Моё обучение</a>
                             </div>
                         </div>
@@ -60,8 +63,10 @@
                     <div class="col-12">
                         <div class="card border-0 shadow-lg rounded-4">
                             <div class="card-body p-4">
-                                <p class="text-muted mb-2">Создано курсов</p>
-                                <p class="display-6 fw-bold mb-2" id="createdCount">0</p>
+                                <dl class="mb-2">
+                                    <dt class="text-muted mb-2">Создано курсов</dt>
+                                    <dd class="display-6 fw-bold mb-2" id="createdCount">0</dd>
+                                </dl>
                                 <a href="my-courses.html" class="btn btn-sm btn-outline-success">Мои курсы</a>
                             </div>
                         </div>
@@ -80,14 +85,14 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
             </div>
             <div class="modal-body">
-                <form id="editProfileForm">
+                <form id="editProfileForm" method="post">
                     <div class="mb-3">
                         <label for="editName" class="form-label">Имя</label>
-                        <input type="text" class="form-control" id="editName" name="name" placeholder="Ivan" required>
+                        <input type="text" class="form-control" id="editName" name="name" placeholder="Ivan" autocomplete="name" required>
                     </div>
                     <div class="mb-3">
                         <label for="editEmail" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="editEmail" name="email" placeholder="email@example.com" required>
+                        <input type="email" class="form-control" id="editEmail" name="email" placeholder="email@example.com" autocomplete="email" required>
                     </div>
                     <div class="mb-3">
                         <label for="editAvatar" class="form-label">Ссылка на аватар</label>
@@ -95,13 +100,13 @@
                     </div>
                     <div class="mb-0">
                         <label for="editPassword" class="form-label">Новый пароль</label>
-                        <input type="password" class="form-control" id="editPassword" name="password" placeholder="Введите новый пароль">
+                        <input type="password" class="form-control" id="editPassword" name="password" placeholder="Введите новый пароль" autocomplete="new-password">
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
-                <button type="submit" class="btn btn-primary" id="saveProfileBtn" data-bs-dismiss="modal" form="editProfileForm">Сохранить</button>
+                <button type="submit" class="btn btn-primary" id="saveProfileBtn" form="editProfileForm">Сохранить</button>
             </div>
         </div>
     </div>

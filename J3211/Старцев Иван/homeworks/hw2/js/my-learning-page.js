@@ -19,7 +19,7 @@
                 <article class="card h-100">
                     <img src="${course.image}" class="card-img-top" alt="${course.title}">
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">${course.title}</h5>
+                        <h2 class="card-title">${course.title}</h2>
                         <p class="card-text text-muted small">${course.description}</p>
                         <p class="card-text mb-2"><i class="bi bi-star-fill rating-star" aria-hidden="true"></i> ${getCourseRating(course).toFixed(1)} / 5</p>
                         <div class="mt-auto">
