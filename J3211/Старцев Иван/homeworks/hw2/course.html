@@ -16,7 +16,7 @@
     <div id="courseMessage" class="alert d-none" role="alert"></div>
     <div class="mb-3">
         <a href="courses.html" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left"></i> Назад
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> Назад
         </a>
     </div>
 
@@ -36,12 +36,12 @@
                         <h2 class="h5 mb-0">Комментарии</h2>
                         <button id="openCommentModalBtn" type="button" class="btn btn-primary btn-sm px-2 px-sm-3" data-bs-toggle="modal"
                                 data-bs-target="#commentModal" aria-label="Оставить комментарий">
-                            <i class="bi bi-chat-square-text"></i>
+                            <i class="bi bi-chat-square-text" aria-hidden="true"></i>
                             <span class="d-none d-sm-inline ms-1">Оставить комментарий</span>
                         </button>
                     </div>
                     <div class="card-body">
-                        <div id="commentsList" class="list-group list-group-flush"></div>
+                        <ul id="commentsList" class="list-group list-group-flush"></ul>
                     </div>
                 </div>
             </section>
@@ -50,11 +50,28 @@
                 <div class="card sticky-top z-0 course-detail__info">
                     <div class="card-body">
                         <h2 class="h5 mb-3">О курсе</h2>
-                        <p class="mb-2"><strong>Автор:</strong> <span id="courseAuthor"></span></p>
-                        <p class="mb-2"><strong>Рейтинг:</strong> <span id="courseRating"></span></p>
-                        <p class="mb-2"><strong>Участники:</strong> <span id="courseStudents"></span></p>
-                        <p class="mb-2"><strong>Уровень:</strong> <span id="courseLevel"></span></p>
-                        <p class="mb-3"><strong>Язык:</strong> <span id="courseLanguage"></span></p>
+                        <dl class="mb-3">
+                            <div class="mb-2">
+                                <dt class="mb-2"><strong>Автор:</strong></dt>
+                                <dd id="courseAuthor"></dd>
+                            </div>
+                            <div class="mb-2">
+                                <dt class="mb-2"><strong>Рейтинг:</strong></dt>
+                                <dd id="courseRating"></dd>
+                            </div>
+                            <div class="mb-2">
+                                <dt class="mb-2"><strong>Участники:</strong></dt>
+                                <dd id="courseStudents"></dd>
+                            </div>
+                            <div class="mb-2">
+                                <dt class="mb-2"><strong>Уровень:</strong></dt>
+                                <dd id="courseLevel"></dd>
+                            </div>
+                            <div class="mb-2">
+                                <dt class="mb-3"><strong>Язык:</strong></dt>
+                                <dd id="courseLanguage"></dd>
+                            </div>
+                        </dl>
                         <div class="d-flex align-items-center mb-3">
                             <span class="badge text-bg-primary fs-5" id="coursePrice"></span>
                         </div>
