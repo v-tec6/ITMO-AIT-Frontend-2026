@@ -16,25 +16,30 @@
         }
         const course = await window.api.getCourse(courseId);
         if (metaDescription) {
-            metaDescription.textContent = "Содержание курса: " + course.title;
+            metaDescription.setAttribute("content", "Информация о курсе: " + course.title);
         }
 
-    const getNavHtml = (dismissOnClick = false) => course.program.map((section, sectionIndex) => `
-            <div class="mb-3">
-                <h3 class="h6 mb-2">${section.title}</h3>
-                <div class="list-group">
-                    ${section.items.map((item, itemIndex) => `
-                        <button type="button"
-                                class="list-group-item list-group-item-action${sectionIndex === state.section && itemIndex === state.item ? " active" : ""}"
-                                data-section-index="${sectionIndex}"
-                                data-item-index="${itemIndex}"${dismissOnClick ? ' data-bs-dismiss="modal"' : ""}>
-                            ${itemIndex + 1}. ${item.title}
-                        </button>
+        const getNavHtml = (dismissOnClick = false) => `
+                <nav aria-label="Уроки курса">
+                    ${course.program.map((section, sectionIndex) => `
+                        <section class="mb-3">
+                            <h3 class="h6 mb-2 p-2">${section.title}</h3>
+                            <ul class="list-group">
+                                ${section.items.map((item, itemIndex) => `
+                                    <li class="list-group-item p-0">
+                                        <button
+                                            type="button"
+                                            class="list-group-item list-group-item-action${sectionIndex === state.section && itemIndex === state.item ? " active" : ""}"
+                                            data-section-index="${sectionIndex}"
+                                            data-item-index="${itemIndex}"${dismissOnClick ? ' data-bs-dismiss="modal"' : ""}>
+                                            ${itemIndex + 1}. ${item.title}
+                                        </button>
+                                    </li>
+                                `).join("")}
+                            </ul>
+                        </section>
                     `).join("")}
-                </div>
-            </div>
-        `).join("");
-
+                </nav>`;
     const renderSidebar = () => {
         lessonsNav.innerHTML = getNavHtml();
         lessonsNavMobile.innerHTML = getNavHtml(true);

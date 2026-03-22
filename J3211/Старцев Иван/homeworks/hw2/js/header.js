@@ -27,7 +27,7 @@
 
                     <button class="navbar-toggler ms-auto me-2" type="button" data-bs-toggle="collapse"
                             data-bs-target="#mainNavCollapse" aria-controls="mainNavCollapse" aria-expanded="false"
-                            aria-label="Toggle navigation">
+                            aria-label="Открыть меню">
                         <span class="navbar-toggler-icon"></span>
                     </button>
 
@@ -46,7 +46,7 @@
                         </div>
                     ` : `
                         <a class="btn btn-outline-light order-lg-last ms-2" href="login.html" aria-label="Войти">
-                            <i class="bi bi-door-open"></i>
+                            <i class="bi bi-door-open" aria-hidden="true"></i>
                         </a>
                     `}
 
