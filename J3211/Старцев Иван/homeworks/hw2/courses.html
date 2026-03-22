@@ -33,10 +33,10 @@
                         <label class="form-label">Цена</label>
                         <div class="row g-2">
                             <div class="col-6">
-                                <input id="desktopMinPrice" type="number" class="form-control" placeholder="От" min="0">
+                                <label for="desktopMinPrice" class="visually-hidden">Введите минимальную цену</label><input id="desktopMinPrice" type="number" class="form-control" placeholder="От" min="0">
                             </div>
                             <div class="col-6">
-                                <input id="desktopMaxPrice" type="number" class="form-control" placeholder="До" min="0">
+                                <label class="visually-hidden" for="desktopMaxPrice">Введите максимальную цену</label><input id="desktopMaxPrice" type="number" class="form-control" placeholder="До" min="0">
                             </div>
                         </div>
                     </div>
@@ -58,7 +58,7 @@
         <section class="col-12 col-md-8 col-lg-9">
             <div class="sticky-top catalog-page__search">
                 <form id="searchForm" class="input-group mb-3">
-                    <input id="searchInput" type="text" class="form-control" placeholder="Введите название курса">
+                    <label for="searchInput" class="visually-hidden">Поиск по названию курса</label><input id="searchInput" type="text" class="form-control" placeholder="Введите название курса">
 
                     <button class="btn btn-secondary d-md-none" type="button"
                             data-bs-toggle="modal" data-bs-target="#filtersModal" aria-label="Открыть фильтры">
@@ -103,10 +103,10 @@
                     <label class="form-label">Цена</label>
                         <div class="row g-2">
                             <div class="col-6">
-                            <input id="mobileMinPrice" type="number" class="form-control" placeholder="От" min="0">
+                                <label class="visually-hidden" for="mobileMinPrice">Введите минимальную цену</label><input id="mobileMinPrice" type="number" class="form-control" placeholder="От" min="0">
                             </div>
                             <div class="col-6">
-                            <input id="mobileMaxPrice" type="number" class="form-control" placeholder="До" min="0">
+                                <label class="visually-hidden" for="mobileMaxPrice">Введите максимальную цену</label><input id="mobileMaxPrice" type="number" class="form-control" placeholder="До" min="0">
                             </div>
                         </div>
                 </div>
