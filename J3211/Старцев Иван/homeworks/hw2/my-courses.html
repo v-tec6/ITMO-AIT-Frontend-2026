@@ -18,7 +18,7 @@
         <h1 class="h3 mb-0">Мои курсы</h1>
         <button id="openCreateCourseModalBtn" type="button" class="btn btn-primary" data-bs-toggle="modal"
                 data-bs-target="#courseModal">
-            <i class="bi bi-plus-circle"></i> Создать курс
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> Создать курс
         </button>
     </div>
 
@@ -52,7 +52,7 @@
     <div id="emptyState" class="alert alert-secondary d-none">
         Пока нет созданных курсов.
     </div>
-    <div id="createdCoursesContainer" class="row g-3"></div>
+    <ul id="createdCoursesContainer" class="row g-3 list-unstyled"></ul>
 </main>
 
 <div class="modal fade" id="courseModal" tabindex="-1" aria-labelledby="courseModalLabel" aria-hidden="true">
@@ -109,9 +109,9 @@
 
                         <div class="col-12">
                             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
-                                <label class="form-label mb-0">Программа и контент курса</label>
+                                <h3 class="h6 mb-0">Программа и контент курса</h3>
                                 <button id="addSectionBtn" type="button" class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-plus-circle"></i> Добавить раздел
+                                    <i class="bi bi-plus-circle" aria-hidden="true"></i> Добавить раздел
                                 </button>
                             </div>
                             <div id="programSections" class="d-grid gap-3"></div>
