@@ -8,6 +8,7 @@
     const openCommentButton = document.getElementById("openCommentModalBtn");
     const submitCommentButton = document.getElementById("submitCommentBtn");
     const startLearningButton = document.getElementById("startLearningBtn");
+    const metaDescription = document.getElementById("metaDescription");
     let course = null;
     let users = [];
 
@@ -142,6 +143,9 @@
         renderProgram();
         await updateCommentButton();
         await updateStartButton();
+        if (metaDescription) {
+            metaDescription.textContent = "Информация о курсе: " + course.title;
+        }
     };
 
     const loadPage = async () => {

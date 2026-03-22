@@ -2,6 +2,7 @@
     const courseId = Number(new URLSearchParams(window.location.search).get("id"));
     const lessonsNav = document.getElementById("lessonsNav");
     const lessonsNavMobile = document.getElementById("lessonsNavMobile");
+    const metaDescription = document.getElementById("metaDescription");
     const state = {
         section: 0,
         item: 0
@@ -14,6 +15,9 @@
             return;
         }
         const course = await window.api.getCourse(courseId);
+        if (metaDescription) {
+            metaDescription.textContent = "Содержание курса: " + course.title;
+        }
 
     const getNavHtml = (dismissOnClick = false) => course.program.map((section, sectionIndex) => `
             <div class="mb-3">
