@@ -95,7 +95,7 @@
                 <div class="list-group-item px-0">
                     <div class="d-flex justify-content-between gap-2">
                         <strong>${getUserName(comment.userId)}</strong>
-                        <span><i class="bi bi-star-fill text-warning"></i> ${comment.rating}/5</span>
+                        <span><i class="bi bi-star-fill rating-star"></i> ${comment.rating}/5</span>
                     </div>
                     <p class="mb-0 mt-1">${comment.text}</p>
                 </div>
