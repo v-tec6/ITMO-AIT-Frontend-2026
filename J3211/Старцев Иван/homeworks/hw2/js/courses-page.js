@@ -43,8 +43,8 @@
 
         emptyState.className = filteredCourses.length ? "alert alert-secondary d-none" : "alert alert-secondary";
         document.getElementById("coursesContainer").innerHTML = filteredCourses.map((course) => `
-            <div class="col-12 col-sm-6 col-xl-4">
-                <div class="card h-100">
+            <li class="col-12 col-sm-6 col-xl-4">
+                <article class="card h-100">
                     <img src="${course.image}" class="card-img-top" alt="${course.title}">
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">${course.title}</h5>
@@ -52,15 +52,15 @@
                         <p class="card-text mb-1"><strong>Автор:</strong> ${getAuthorName(course)}</p>
                         <p class="card-text mb-1"><strong>Уровень:</strong> ${course.level}</p>
                         <p class="card-text mb-1"><strong>Язык:</strong> ${course.language}</p>
-                        <p class="card-text mb-1"><i class="bi bi-star-fill rating-star"></i> ${getCourseRating(course).toFixed(1)} / 5</p>
-                        <p class="card-text mb-3"><i class="bi bi-people-fill"></i> ${getCourseStudents(course.id)} участников</p>
+                        <p class="card-text mb-1"><i class="bi bi-star-fill rating-star" aria-hidden="true"></i> ${getCourseRating(course).toFixed(1)} / 5</p>
+                        <p class="card-text mb-3"><i class="bi bi-people-fill" aria-hidden="true"></i> ${getCourseStudents(course.id)} участников</p>
                         <div class="mt-auto">
                             <span class="badge bg-primary fs-6">${course.price} ₽</span>
                             <a href="course.html?id=${course.id}" class="btn btn-sm btn-outline-primary ms-2">Подробнее</a>
                         </div>
                     </div>
-                </div>
-            </div>
+                </article>
+            </li>
         `).join("");
     };
 

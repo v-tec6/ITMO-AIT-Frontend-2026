@@ -57,16 +57,17 @@
 
         <section class="col-12 col-md-8 col-lg-9">
             <div class="sticky-top catalog-page__search">
-                <form id="searchForm" class="input-group mb-3">
-                    <label for="searchInput" class="visually-hidden">Поиск по названию курса</label><input id="searchInput" type="text" class="form-control" placeholder="Введите название курса">
+                <form id="searchForm" role="search" class="input-group mb-3">
+                    <label for="searchInput" class="visually-hidden">Поиск по названию курса</label>
+                    <input id="searchInput" type="search" class="form-control" placeholder="Введите название курса">
 
                     <button class="btn btn-secondary d-md-none" type="button"
                             data-bs-toggle="modal" data-bs-target="#filtersModal" aria-label="Открыть фильтры">
-                        <i class="bi bi-funnel"></i>
+                        <i class="bi bi-funnel" aria-hidden="true"></i>
                     </button>
 
                     <button class="btn btn-primary" type="submit">
-                        <i class="bi bi-search"></i>
+                        <i class="bi bi-search" aria-hidden="true"></i>
                         <span class="d-none d-sm-inline ms-1">Искать</span>
                     </button>
                 </form>
@@ -76,7 +77,7 @@
                 Курсы не найдены.
             </div>
 
-            <div id="coursesContainer" class="row g-3"></div>
+            <ul id="coursesContainer" class="row g-3 list-unstyled"></ul>
         </section>
     </div>
 </main>
