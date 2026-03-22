@@ -52,7 +52,7 @@
                         <p class="card-text mb-1"><strong>Автор:</strong> ${getAuthorName(course)}</p>
                         <p class="card-text mb-1"><strong>Уровень:</strong> ${course.level}</p>
                         <p class="card-text mb-1"><strong>Язык:</strong> ${course.language}</p>
-                        <p class="card-text mb-1"><i class="bi bi-star-fill text-warning"></i> ${getCourseRating(course).toFixed(1)} / 5</p>
+                        <p class="card-text mb-1"><i class="bi bi-star-fill rating-star"></i> ${getCourseRating(course).toFixed(1)} / 5</p>
                         <p class="card-text mb-3"><i class="bi bi-people-fill"></i> ${getCourseStudents(course.id)} участников</p>
                         <div class="mt-auto">
                             <span class="badge bg-primary fs-6">${course.price} ₽</span>

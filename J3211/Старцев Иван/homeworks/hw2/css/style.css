@@ -21,3 +21,7 @@ body {
 .lesson-page__sidebar {
     max-height: calc(100vh - var(--header-height) - 2rem);
 }
+
+.rating-star {
+    color: #0d6efd;
+}

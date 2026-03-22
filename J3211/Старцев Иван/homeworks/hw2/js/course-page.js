@@ -133,7 +133,7 @@
         document.getElementById("courseTitle").textContent = course.title;
         document.getElementById("courseDescription").textContent = course.fullDescription || course.description;
         document.getElementById("courseAuthor").textContent = author ? author.name : "Неизвестный автор";
-        document.getElementById("courseRating").innerHTML = `<i class="bi bi-star-fill text-warning"></i> ${getCourseRating().toFixed(1)} / 5`;
+        document.getElementById("courseRating").innerHTML = `<i class="bi bi-star-fill rating-star"></i> ${getCourseRating().toFixed(1)} / 5`;
         document.getElementById("courseStudents").textContent = `${getCourseStudents()} человек`;
         document.getElementById("courseLevel").textContent = course.level;
         document.getElementById("courseLanguage").textContent = course.language;
@@ -154,7 +154,7 @@
         await render();
     };
 
-    openCommentButton.addEventListener("click", async (event) => {
+    openCommentButton.addEventListener("click", async () => {
         if (!window.auth.getUserId()) {
             window.location.href = "login.html";
             return;

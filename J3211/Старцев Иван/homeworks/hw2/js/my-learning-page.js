@@ -21,7 +21,7 @@
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">${course.title}</h5>
                         <p class="card-text text-muted small">${course.description}</p>
-                        <p class="card-text mb-2"><i class="bi bi-star-fill text-warning"></i> ${getCourseRating(course).toFixed(1)} / 5</p>
+                        <p class="card-text mb-2"><i class="bi bi-star-fill rating-star"></i> ${getCourseRating(course).toFixed(1)} / 5</p>
                         <div class="mt-auto">
                             <a href="lesson.html?id=${course.id}" class="btn btn-success btn-sm">Продолжить</a>
                             <a href="course.html?id=${course.id}" class="btn btn-outline-primary btn-sm ms-1">О курсе</a>
