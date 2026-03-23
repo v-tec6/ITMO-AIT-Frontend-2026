@@ -13,10 +13,6 @@
       "password": "1234"
     }
   ],
-  "stats": {
-    "totalExperiments": 15,
-    "totalModels": 4
-  },
   "models": [
     {
       "id": "1",
