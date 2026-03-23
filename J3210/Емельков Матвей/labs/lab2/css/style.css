@@ -241,6 +241,14 @@ body {
     .stat-card {
         margin-bottom: 15px;
     }
+
+    .nav-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+        border-bottom: 1px solid #dee2e6;
+    }
 }
 
 @media (min-width: 1400px) {

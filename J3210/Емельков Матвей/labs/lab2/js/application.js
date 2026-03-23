@@ -21,7 +21,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    await fetchAndRenderDashboard();
+    if (window.location.pathname.includes("experiment_details.html")) {
+        await loadExperimentDetails();
+    } else {
+        await fetchAndRenderDashboard();
+    }
 
     const btnSave = document.getElementById("btnSaveExperiment");
     if (btnSave) {
@@ -58,7 +62,7 @@ async function fetchAndRenderDashboard() {
             experiments.slice().reverse().forEach(exp => {
                 searchTableBody.innerHTML += `
                 <tr>
-                    <td><a href="experiment_details.html" class="text-decoration-none text-truncate btn-min-width">${exp.name}</a></td>
+                    <td><a href="experiment_details.html?id=${exp.id}" class="text-decoration-none text-truncate btn-min-width">${exp.name}</a></td>
                     <td><span class="badge bg-secondary text-truncate btn-min-width">${exp.model}</span></td>
                     <td>${exp.metricName}</td>
                     <td>${exp.metricValue}</td>
@@ -85,8 +89,8 @@ async function fetchAndRenderDashboard() {
             experiments.slice().reverse().slice(0, EXP_TO_SHOW_ON_MAIN_PAGE).forEach(exp => {
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
-                <td><a href="experiment_details.html" class="text-decoration-none">${exp.name}</a></td>
-                <td><span class="badge bg-secondary">${exp.model}</span></td>
+                <td><a href="experiment_details.html?id=${exp.id}" class="text-decoration-none text-truncate btn-min-width">${exp.name}</a></td>
+                <td><span class="badge bg-secondary text-truncate btn-min-width">${exp.model}</span></td>
                 <td>${exp.metricName || 'Accuracy'}</td>
                 <td>${exp.metricValue || '0'}</td>
                 <td>${exp.date}</td>
@@ -138,7 +142,7 @@ async function fetchAndRenderDashboard() {
                                                 <td class="ps-4"><div class="table-truncate">v${v.id}</div></td>
                                                 <td><span class="badge ${v.status === 'success' ? 'bg-success' : 'bg-warning text-dark'}">${v.status}</span></td>
                                                 <td>Acc: ${v.metricValue}</td>
-                                                <td><a href="#" class="text-decoration-none">Детали</a></td>
+                                                <td><a href="experiment_details.html?id=${v.id}" class="text-decoration-none">Детали</a></td>
                                             </tr>
                                         `).join('') : '<tr><td colspan="4" class="text-center p-3 text-muted">Версии не найдены</td></tr>'}
                                     </tbody>
@@ -245,7 +249,7 @@ async function createNewExperiment() {
 async function deleteUserProfile() {
     const userStr = localStorage.getItem("currentUser");
     if (!userStr) return;
-    const user = JSON.parse(localStorage.getItem("currentUser"));
+    const user = JSON.parse(userStr);
 
     if (!confirm("ВНИМАНИЕ! Это необратимое действие. Удалить профиль и все данные?")) return;
 
@@ -290,5 +294,42 @@ window.deleteModel = async function(id) {
             console.error("Ошибка удаления модели:", e);
             alert("Не удалось удалить модель.");
         }
+    }
+}
+
+async function loadExperimentDetails() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const expId = urlParams.get('id');
+
+    if (!expId) {
+        alert("Эксперимент не найден!");
+        window.location.href = "search_page.html";
+        return;
+    }
+
+    try {
+        const response = await axios.get(`${API_URL}/experiments/${expId}`);
+        const exp = response.data;
+
+        document.getElementById("detailExpName").innerText = exp.name;
+        document.getElementById("detailExpDate").innerText = `Запущен: ${exp.date}`;
+
+        const statusBadge = document.getElementById("detailExpStatus");
+        statusBadge.innerText = exp.status;
+        if (exp.status === "success") {
+            statusBadge.className = "badge bg-success fs-5";
+        } else {
+            statusBadge.className = "badge bg-warning text-dark fs-5";
+        }
+
+        document.getElementById("detailExpMetricName").innerText = exp.metricName || "Метрика";
+        document.getElementById("detailExpMetricValue").innerText = exp.metricValue || "-";
+        document.getElementById("detailExpModelName").innerText = exp.model || "-";
+        document.getElementById("detailExpDuration").innerText = exp.duration || "-";
+
+    } catch (error) {
+        console.error("Ошибка загрузки деталей:", error);
+        alert("Не удалось загрузить данные эксперимента.");
+        window.location.href = "search_page.html";
     }
 }
