@@ -1,3 +1,6 @@
+import api from "./api.js";
+import auth from "./auth.js";
+
 (() => {
     const courseId = Number(new URLSearchParams(window.location.search).get("id"));
     const message = document.getElementById("courseMessage");
@@ -39,7 +42,7 @@
     const getCourseStudents = () => users.filter((user) => user.learningCourseIds.includes(course.id)).length;
 
     const getCurrentComment = () => {
-        const userId = window.auth.getUserId();
+        const userId = auth.getUserId();
         if (!userId) {return null;}
         return course.comments.find((comment) => comment.userId === userId) || null;
     };
@@ -51,7 +54,7 @@
 
         const currentComment = getCurrentComment();
 
-        const user = await window.auth.loadCurrentUser();
+        const user = await auth.loadCurrentUser();
 
         if (!user) {
             openCommentButton.classList.add("d-none");
@@ -77,7 +80,7 @@
     };
 
     const updateStartButton = async () => {
-        const user = await window.auth.loadCurrentUser();
+        const user = await auth.loadCurrentUser();
 
         if (!user) {
             startLearningButton.textContent = "Войти для обучения";
@@ -156,14 +159,14 @@
     };
 
     const loadPage = async () => {
-        course = await window.api.getCourse(courseId);
-        users = await window.api.getUsers();
+        course = await api.getCourse(courseId);
+        users = await api.getUsers();
         document.title = "Курс" + (course.title ? `: ${course.title}` : "");
         await render();
     };
 
     openCommentButton.addEventListener("click", async () => {
-        if (!window.auth.getUserId()) {
+        if (!auth.getUserId()) {
             window.location.href = "login.html";
             return;
         }
@@ -175,7 +178,7 @@
         event.preventDefault();
         hideMessage();
 
-        const user = await window.auth.requireAuth();
+        const user = await auth.requireAuth();
 
         if (!user) {
             return;
@@ -194,7 +197,7 @@
             : [...course.comments, nextComment];
 
         try {
-            course = await window.api.updateCourse(course.id, {
+            course = await api.updateCourse(course.id, {
                 comments: nextComments
             });
 
@@ -216,7 +219,7 @@
         event.preventDefault();
         hideMessage();
 
-        const user = await window.auth.requireAuth();
+        const user = await auth.requireAuth();
 
         if (!user) {
             return;
@@ -228,7 +231,7 @@
         }
 
         try {
-            await window.api.updateUser(user.id, {
+            await api.updateUser(user.id, {
                 learningCourseIds: [...user.learningCourseIds, course.id]
             });
 

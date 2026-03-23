@@ -1,3 +1,6 @@
+import api from "./api.js";
+import auth from "./auth.js";
+
 (() => {
     const form = document.getElementById("loginForm");
     const alert = document.getElementById("loginAlert");
@@ -19,7 +22,7 @@
     });
 
     const init = async () => {
-        if (await window.auth.redirectAuth()) {
+        if (await auth.redirectAuth()) {
             return;
         }
 
@@ -30,12 +33,12 @@
             const formData = new FormData(form);
 
             try {
-                const response = await window.api.login({
+                const response = await api.login({
                     email: formData.get("email").trim(),
                     password: formData.get("password")
                 });
 
-                window.auth.setSession(response.user);
+                auth.setSession(response.user);
                 window.location.replace("courses.html");
             } catch {
                 showMessage("danger", "Не удалось войти.");

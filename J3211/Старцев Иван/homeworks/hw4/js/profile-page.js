@@ -1,3 +1,6 @@
+import api from "./api.js";
+import auth from "./auth.js";
+
 (() => {
     const pageAlert = document.getElementById("profileAlert");
     const nameField = document.getElementById("profileName");
@@ -53,8 +56,8 @@
         const password = formData.get("password");
         if (password) {payload.password = password;}
         try {
-            currentUser = await window.api.updateUser(currentUser.id, payload);
-            window.auth.updateCurrentUser(currentUser);
+            currentUser = await api.updateUser(currentUser.id, payload);
+            auth.updateCurrentUser(currentUser);
             render();
             showMessage("success", "Профиль обновлен.");
             const modal = window.bootstrap.Modal.getInstance(document.getElementById("editProfileModal"));
@@ -66,7 +69,7 @@
     });
 
     const init = async () => {
-        currentUser = await window.auth.requireAuth();
+        currentUser = await auth.requireAuth();
         if (!currentUser) {
             return
         }

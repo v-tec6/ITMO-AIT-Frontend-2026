@@ -1,3 +1,5 @@
+import api from "./api.js";
+
 (() => {
     const emptyState = document.getElementById("emptyState");
     let courses = [];
@@ -76,8 +78,8 @@
 
     const init = async () => {
         try {
-            courses =await window.api.getCourses();
-            users = await window.api.getUsers();
+            courses =await api.getCourses();
+            users = await api.getUsers();
             render();
         } catch {
             emptyState.className = "alert alert-secondary";

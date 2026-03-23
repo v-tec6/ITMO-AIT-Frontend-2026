@@ -1,3 +1,6 @@
+import api from "./api.js";
+import auth from "./auth.js";
+
 (() => {
     const pageAlert = document.getElementById("myCoursesAlert");
     const container = document.getElementById("createdCoursesContainer");
@@ -173,8 +176,8 @@
     };
 
     const loadData = async () => {
-        courses = await window.api.getCourses();
-        users = await window.api.getUsers();
+        courses = await api.getCourses();
+        users = await api.getUsers();
         renderCourses();
     };
 
@@ -294,19 +297,19 @@
             if (isEditing) {
                 const currentCourse = courses.find((course) => course.id === editingCourseId);
 
-                await window.api.updateCourse(editingCourseId, {
+                await api.updateCourse(editingCourseId, {
                     ...payload,
                     comments: currentCourse.comments
                 });
             } else {
-                const createdCourse = await window.api.createCourse({
+                const createdCourse = await api.createCourse({
                     ...payload,
                     comments: []
                 });
-                currentUser = await window.api.updateUser(currentUser.id, {
+                currentUser = await api.updateUser(currentUser.id, {
                     createdCourseIds: [...currentUser.createdCourseIds, createdCourse.id]
                 });
-                window.auth.updateCurrentUser(currentUser);
+                auth.updateCurrentUser(currentUser);
             }
             await loadData();
             resetForm();
@@ -318,7 +321,7 @@
     });
 
     const init = async () => {
-        currentUser = await window.auth.requireAuth();
+        currentUser = await auth.requireAuth();
         if (!currentUser) {
             return;
         }

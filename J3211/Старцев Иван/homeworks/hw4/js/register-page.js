@@ -1,3 +1,6 @@
+import api from "./api.js";
+import auth from "./auth.js";
+
 (() => {
     const form = document.getElementById("registerForm");
     const alert = document.getElementById("registerAlert");
@@ -19,7 +22,7 @@
     });
 
     const init = async () => {
-        if (await window.auth.redirectAuth()) {
+        if (await auth.redirectAuth()) {
             return;
         }
 
@@ -31,7 +34,7 @@
             const email = formData.get("email").trim();
 
             try {
-                const response = await window.api.signup({
+                const response = await api.signup({
                     name: formData.get("name").trim(),
                     email,
                     password: formData.get("password"),
@@ -40,7 +43,7 @@
                     createdCourseIds: []
                 });
 
-                window.auth.setSession(response.user);
+                auth.setSession(response.user);
                 window.location.replace("courses.html");
             } catch {
                 showMessage("danger", "Не удалось зарегистрироваться.");

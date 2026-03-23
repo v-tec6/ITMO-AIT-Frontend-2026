@@ -1,3 +1,6 @@
+import api from "./api.js";
+import auth from "./auth.js";
+
 (() => {
     const emptyState = document.getElementById("emptyState");
     let learningCourses = [];
@@ -38,9 +41,9 @@
     };
 
     const init = async () => {
-        const user = await window.auth.requireAuth();
+        const user = await auth.requireAuth();
         if (!user) {return;}
-        const courses = await window.api.getCourses();
+        const courses = await api.getCourses();
         learningCourses = courses.filter((course) => user.learningCourseIds.includes(course.id));
         render();
     };

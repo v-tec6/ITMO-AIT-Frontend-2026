@@ -1,3 +1,5 @@
+import auth from "./auth.js";
+
 (() => {
     const header = document.querySelector("[data-app-header]");
     const page = document.body.dataset.page || "";
@@ -18,7 +20,7 @@
     };
 
     const render = async () => {
-        const user = await window.auth.loadCurrentUser();
+        const user = await auth.loadCurrentUser();
 
         header.innerHTML = `
             <nav class="navbar navbar-expand-lg bg-dark navbar-dark border-bottom">
@@ -73,7 +75,7 @@
 
         if (logoutButton) {
             logoutButton.onclick = () => {
-                window.auth.clearSession();
+                auth.clearSession();
                 window.location.replace("courses.html");
             };
         }

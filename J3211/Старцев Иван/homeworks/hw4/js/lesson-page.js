@@ -1,3 +1,6 @@
+import api from "./api.js";
+import auth from "./auth.js";
+
 (() => {
     const courseId = Number(new URLSearchParams(window.location.search).get("id"));
     const lessonsNav = document.getElementById("lessonsNav");
@@ -8,13 +11,13 @@
         item: 0
     };
     const init = async () => {
-        const user = await window.auth.requireAuth();
+        const user = await auth.requireAuth();
         if (!user) {return;}
         if (!courseId || !user.learningCourseIds.includes(courseId)) {
             window.location.href = "my-learning.html";
             return;
         }
-        const course = await window.api.getCourse(courseId);
+        const course = await api.getCourse(courseId);
         if (metaDescription) {
             metaDescription.setAttribute("content", "Информация о курсе: " + course.title);
         }
