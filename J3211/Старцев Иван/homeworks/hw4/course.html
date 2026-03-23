@@ -17,7 +17,10 @@
     <div id="courseMessage" class="alert d-none" role="alert"></div>
     <div class="mb-3">
         <a href="courses.html" class="btn btn-outline-dark btn-sm">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> Назад
+            <svg class="default_svg" aria-hidden="true">
+                <use href="./sprites.svg#arrowLeft"></use>
+            </svg>
+            Назад
         </a>
     </div>
 
@@ -37,7 +40,9 @@
                         <h2 class="h5 mb-0">Комментарии</h2>
                         <button id="openCommentModalBtn" type="button" class="btn btn-primary btn-sm px-2 px-sm-3" data-bs-toggle="modal"
                                 data-bs-target="#commentModal" aria-label="Оставить комментарий">
-                            <i class="bi bi-chat-square-text" aria-hidden="true"></i>
+                            <svg class="default_svg" aria-hidden="true">
+                                <use href="./sprites.svg#chat"></use>
+                            </svg>
                             <span class="d-none d-sm-inline ms-1">Оставить комментарий</span>
                         </button>
                     </div>

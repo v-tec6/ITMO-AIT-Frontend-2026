@@ -96,7 +96,12 @@
                     <article>
                         <header class="d-flex justify-content-between gap-2">
                             <strong>${getUserName(comment.userId)}</strong>
-                            <span><i class="bi bi-star-fill rating-star" aria-hidden="true"></i> ${comment.rating}/5</span>
+                            <span>
+                                <svg class="rating__star" aria-hidden="true">
+                                    <use href="./sprites.svg#ratingStar"></use>
+                                </svg> 
+                                ${comment.rating}/5
+                            </span>
                         </header>
                         <p class="mb-0 mt-1">${comment.text}</p>
                     </article>
@@ -135,7 +140,7 @@
         document.getElementById("courseTitle").textContent = course.title;
         document.getElementById("courseDescription").textContent = course.fullDescription || course.description;
         document.getElementById("courseAuthor").textContent = author ? author.name : "Неизвестный автор";
-        document.getElementById("courseRating").innerHTML = `<i class="bi bi-star-fill rating-star" aria-hidden="true"></i> ${getCourseRating().toFixed(1)} / 5`;
+        document.getElementById("courseRating").innerHTML = `<svg class="rating__star" aria-hidden="true"><use href="./sprites.svg#ratingStar"></use> </svg> ${getCourseRating().toFixed(1)} / 5`;
         document.getElementById("courseStudents").textContent = `${getCourseStudents()} человек`;
         document.getElementById("courseLevel").textContent = course.level;
         document.getElementById("courseLanguage").textContent = course.language;

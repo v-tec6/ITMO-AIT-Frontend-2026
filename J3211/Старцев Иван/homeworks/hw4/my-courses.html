@@ -19,7 +19,10 @@
         <h1 class="h3 mb-0">Мои курсы</h1>
         <button id="openCreateCourseModalBtn" type="button" class="btn btn-primary" data-bs-toggle="modal"
                 data-bs-target="#courseModal">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i> Создать курс
+            <svg class="default_svg" aria-hidden="true">
+                <use href="./sprites.svg#plusCircle"></use>
+            </svg>
+            Создать курс
         </button>
     </div>
 
@@ -119,7 +122,10 @@
                             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
                                 <h3 class="h6 mb-0">Программа и контент курса</h3>
                                 <button id="addSectionBtn" type="button" class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-plus-circle" aria-hidden="true"></i> Добавить раздел
+                                    <svg class="default_svg" aria-hidden="true">
+                                        <use href="./sprites.svg#plusCircle"></use>
+                                    </svg>
+                                    Добавить раздел
                                 </button>
                             </div>
                             <div id="programSections" class="d-grid gap-3"></div>

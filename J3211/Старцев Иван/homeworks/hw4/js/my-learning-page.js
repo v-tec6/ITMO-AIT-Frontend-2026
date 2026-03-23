@@ -20,8 +20,13 @@
                     <img src="${course.image}" class="card-img-top" alt="${course.title}">
                     <div class="card-body d-flex flex-column">
                         <h2 class="card-title">${course.title}</h2>
-                        <p class="card-text text-muted small">${course.description}</p>
-                        <p class="card-text mb-2"><i class="bi bi-star-fill rating-star" aria-hidden="true"></i> ${getCourseRating(course).toFixed(1)} / 5</p>
+                        <p class="card-text text-muted small mb-1">${course.description}</p>
+                        <p class="card-text mb-2">
+                            <svg class="rating__star" aria-hidden="true">
+                              <use href="./sprites.svg#ratingStar"></use>
+                            </svg>
+                            ${getCourseRating(course).toFixed(1)} / 5
+                        </p>
                         <div class="mt-auto">
                             <a href="lesson.html?id=${course.id}" class="btn btn-success btn-sm">Продолжить</a>
                             <a href="course.html?id=${course.id}" class="btn btn-outline-primary btn-sm ms-1">О курсе</a>

@@ -32,8 +32,10 @@
                     </button>
 
                     <div class="d-flex align-items-center order-lg-last gap-2">
-                        <button class="btn btn-outline-secondary theme-toggle-btn rounded-circle" type="button" data-theme-toggle aria-label="Переключить тему">
-                            <i class="bi bi-circle-half" aria-hidden="true"></i>
+                        <button class="btn btn-outline-light header__button rounded-circle object-fit-cover" type="button" data-theme-toggle aria-label="Переключить тему">
+                            <svg class="header_svg" aria-hidden="true">
+                                <use href="./sprites.svg#circleHalf"></use>
+                            </svg>
                         </button>
 
                         ${user ? `
@@ -50,8 +52,10 @@
                                 </ul>
                             </div>
                         ` : `
-                            <a class="btn btn-outline-light" href="login.html" aria-label="Войти">
-                                <i class="bi bi-door-open" aria-hidden="true"></i>
+                            <a class="btn btn-outline-light header__button" href="login.html" aria-label="Войти">
+                                <svg class="header_svg" aria-hidden="true">
+                                    <use href="./sprites.svg#door"></use>
+                                </svg>
                             </a>
                         `}
                     </div>

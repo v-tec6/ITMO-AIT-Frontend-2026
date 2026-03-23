@@ -47,7 +47,9 @@
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <h5 class="h6 mb-0" data-lesson-heading>Урок ${lessonIndex + 1}</h5>
                 <button type="button" class="btn btn-sm btn-outline-danger" data-remove-lesson aria-label="Удалить урок">
-                    <i class="bi bi-trash" aria-hidden="true"></i>
+                    <svg class="default_svg" aria-hidden="true">
+                        <use href="./sprites.svg#trash"></use>
+                    </svg>
                 </button>
             </div>
     
@@ -73,7 +75,10 @@
                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
                     <h4 class="h6 mb-0" data-section-heading>Раздел ${sectionIndex + 1}</h4>
                     <button type="button" class="btn btn-sm btn-outline-danger" data-remove-section aria-label="Удалить раздел">
-                        <i class="bi bi-trash" aria-hidden="true"></i> Удалить раздел
+                        <svg class="default_svg" aria-hidden="true">
+                            <use href="./sprites.svg#trash"></use>
+                        </svg>
+                        Удалить раздел
                     </button>
                 </div>
     
@@ -87,7 +92,10 @@
                     ${section.items.map((lesson, lessonIndex) => getLessonHtml(lesson, lessonIndex)).join("")}
                 </div>
                 <button type="button" class="btn btn-sm btn-outline-primary mt-2" data-add-lesson>
-                    <i class="bi bi-plus-circle" aria-hidden="true"></i> Добавить урок
+                    <svg class="default_svg" aria-hidden="true">
+                        <use href="./sprites.svg#plusCircle"></use>
+                    </svg>
+                    Добавить урок
                 </button>
             </div>
         </div>

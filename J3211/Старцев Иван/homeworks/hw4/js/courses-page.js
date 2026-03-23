@@ -52,8 +52,18 @@
                         <p class="card-text mb-1"><strong>Автор:</strong> ${getAuthorName(course)}</p>
                         <p class="card-text mb-1"><strong>Уровень:</strong> ${course.level}</p>
                         <p class="card-text mb-1"><strong>Язык:</strong> ${course.language}</p>
-                        <p class="card-text mb-1"><i class="bi bi-star-fill rating-star" aria-hidden="true"></i> ${getCourseRating(course).toFixed(1)} / 5</p>
-                        <p class="card-text mb-3"><i class="bi bi-people-fill" aria-hidden="true"></i> ${getCourseStudents(course.id)} участников</p>
+                        <p class="card-text mb-1">
+                            <svg class="rating__star" aria-hidden="true">
+                              <use href="./sprites.svg#ratingStar"></use>
+                            </svg>
+                            ${getCourseRating(course).toFixed(1)} / 5
+                        </p>
+                        <p class="card-text mb-3">
+                            <svg class="card__users" aria-hidden="true">
+                              <use href="./sprites.svg#users"></use>
+                            </svg> 
+                            ${getCourseStudents(course.id)} участников
+                        </p>
                         <div class="mt-auto">
                             <span class="badge bg-primary fs-6">${course.price} ₽</span>
                             <a href="course.html?id=${course.id}" class="btn btn-sm btn-outline-primary ms-2">Подробнее</a>
