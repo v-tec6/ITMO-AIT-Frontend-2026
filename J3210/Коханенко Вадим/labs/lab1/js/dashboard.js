@@ -1,4 +1,3 @@
-// Данные
 let userNotes = [];
 let userRoutes = [];
 let currentUser = null;

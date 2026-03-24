@@ -11,20 +11,21 @@
 </head>
 <body>
     <!-- Навигация -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success" aria-label="Главная навигация">
         <div class="container">
-            <span class="navbar-brand">
-                <i class="bi bi-compass"></i> FlyingOwl
+            <span class="navbar-brand" aria-label="FlyingOwl">
+                <i class="bi bi-compass" aria-hidden="true"></i> FlyingOwl
             </span>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-expanded="false" aria-controls="navbarNav" aria-label="Открыть меню">
+                <span class="navbar-toggler-icon" aria-hidden="true"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="index.html">Вход</a>
+                <ul class="navbar-nav ms-auto" role="list">
+                    <li class="nav-item" role="listitem">
+                        <a class="nav-link active" href="index.html" aria-current="page">Вход</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" role="listitem">
                         <a class="nav-link" href="register.html">Регистрация</a>
                     </li>
                 </ul>
@@ -33,32 +34,35 @@
     </nav>
 
     <main>
+        <!-- Окно входа -->
         <div class="auth-wrapper">
             <div class="card auth-card">
                 <div class="card-header text-center">
-                    <h4><i class="bi bi-box-arrow-in-right"></i> Вход в FlyingOwl</h4>
+                    <h1><i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> Вход в FlyingOwl</h1>
                 </div>
                 <div class="card-body p-4">
                     <form id="loginForm">
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
+                            <label for="email" class="form-label">Email <span aria-hidden="true">*</span></label>
                             <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                <input type="email" class="form-control" id="email" placeholder="example@mail.com" required>
+                                <span class="input-group-text" aria-hidden="true"><i class="bi bi-envelope"></i></span>
+                                <input type="email" class="form-control" id="email" 
+                                       aria-required="true" placeholder="example@mail.com" required>
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="password" class="form-label">Пароль</label>
+                            <label for="password" class="form-label">Пароль <span aria-hidden="true">*</span></label>
                             <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                                <input type="password" class="form-control" id="password" placeholder="••••••••" required>
+                                <span class="input-group-text" aria-hidden="true"><i class="bi bi-lock"></i></span>
+                                <input type="password" class="form-control" id="password" 
+                                       aria-required="true" placeholder="••••••••" required>
                             </div>
                         </div>
 
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-success">
-                                <i class="bi bi-box-arrow-in-right"></i> Войти
+                                <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> Войти
                             </button>
                         </div>
                     </form>

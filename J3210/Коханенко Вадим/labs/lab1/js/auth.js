@@ -8,12 +8,12 @@ async function handleRegister(event) {
     const confirmPassword = document.getElementById('confirmPassword').value;
     
     if (password.length < 8) {
-        alert('Пароль должен быть минимум 8 символов.');
+        showNotification('Пароль должен быть минимум 8 символов.', true);
         return;
     }
 
     if (password !== confirmPassword) {
-        alert('Пароли не совпадают.');
+        showNotification('Пароли не совпадают.', true);
         return;
     }
 
@@ -21,10 +21,12 @@ async function handleRegister(event) {
         const data = await api.register({ email, password, name });
         localStorage.setItem('token', data.accessToken);
         localStorage.setItem('user', JSON.stringify(data.user));
-        alert('Регистрация успешна!');
-        window.location.href = 'dashboard.html';
+        showNotification('Регистрация успешна! Перенаправление...');
+        setTimeout(() => {
+            window.location.href = 'dashboard.html';
+        }, 1500);
     } catch (error) {
-        alert(error.message || 'Ошибка при регистрации');
+        showNotification(error.message || 'Ошибка при регистрации', true);
     }
 }
 
@@ -39,9 +41,12 @@ async function handleLogin(event) {
         const data = await api.login({ email, password });
         localStorage.setItem('token', data.accessToken);
         localStorage.setItem('user', JSON.stringify(data.user));
-        window.location.href = 'dashboard.html';
+        showNotification('Вход выполнен успешно! Перенаправление...');
+        setTimeout(() => {
+            window.location.href = 'dashboard.html';
+        }, 1500);
     } catch (error) {
-        alert('Неверный email или пароль');
+        showNotification('Неверный email или пароль', true);
     }
 }
 
@@ -71,8 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
         loginForm.addEventListener('submit', handleLogin);
     }
 
-    const logoutBtn = document.querySelector('a[href="index.html"]');
-    if (logoutBtn && logoutBtn.textContent.includes('Выйти')) {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
         logoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
             api.logout();
