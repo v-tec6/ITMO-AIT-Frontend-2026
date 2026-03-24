@@ -1,4 +1,3 @@
-// Загрузка направления
 function getDestinationId() {
     const urlParams = new URLSearchParams(window.location.search);
     return parseInt(urlParams.get('id')) || 1;
@@ -10,17 +9,23 @@ async function loadDestination() {
     try {
         const destination = await api.get(`/destinations/${id}`);
         if (!destination) {
-            window.location.href = 'search.html';
+            showNotification('Направление не найдено', true);
+            setTimeout(() => {
+                window.location.href = 'search.html';
+            }, 1500);
             return;
         }
         renderDestinationPage(destination);
+        document.title = `FlyingOwl - ${destination.name}`;
     } catch (error) {
         console.error('Ошибка загрузки направления:', error);
-        window.location.href = 'search.html';
+        showNotification('Ошибка загрузки направления', true);
+        setTimeout(() => {
+            window.location.href = 'search.html';
+        }, 1500);
     }
 }
 
-// Отрисовка странички
 function renderDestinationPage(dest) {
     const content = document.getElementById('destinationContent');
     
@@ -29,11 +34,11 @@ function renderDestinationPage(dest) {
     let stars = '';
     for (let i = 0; i < 5; i++) {
         if (i < fullStars) {
-            stars += '<i class="bi bi-star-fill"></i>';
+            stars += '<i class="bi bi-star-fill" aria-hidden="true"></i>';
         } else if (i === fullStars && hasHalf) {
-            stars += '<i class="bi bi-star-half"></i>';
+            stars += '<i class="bi bi-star-half" aria-hidden="true"></i>';
         } else {
-            stars += '<i class="bi bi-star"></i>';
+            stars += '<i class="bi bi-star" aria-hidden="true"></i>';
         }
     }
 
@@ -42,12 +47,12 @@ function renderDestinationPage(dest) {
     ).join('');
 
     const attractionsHtml = dest.attractions.map(attr => `
-        <div class="attraction-item d-flex align-items-center">
-            <div class="me-3">
+        <div class="attraction-item d-flex align-items-center" role="listitem">
+            <div class="me-3" aria-hidden="true">
                 <div style="width: 60px; height: 60px; border-radius: 10px; background-image: url('${attr.image}'); background-size: cover; background-position: center;"></div>
             </div>
             <div>
-                <h6 class="mb-1">${attr.name}</h6>
+                <h3 class="h6 mb-1">${attr.name}</h3>
                 <p class="text-muted small mb-0">${attr.description}</p>
             </div>
         </div>
@@ -59,15 +64,15 @@ function renderDestinationPage(dest) {
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-8">
-                            <h1 class="destination-title display-7 display-md-5 display-lg-4">${dest.name}</h1>
+                            <h1 class="destination-title">${dest.name}</h1>
                             <div class="d-flex align-items-center mb-3">
-                                <span class="rating-large me-2">${stars}</span>
-                                <span class="fs-4 fw-bold me-2">${dest.rating}</span>
+                                <span class="rating-large me-2" aria-label="Рейтинг: ${dest.rating} из 5">${stars}</span>
+                                <span class="fs-4 fw-bold me-2" aria-hidden="true">${dest.rating}</span>
                                 <span class="text-white-50">(${dest.reviews} отзывов)</span>
                             </div>
                             <div class="d-flex flex-wrap gap-3">
                                 <span class="badge bg-white text-dark p-2">
-                                    <i class="bi bi-calendar3"></i> ${dest.duration}
+                                    <i class="bi bi-calendar3" aria-hidden="true"></i> ${dest.duration}
                                 </span>
                                 <span class="badge bg-white text-dark p-2">
                                     ${dest.budget} бюджет
@@ -82,17 +87,18 @@ function renderDestinationPage(dest) {
         <div class="container mt-4">
             <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-end">
-                    <button class="btn btn-success me-2" onclick="openAddRouteModal('${dest.id}', '${dest.name}', '${dest.attractions[0]?.name}, ${dest.attractions[1]?.name}', '${dest.description}', '${dest.duration}', '${dest.budget}', '${dest.type}')">
-                        <i class="bi bi-map"></i> Добавить в маршруты
+                    <button class="btn btn-success me-2" onclick="openAddRouteModal('${dest.id}', '${dest.name.replace(/'/g, "\\'")}', '${dest.attractions[0]?.name || ''}, ${dest.attractions[1]?.name || ''}', '${dest.description.replace(/'/g, "\\'")}', '${dest.duration}', '${dest.budget}', '${dest.type}')"
+                            aria-label="Добавить маршрут в личный кабинет">
+                        <i class="bi bi-map" aria-hidden="true"></i> Добавить в маршруты
                     </button>
                 </div>
             </div>
 
             <div class="row g-4 mb-5">
                 <div class="col-lg-8">
-                    <div class="card info-card mb-4">
+                    <section class="card info-card mb-4" aria-labelledby="aboutHeading">
                         <div class="card-header">
-                            <i class="bi bi-info-circle"></i> О направлении
+                            <h2 id="aboutHeading" class="h5 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> О направлении</h2>
                         </div>
                         <div class="card-body">
                             <p class="card-text">${dest.fullDescription || dest.description}</p>
@@ -100,65 +106,67 @@ function renderDestinationPage(dest) {
                                 ${tags}
                             </div>
                         </div>
-                    </div>
+                    </section>
 
-                    <div class="card info-card mb-4">
+                    <section class="card info-card mb-4" aria-labelledby="attractionsHeading">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <span><i class="bi bi-camera"></i> Места</span>
+                            <h2 id="attractionsHeading" class="h5 mb-0"><i class="bi bi-camera" aria-hidden="true"></i> Достопримечательности</h2>
                             <span class="badge bg-success">${dest.attractions.length}+ мест</span>
                         </div>
                         <div class="card-body p-0">
-                            ${attractionsHtml}
+                            <div role="list" aria-label="Список достопримечательностей">
+                                ${attractionsHtml}
+                            </div>
                         </div>
-                    </div>
+                    </section>
                 </div>
 
                 <div class="col-lg-4">
-                    <div class="card info-card mb-4">
+                    <aside class="card info-card mb-4" aria-labelledby="quickInfoHeading">
                         <div class="card-header">
-                            <i class="bi bi-clock-history"></i> Быстрая информация
+                            <h2 id="quickInfoHeading" class="h5 mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> Быстрая информация</h2>
                         </div>
                         <div class="card-body">
-                            <div class="quick-info-item">
-                                <div class="quick-info-icon">
+                            <div class="quick-info-item text-center">
+                                <div class="quick-info-icon" aria-hidden="true">
                                     <i class="bi bi-cash-coin"></i>
                                 </div>
-                                <h6>Стоимость</h6>
+                                <h3 class="h6">Стоимость</h3>
                                 <div class="price-large">${dest.price}</div>
                             </div>
                             <hr>
                             <div class="row g-3">
                                 <div class="col-6">
-                                    <div class="quick-info-icon small">
+                                    <div class="quick-info-icon small" aria-hidden="true">
                                         <i class="bi bi-calendar-check"></i>
                                     </div>
-                                    <h6 class="small">Лучший сезон</h6>
+                                    <h3 class="h6 small">Лучший сезон</h3>
                                     <p class="fw-bold">${dest.bestSeason}</p>
                                 </div>
                                 <div class="col-6">
-                                    <div class="quick-info-icon small">
+                                    <div class="quick-info-icon small" aria-hidden="true">
                                         <i class="bi bi-translate"></i>
                                     </div>
-                                    <h6 class="small">Язык</h6>
+                                    <h3 class="h6 small">Язык</h3>
                                     <p class="fw-bold">${dest.language}</p>
                                 </div>
                                 <div class="col-6">
-                                    <div class="quick-info-icon small">
+                                    <div class="quick-info-icon small" aria-hidden="true">
                                         <i class="bi bi-currency-exchange"></i>
                                     </div>
-                                    <h6 class="small">Валюта</h6>
+                                    <h3 class="h6 small">Валюта</h3>
                                     <p class="fw-bold">${dest.currency}</p>
                                 </div>
                                 <div class="col-6">
-                                    <div class="quick-info-icon small">
+                                    <div class="quick-info-icon small" aria-hidden="true">
                                         <i class="bi bi-clock"></i>
                                     </div>
-                                    <h6 class="small">Часовой пояс</h6>
+                                    <h3 class="h6 small">Часовой пояс</h3>
                                     <p class="fw-bold">${dest.timezone}</p>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </aside>
                 </div>
             </div>
         </div>
@@ -166,7 +174,6 @@ function renderDestinationPage(dest) {
     content.innerHTML = html;
 }
 
-// Модалка добавления маршрута
 function openAddRouteModal(destinationId, destinationName, attractions, description, duration, budget, type) {
     document.getElementById('routeTitle').value = destinationName;
     document.getElementById('routePoints').value = attractions;
@@ -180,7 +187,6 @@ function openAddRouteModal(destinationId, destinationName, attractions, descript
     modal.show();
 }
 
-// Сохранение маршрута в ЛК
 async function saveRouteFromDestination() {
     const destinationId = parseInt(document.getElementById('routeDestinationId').value);
     const title = document.getElementById('routeTitle').value;
@@ -192,8 +198,10 @@ async function saveRouteFromDestination() {
 
     const currentUser = api.getCurrentUser();
     if (!currentUser) {
-        alert('Необходимо авторизоваться');
-        window.location.href = 'index.html';
+        showNotification('Необходимо авторизоваться', true);
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1500);
         return;
     }
 
@@ -202,7 +210,7 @@ async function saveRouteFromDestination() {
         const existingRoute = allRoutes.find(r => r.destinationId === destinationId && r.userId === currentUser.id);
 
         if (existingRoute) {
-            alert('Этот маршрут уже есть в вашем личном кабинете!');
+            showNotification('Этот маршрут уже есть в вашем личном кабинете!', true);
             return;
         }
 
@@ -219,16 +227,15 @@ async function saveRouteFromDestination() {
             savedAt: new Date().toISOString()
         };
 
-        await api.authPost('/routes', newRoute);
-        alert('Маршрут добавлен в личный кабинет!');
-        
+        await api.authPost('/routes', newRoute);        
         const modal = bootstrap.Modal.getInstance(document.getElementById('addRouteModal'));
         modal.hide();
+        
+        showNotification('Маршрут добавлен в личный кабинет!');
     } catch (error) {
         console.error('Ошибка при сохранении маршрута:', error);
-        alert('Ошибка при сохранении маршрута: ' + error.message);
+        showNotification('Ошибка при сохранении маршрута: ' + error.message, true);
     }
 }
 
-// Инициализация
 document.addEventListener('DOMContentLoaded', loadDestination);

@@ -12,28 +12,29 @@
 </head>
 <body>
     <!-- Навигация -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success" aria-label="Главная навигация">
         <div class="container">
-            <span class="navbar-brand">
-                <i class="bi bi-compass"></i> FlyingOwl
+            <span class="navbar-brand" aria-label="FlyingOwl">
+                <i class="bi bi-compass" aria-hidden="true"></i> FlyingOwl
             </span>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-expanded="false" aria-controls="navbarNav" aria-label="Открыть меню">
+                <span class="navbar-toggler-icon" aria-hidden="true"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="search.html">
-                            <i class="bi bi-search"></i> Поиск
+                <ul class="navbar-nav ms-auto" role="list">
+                    <li class="nav-item" role="listitem">
+                        <a class="nav-link active" href="search.html" aria-current="page">
+                            <i class="bi bi-search" aria-hidden="true"></i> Поиск
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" role="listitem">
                         <a class="nav-link" href="dashboard.html">
-                            <i class="bi bi-person-circle"></i> Личный кабинет
+                            <i class="bi bi-person-circle" aria-hidden="true"></i> Личный кабинет
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">Выйти</a>
+                    <li class="nav-item" role="listitem">
+                        <a class="nav-link" href="#" id="logoutBtn">Выйти</a>
                     </li>
                 </ul>
             </div>
@@ -41,22 +42,24 @@
     </nav>
 
     <!-- Секция с поиском -->
-    <div class="hero-search">
+    <div class="hero-search" aria-label="Поиск направлений">
         <div class="container text-center">
             <h1 class="display-5 mb-3">
-                <i class="bi bi-compass"></i> Куда отправимся?
+                <i class="bi bi-compass" aria-hidden="true"></i> Куда отправимся?
             </h1>
             <p class="lead mb-4">Найдите идеальное путешествие среди тысяч направлений</p>
             
             <div class="row justify-content-center">
                 <div class="col-md-8">
+                    <label for="searchInput" class="visually-hidden">Поиск по странам, городам, направлениям</label>
                     <div class="input-group input-group-lg">
-                        <span class="input-group-text bg-white border-0">
+                        <span class="input-group-text bg-white border-0" aria-hidden="true">
                             <i class="bi bi-search text-success"></i>
                         </span>
                         <input type="text" class="form-control border-0" id="searchInput" 
                                placeholder="Поиск по странам, городам, направлениям…" 
-                               onkeyup="filterDestinations()">
+                               onkeyup="filterDestinations()"
+                               aria-label="Поиск по странам, городам, направлениям">
                     </div>
                 </div>
             </div>
@@ -65,40 +68,40 @@
 
     <main class="container mb-5">
         <!-- Фильтры -->
-        <div class="filter-section">
+        <div class="filter-section" aria-label="Фильтры поиска">
             <div class="row g-4">
                 <!-- Тип -->
                 <div class="col-lg-4">
-                    <div class="filter-title">
-                        <i class="bi bi-geo-alt-fill text-success"></i> Тип направления
+                    <div class="filter-title" id="typeFilterLabel">
+                        <i class="bi bi-geo-alt-fill text-success" aria-hidden="true"></i> Тип направления
                     </div>
-                    <div class="d-flex flex-wrap gap-2" role="group">
+                    <div class="d-flex flex-wrap gap-2" role="group" aria-labelledby="typeFilterLabel">
                         <input type="radio" class="btn-check" name="typeFilter" id="typeAll" value="all" checked>
-                        <label class="btn btn-outline-success" for="typeAll">Все</label>
+                        <label class="btn btn-outline-success" for="typeAll" aria-label="Показать все направления">Все</label>
                         
                         <input type="radio" class="btn-check" name="typeFilter" id="typeCity" value="Город">
-                        <label class="btn btn-outline-success" for="typeCity">
-                            <i class="bi bi-building"></i> Город
+                        <label class="btn btn-outline-success" for="typeCity" aria-label="Показать только города">
+                            <i class="bi bi-building" aria-hidden="true"></i> Город
                         </label>
                         
                         <input type="radio" class="btn-check" name="typeFilter" id="typeNature" value="Природа">
-                        <label class="btn btn-outline-success" for="typeNature">
-                            <i class="bi bi-tree"></i> Природа
+                        <label class="btn btn-outline-success" for="typeNature" aria-label="Показать только природные направления">
+                            <i class="bi bi-tree" aria-hidden="true"></i> Природа
                         </label>
                         
                         <input type="radio" class="btn-check" name="typeFilter" id="typeMixed" value="Смешанный">
-                        <label class="btn btn-outline-success" for="typeMixed">
-                            <i class="bi bi-arrow-repeat"></i> Смешанный
+                        <label class="btn btn-outline-success" for="typeMixed" aria-label="Показать смешанные направления">
+                            <i class="bi bi-arrow-repeat" aria-hidden="true"></i> Смешанный
                         </label>
                     </div>
                 </div>
                 
                 <!-- Бюджет -->
                 <div class="col-lg-4">
-                    <div class="filter-title">
-                        <i class="bi bi-wallet2 text-success"></i> Бюджет
-                    </div>
-                    <select class="form-select" id="budgetFilter" onchange="filterDestinations()">
+                    <label for="budgetFilter" class="filter-title" id="budgetFilterLabel">
+                        <i class="bi bi-wallet2 text-success" aria-hidden="true"></i> Бюджет
+                    </label>
+                    <select class="form-select" id="budgetFilter" onchange="filterDestinations()" aria-labelledby="budgetFilterLabel">
                         <option value="all">Любой бюджет</option>
                         <option value="Низкий">Низкий (до 50 000 рублей)</option>
                         <option value="Средний">Средний (50 000 — 100 000 рублей)</option>
@@ -108,10 +111,10 @@
                 
                 <!-- Длительность -->
                 <div class="col-lg-4">
-                    <div class="filter-title">
-                        <i class="bi bi-calendar-week text-success"></i> Длительность
-                    </div>
-                    <select class="form-select" id="durationFilter" onchange="filterDestinations()">
+                    <label for="durationFilter" class="filter-title" id="durationFilterLabel">
+                        <i class="bi bi-calendar-week text-success" aria-hidden="true"></i> Длительность
+                    </label>
+                    <select class="form-select" id="durationFilter" onchange="filterDestinations()" aria-labelledby="durationFilterLabel">
                         <option value="all">Любая длительность</option>
                         <option value="1-3 дня">1-3 дня</option>
                         <option value="4-7 дней">4-7 дней</option>
@@ -122,23 +125,26 @@
             
             <!-- Кнопочки -->
             <div class="row mt-4">
-                <div class="col-12 d-flex justify-content-end">
-                    <button class="btn btn-outline-secondary me-2" onclick="resetFilters()">
-                        <i class="bi bi-x-circle"></i> Сбросить
+                <div class="col-12 d-flex justify-content-end align-items-center gap-3">
+                    <button class="btn btn-outline-secondary" onclick="resetFilters()" aria-label="Сбросить все фильтры">
+                        <i class="bi bi-x-circle" aria-hidden="true"></i> Сбросить
                     </button>
-                    <span class="text-muted align-self-center" id="resultsCount"></span>
+                    <span class="text-muted" id="resultsCount" aria-live="polite" aria-label="Количество найденных направлений"></span>
                 </div>
             </div>
         </div>
 
-        <!-- Табличка с карточками направлений -->
-        <div class="row g-4" id="destinationsGrid">
-        </div>
+        <!-- Результаты поиска -->
+        <section aria-label="Результаты поиска направлений">
+            <h2 class="visually-hidden">Найденные направления</h2>
+            <div class="row g-4" id="destinationsGrid" role="list" aria-label="Список доступных направлений">
+            </div>
+        </section>
     </main>
 
     <footer class="bg-light py-4 mt-5">
         <div class="container text-center">
-            <p class="mb-0">&copy; 2026  FlyingOwl.</p>
+            <p class="mb-0">&copy; 2026 FlyingOwl.</p>
         </div>
     </footer>
 

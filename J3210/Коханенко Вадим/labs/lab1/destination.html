@@ -12,78 +12,78 @@
 </head>
 <body>
     <!-- Навигация -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success" aria-label="Главная навигация">
         <div class="container">
-            <span class="navbar-brand">
-                <i class="bi bi-compass"></i> FlyingOwl
+            <span class="navbar-brand" aria-label="FlyingOwl">
+                <i class="bi bi-compass" aria-hidden="true"></i> FlyingOwl
             </span>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-expanded="false" aria-controls="navbarNav" aria-label="Открыть меню">
+                <span class="navbar-toggler-icon" aria-hidden="true"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
+                <ul class="navbar-nav ms-auto" role="list">
+                    <li class="nav-item" role="listitem">
                         <a class="nav-link" href="search.html">
-                            <i class="bi bi-search"></i> Поиск
+                            <i class="bi bi-search" aria-hidden="true"></i> Поиск
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" role="listitem">
                         <a class="nav-link" href="dashboard.html">
-                            <i class="bi bi-person-circle"></i> Личный кабинет
+                            <i class="bi bi-person-circle" aria-hidden="true"></i> Личный кабинет
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">
-                            <i class="bi bi-box-arrow-right"></i> Выйти
-                        </a>
+                    <li class="nav-item" role="listitem">
+                        <a class="nav-link" href="#" id="logoutBtn">Выйти</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <main id="destinationContent"></main>
+    <!-- Подгрузка контента для конкретного маршрута -->
+    <main id="destinationContent" class="destination-main">
+    </main>
 
     <!-- Модалка: добавить маршрут -->
-    <div class="modal fade" id="addRouteModal" tabindex="-1">
+    <div class="modal fade" id="addRouteModal" tabindex="-1" aria-labelledby="addRouteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">
-                        <i class="bi bi-map"></i> Детали маршрута
+                    <h5 class="modal-title" id="addRouteModalLabel">
+                        <i class="bi bi-map" aria-hidden="true"></i> Детали маршрута
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                 </div>
                 <div class="modal-body">
                     <form id="addRouteFromDestinationForm">
                         <div class="mb-3">
-                            <label class="form-label">Название маршрута</label>
+                            <label for="routeTitle" class="form-label">Название маршрута</label>
                             <input type="text" class="form-control" id="routeTitle" readonly>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Основные точки маршрута</label>
+                                <label for="routePoints" class="form-label">Основные точки маршрута</label>
                                 <input type="text" class="form-control" id="routePoints" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Тип маршрута</label>
+                                <label for="routeType" class="form-label">Тип маршрута</label>
                                 <input type="text" class="form-control" id="routeType" readonly>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Длительность</label>
+                                <label for="routeDuration" class="form-label">Длительность</label>
                                 <input type="text" class="form-control" id="routeDuration" readonly>
-
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Бюджет</label>
+                                <label for="routeBudget" class="form-label">Бюджет</label>
                                 <input type="text" class="form-control" id="routeBudget" readonly>
                             </div>
                         </div>
                         <input type="hidden" id="routeDestinationId">
                         <div class="mb-3">
-                            <label class="form-label">Описание</label>
+                            <label for="routeDescription" class="form-label">Описание</label>
                             <textarea class="form-control" id="routeDescription" rows="3" readonly></textarea>
                         </div>
                     </form>
@@ -92,7 +92,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
                     <button type="button" class="btn btn-success" onclick="saveRouteFromDestination()">
-                        <i class="bi bi-plus-circle"></i> Добавить в маршруты
+                        <i class="bi bi-plus-circle" aria-hidden="true"></i> Добавить в маршруты
                     </button>
                 </div>
             </div>
