@@ -22,7 +22,7 @@ async function loadUserData() {
         updateUI();
     } catch (error) {
         console.error('Ошибка загрузки данных:', error);
-        alert('Ошибка загрузки данных: ' + error.message);
+        showNotification('Ошибка загрузки данных: ' + error.message, true);
     }
 }
 
@@ -76,7 +76,6 @@ async function deleteRouteFromAPI(id) {
     }
 }
 
-// Обновления счётчиков и заметок+маршрутов
 function updateUI() {
     document.getElementById('notesCount').textContent = userNotes.length;
     document.getElementById('routesCount').textContent = userRoutes.length;
@@ -87,7 +86,6 @@ function updateUI() {
     renderRoutes();
 }
 
-// Всякие иконки и цвета
 function getTypeIcon(type) {
     const icons = {
         'Город': 'bi-building',
@@ -97,15 +95,14 @@ function getTypeIcon(type) {
     return icons[type] || 'bi-arrow-repeat';
 }
 
-// Отображение маршрутов
 function renderRoutes() {
     const container = document.getElementById('routesContainer');
     
     if (userRoutes.length === 0) {
         container.innerHTML = `
             <div class="col-12 empty-state">
-                <i class="bi bi-map"></i>
-                <h5>У вас пока нет сохранённых маршрутов</h5>
+                <i class="bi bi-map" aria-hidden="true"></i>
+                <h3>У вас пока нет сохранённых маршрутов</h3>
                 <p class="text-muted">Найдите интересные направления в поиске!</p>
             </div>
         `;
@@ -119,15 +116,14 @@ function renderRoutes() {
     container.innerHTML = html;
 }
 
-// Отображение заметок
 function renderNotes() {
     const container = document.getElementById('notesContainer');
     
     if (userNotes.length === 0) {
         container.innerHTML = `
             <div class="col-12 empty-state">
-                <i class="bi bi-journal-bookmark"></i>
-                <h5>У вас пока нет заметок</h5>
+                <i class="bi bi-journal-bookmark" aria-hidden="true"></i>
+                <h3>У вас пока нет заметок</h3>
                 <p class="text-muted">Создайте первую заметку о ваших путешествиях!</p>
             </div>
         `;
@@ -141,38 +137,39 @@ function renderNotes() {
     container.innerHTML = html;
 }
 
-// Карточка маршрута
 function createRouteCard(route) {
     return `
-        <div class="col-lg-6">
+        <div class="col-lg-6" role="listitem">
             <div class="card route-card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="card-title">${route.title}</h5>
+                        <h3 class="h5 card-title">${route.title}</h3>
                         <span class="badge bg-success">${route.duration}</span>
                     </div>
                     <div class="route-duration mb-2">
-                        <i class="bi bi-geo-alt"></i> ${route.points}
+                        <i class="bi bi-geo-alt" aria-hidden="true"></i> ${route.points}
                     </div>
                     <p class="card-text">
                         ${route.description.substring(0, 250)}${route.description.length > 250 ? '…' : ''}
                         <a href="destination.html?id=${route.destinationId}" class="text-success text-decoration-none">
-                                ${route.description.length > 250 ? '' : '…'}читать далее</a>
+                            ${route.description.length > 250 ? '' : '…'}читать далее
+                        </a>
                     </p>
                 </div>
                 <div class="card-footer">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <span class="badge bg-light text-dark me-1">
-                                <i class="bi bi-tag"></i> ${route.budget} бюджет
+                                <i class="bi bi-tag" aria-hidden="true"></i> ${route.budget} бюджет
                             </span>
                             <span class="badge bg-light text-dark me-1">
-                                <i class="bi ${getTypeIcon(route.type)}"></i> ${route.type}
+                                <i class="bi ${getTypeIcon(route.type)}" aria-hidden="true"></i> ${route.type}
                             </span>
                         </div>
                         <div>
-                            <button class="btn btn-sm btn-outline-danger" onclick="deleteRoute('${route.id}')">
-                                <i class="bi bi-trash"></i>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteRoute('${route.id}')"
+                                    aria-label="Удалить маршрут ${route.title}">
+                                <i class="bi bi-trash" aria-hidden="true"></i>
                             </button>
                         </div>
                     </div>
@@ -182,7 +179,6 @@ function createRouteCard(route) {
     `;
 }
 
-// Карточка заметки
 function createNoteCard(note) {
     let tags = '';
     if (note.tags) {
@@ -195,28 +191,30 @@ function createNoteCard(note) {
     const safeNoteId = String(note.id).replace(/[^a-zA-Z0-9]/g, '');
     
     return `
-        <div class="col-lg-4 col-md-6">
+        <div class="col-lg-4 col-md-6" role="listitem">
             <div class="card note-card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span class="badge-type">
-                        <i class="bi ${getTypeIcon(note.type)}"></i> ${note.type}
+                        <i class="bi ${getTypeIcon(note.type)}" aria-hidden="true"></i> ${note.type}
                     </span>
-                    <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-primary" onclick="editNote('${note.id}')" data-bs-toggle="modal" data-bs-target="#editNoteModal">
-                            <i class="bi bi-pencil"></i>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Действия с заметкой">
+                        <button class="btn btn-outline-primary" onclick="editNote('${note.id}')" data-bs-toggle="modal" data-bs-target="#editNoteModal"
+                                aria-label="Редактировать заметку">
+                            <i class="bi bi-pencil" aria-hidden="true"></i>
                         </button>
-                        <button class="btn btn-outline-danger" onclick="deleteNote('${note.id}')">
-                            <i class="bi bi-trash"></i>
+                        <button class="btn btn-outline-danger" onclick="deleteNote('${note.id}')"
+                                aria-label="Удалить заметку">
+                            <i class="bi bi-trash" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title">${note.title}</h5>
-                    ${note.date ? `<h6 class="card-subtitle mb-2 text-muted"><i class="bi bi-calendar3"></i> ${note.date}</h6>` : ''}
+                    <h3 class="h5 card-title">${note.title}</h3>
+                    ${note.date ? `<h4 class="h6 card-subtitle mb-2 text-muted"><i class="bi bi-calendar3" aria-hidden="true"></i> ${note.date}</h4>` : ''}
                     <p class="card-text">
                         ${note.content.substring(0, 100)}${note.content.length > 100 ? '…' : ''}
                         ${note.content.length > 100 ? 
-                            `<a href="#" class="text-success text-decoration-none" data-bs-toggle="modal" data-bs-target="#noteModal${safeNoteId}">
+                            `<a href="#" class="text-success text-decoration-none" data-bs-toggle="modal" data-bs-target="#noteModal${safeNoteId}" aria-label="Читать полностью">
                                 читать далее</a>` : ''}
                     </p>
                     ${tags ? `<div class="mt-3">${tags}</div>` : ''}
@@ -224,19 +222,18 @@ function createNoteCard(note) {
             </div>
         </div>
         
-        <!-- Модалка: текст длинной заметки -->
         ${note.content.length > 100 ? `
-        <div class="modal fade" id="noteModal${safeNoteId}" tabindex="-1">
+        <div class="modal fade" id="noteModal${safeNoteId}" tabindex="-1" aria-labelledby="noteModalLabel${safeNoteId}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title">
-                            <i class="bi bi-journal-text"></i> ${note.title}
+                        <h5 class="modal-title" id="noteModalLabel${safeNoteId}">
+                            <i class="bi bi-journal-text" aria-hidden="true"></i> ${note.title}
                         </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                     </div>
                     <div class="modal-body">
-                        ${note.date ? `<p class="text-muted"><i class="bi bi-calendar3"></i> ${note.date}</p>` : ''}
+                        ${note.date ? `<p class="text-muted"><i class="bi bi-calendar3" aria-hidden="true"></i> ${note.date}</p>` : ''}
                         <p>${note.content}</p>
                         ${tags ? `<div class="mt-3">${tags}</div>` : ''}
                     </div>
@@ -247,20 +244,19 @@ function createNoteCard(note) {
     `;
 }
 
-// Удаление маршрута
 async function deleteRoute(routeId) {
     if (confirm('Удалить этот маршрут?')) {
         try {
             await deleteRouteFromAPI(routeId);
             userRoutes = userRoutes.filter(r => r.id !== routeId);
             updateUI();
+            showNotification('Маршрут успешно удалён');
         } catch (error) {
-            alert('Ошибка при удалении маршрута');
+            showNotification('Ошибка при удалении маршрута', true);
         }
     }
 }
 
-// Добавить заметку
 async function addNote() {
     const title = document.getElementById('noteTitle').value;
     const date = document.getElementById('noteDate').value;
@@ -270,7 +266,7 @@ async function addNote() {
     const tags = document.getElementById('noteTags').value;
     
     if (!title || !content || !country) {
-        alert('Заполните обязательные поля: заголовок, страна, текст заметки');
+        showNotification('Заполните обязательные поля: заголовок, страна, текст заметки', true);
         return;
     }
     
@@ -282,25 +278,25 @@ async function addNote() {
         document.getElementById('addNoteForm').reset();
         const modal = bootstrap.Modal.getInstance(document.getElementById('addNoteModal'));
         modal.hide();
+        showNotification('Заметка успешно сохранена');
     } catch (error) {
-        alert('Ошибка при сохранении заметки');
+        showNotification('Ошибка при сохранении заметки', true);
     }
 }
 
-// Удалить заметку
 async function deleteNote(noteId) {
     if (confirm('Удалить эту заметку?')) {
         try {
             await deleteNoteFromAPI(noteId);
             userNotes = userNotes.filter(n => String(n.id) !== String(noteId));
             updateUI();
+            showNotification('Заметка успешно удалена');
         } catch (error) {
-            alert('Ошибка при удалении заметки');
+            showNotification('Ошибка при удалении заметки', true);
         }
     }
 }
 
-// Отредачить заметку
 function editNote(noteId) {
     const note = userNotes.find(n => String(n.id) === String(noteId));
     if (!note) return;
@@ -315,7 +311,6 @@ function editNote(noteId) {
     document.getElementById('editNoteTags').value = note.tags || '';
 }
 
-// Обновление заметки
 async function updateNote() {
     const title = document.getElementById('editNoteTitle').value;
     const date = document.getElementById('editNoteDate').value;
@@ -325,7 +320,7 @@ async function updateNote() {
     const tags = document.getElementById('editNoteTags').value;
     
     if (!title || !content || !country) {
-        alert('Заполните обязательные поля: заголовок, страна, текст заметки');
+        showNotification('Заполните обязательные поля: заголовок, страна, текст заметки', true);
         return;
     }
     
@@ -345,12 +340,12 @@ async function updateNote() {
         const modal = bootstrap.Modal.getInstance(document.getElementById('editNoteModal'));
         modal.hide();
         delete window.editingNoteId;
+        showNotification('Заметка успешно обновлена');
     } catch (error) {
-        alert('Ошибка при обновлении заметки');
+        showNotification('Ошибка при обновлении заметки', true);
     }
 }
 
-// Инициализация при загрузке
 document.addEventListener('DOMContentLoaded', function() {
     loadUserData();
     
