@@ -30,31 +30,34 @@
           <h1 class="h4 fw-semibold mb-1">Регистрация</h1>
           <p class="text-secondary mb-4">Создайте аккаунт, чтобы покупать билеты и хранить их в одном месте.</p>
 
-          <form>
+          <form id="registerForm" novalidate>
             <div class="row g-3">
               <div class="col-md-6">
                 <label class="form-label">Имя</label>
-                <input class="form-control" required>
+                <input class="form-control" name="firstName" required>
               </div>
               <div class="col-md-6">
                 <label class="form-label">Фамилия</label>
-                <input class="form-control" required>
+                <input class="form-control" name="lastName" required>
               </div>
               <div class="col-12">
                 <label class="form-label">Эл. почта</label>
-                <input type="email" class="form-control" required>
+                <input type="email" class="form-control" name="email" required>
               </div>
               <div class="col-md-6">
                 <label class="form-label">Пароль</label>
-                <input type="password" class="form-control" required>
+                <input type="password" class="form-control" name="password" required>
               </div>
               <div class="col-md-6">
                 <label class="form-label">Повтор пароля</label>
-                <input type="password" class="form-control" required>
+                <input type="password" class="form-control" name="confirmPassword" required>
+              </div>
+              <div class="col-12">
+                <div class="alert alert-danger d-none mb-0" id="registerError" role="alert"></div>
               </div>
               <div class="col-12">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" required>
+                  <input class="form-check-input" type="checkbox" name="terms" required>
                   <label class="form-check-label">
                     Я согласен с условиями сервиса
                   </label>
@@ -62,9 +65,13 @@
               </div>
             </div>
 
-            <button class="btn btn-primary w-100 mt-4" type="button" onclick="location.href='login.html'">
+            <button class="btn btn-primary w-100 mt-4" id="registerSubmit" type="submit">
               Создать аккаунт
             </button>
+
+            <div class="text-secondary small mt-3">
+              Уже есть аккаунт? <a href="login.html">Войти</a>
+            </div>
 
           </form>
 
@@ -74,6 +81,10 @@
   </div>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/auth-service.js"></script>
+<script src="assets/js/register-page.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
