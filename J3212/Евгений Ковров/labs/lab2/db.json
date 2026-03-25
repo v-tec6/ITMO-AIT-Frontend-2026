@@ -1,0 +1,479 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Евгений Ковров",
+      "email": "evgeny.kovrov@example.com",
+      "password": "qwerty123"
+    },
+    {
+      "id": 2,
+      "name": "Анна Смирнова",
+      "email": "anna.smirnova@example.com",
+      "password": "anna2026"
+    },
+    {
+      "id": 3,
+      "name": "Илья Петров",
+      "email": "ilya.petrov@example.com",
+      "password": "petrov777"
+    },
+    {
+      "id": 4,
+      "name": "Мария Орлова",
+      "email": "maria.orlova@example.com",
+      "password": "mariapass"
+    },
+    {
+      "id": 5,
+      "name": "Дмитрий Волков",
+      "email": "dmitry.volkov@example.com",
+      "password": "volkov2026"
+    },
+    {
+      "id": 6,
+      "name": "Ольга Фёдорова",
+      "email": "olga.fedorova@example.com",
+      "password": "olga1234"
+    },
+    {
+      "id": 7,
+      "name": "Никита Соколов",
+      "email": "nikita.sokolov@example.com",
+      "password": "sokolov88"
+    },
+    {
+      "id": 8,
+      "name": "Александра Морозова",
+      "email": "alexandra.morozova@example.com",
+      "password": "morozova2026"
+    },
+    {
+      "id": 9,
+      "name": "Кирилл Павлов",
+      "email": "kirill.pavlov@example.com",
+      "password": "kirillpass"
+    },
+    {
+      "id": 10,
+      "name": "Екатерина Белова",
+      "email": "ekaterina.belova@example.com",
+      "password": "belova2026"
+    },
+    {
+      "id": 11,
+      "name": "Роман Григорьев",
+      "email": "roman.grigorev@example.com",
+      "password": "roman555"
+    },
+    {
+      "id": 12,
+      "name": "Виктория Кузнецова",
+      "email": "victoria.kuznetsova@example.com",
+      "password": "vika2026"
+    },
+    {
+      "id": 13,
+      "name": "Артём Лазарев",
+      "email": "artem.lazarev@example.com",
+      "password": "lazarev321"
+    },
+    {
+      "id": 14,
+      "name": "Полина Захарова",
+      "email": "polina.zakharova@example.com",
+      "password": "polina2026"
+    },
+    {
+      "id": 15,
+      "name": "Сергей Тимофеев",
+      "email": "sergey.timofeev@example.com",
+      "password": "sergeypass"
+    },
+    {
+      "id": 16,
+      "name": "Татьяна Егорова",
+      "email": "tatyana.egorova@example.com",
+      "password": "egorova77"
+    },
+    {
+      "id": 17,
+      "name": "Павел Жуков",
+      "email": "pavel.zhukov@example.com",
+      "password": "zhukov2026"
+    },
+    {
+      "id": 18,
+      "name": "Дарья Николаева",
+      "email": "daria.nikolaeva@example.com",
+      "password": "daria456"
+    },
+    {
+      "id": 19,
+      "name": "Максим Комаров",
+      "email": "maxim.komarov@example.com",
+      "password": "komarovpass"
+    },
+    {
+      "id": 20,
+      "name": "Алина Власова",
+      "email": "alina.vlasova@example.com",
+      "password": "alina2026"
+    },
+    {
+      "id": 21,
+      "name": "Игорь Сафонов",
+      "email": "igor.safonov@example.com",
+      "password": "safonov001"
+    },
+    {
+      "id": 22,
+      "name": "Юлия Данилова",
+      "email": "yulia.danilova@example.com",
+      "password": "yulia2026"
+    },
+    {
+      "id": 23,
+      "name": "Константин Андреев",
+      "email": "konstantin.andreev@example.com",
+      "password": "andreev999"
+    }
+  ],
+  "events": [
+    {
+      "id": 1,
+      "title": "Джаз в Полуторке",
+      "description": "Камерный вечер джаза в Новой Голландии с живым составом и мягким сценическим светом. В программе стандарты и современные аранжировки, рассчитанные на спокойный вечер в центре Петербурга.",
+      "date": "2026-04-10",
+      "time": "20:00",
+      "city": "Санкт-Петербург",
+      "venue": "Новая Голландия, сцена «Полуторка»",
+      "price": 1200,
+      "image": "assets/img/events/jazz.jpg",
+      "category": "Концерт",
+      "availableTickets": 44
+    },
+    {
+      "id": 2,
+      "title": "Стендап: Пятничный микрофон",
+      "description": "Пятничный стендап-вечер с короткими сетами, импровизацией и плотным лайнапом. Формат подойдёт тем, кто любит камерные площадки, быстрый темп и живую реакцию зала.",
+      "date": "2026-04-12",
+      "time": "19:30",
+      "city": "Санкт-Петербург",
+      "venue": "Бар на Рубинштейна",
+      "price": 700,
+      "image": "assets/img/events/standup.jpg",
+      "category": "Стендап",
+      "availableTickets": 31
+    },
+    {
+      "id": 3,
+      "title": "Хоккей: СКА",
+      "description": "Домашний матч СКА в Ледовом дворце с полной ареной и напряжённой спортивной атмосферой. Это хороший вариант для тех, кто хочет провести вечер на большом событии и посмотреть быстрый хоккей вживую.",
+      "date": "2026-04-18",
+      "time": "18:00",
+      "city": "Санкт-Петербург",
+      "venue": "Ледовый дворец",
+      "price": 1500,
+      "image": "assets/img/events/hockey.jpg",
+      "category": "Спорт",
+      "availableTickets": 128
+    },
+    {
+      "id": 4,
+      "title": "Балет «Лебединое озеро»",
+      "description": "Классическая постановка с большим оркестром и традиционной сценографией на исторической площадке. Спектакль подходит как для первого знакомства с балетом, так и для спокойного культурного вечера в центре города.",
+      "date": "2026-04-22",
+      "time": "19:00",
+      "city": "Санкт-Петербург",
+      "venue": "Мариинский театр",
+      "price": 2800,
+      "image": "assets/img/events/ballet.jpg",
+      "category": "Театр",
+      "availableTickets": 52
+    },
+    {
+      "id": 5,
+      "title": "Выставка «Город и вода»",
+      "description": "Современная выставка о визуальном образе Петербурга, набережных и индустриальных береговых линиях. Экспозиция собрана из фотографии, графики и мультимедийных инсталляций, которые удобно смотреть в собственном темпе.",
+      "date": "2026-04-25",
+      "time": "11:00",
+      "city": "Санкт-Петербург",
+      "venue": "Севкабель Порт",
+      "price": 500,
+      "image": "assets/img/events/exhibition.jpg",
+      "category": "Выставка",
+      "availableTickets": 203
+    },
+    {
+      "id": 6,
+      "title": "Фестиваль еды «Вкус Невы»",
+      "description": "Городской гастрономический фестиваль с корнерами ресторанов, локальными брендами и вечерней музыкальной программой. Здесь удобно провести выходной с друзьями и попробовать разные кухни без формального сценария.",
+      "date": "2026-05-01",
+      "time": "13:00",
+      "city": "Санкт-Петербург",
+      "venue": "Никольские ряды",
+      "price": 900,
+      "image": "assets/img/events/food-fest.jpg",
+      "category": "Фестиваль",
+      "availableTickets": 340
+    },
+    {
+      "id": 7,
+      "title": "Концерт «Симфонические хиты кино»",
+      "description": "Большой оркестровый концерт с музыкой из известных фильмов и сериалов в современной подаче. Программа построена на узнаваемых темах, поэтому хорошо подойдёт и для регулярных слушателей, и для широкой аудитории.",
+      "date": "2026-05-07",
+      "time": "20:00",
+      "city": "Санкт-Петербург",
+      "venue": "БКЗ «Октябрьский»",
+      "price": 1900,
+      "image": "assets/img/events/orchestra.jpg",
+      "category": "Концерт",
+      "availableTickets": 86
+    },
+    {
+      "id": 8,
+      "title": "Спектакль «Ревизор»",
+      "description": "Современное прочтение классической пьесы с динамичной сценической подачей и акцентом на сатиру. Постановка идёт без лишней академичности, поэтому воспринимается легко и держит внимание до финала.",
+      "date": "2026-05-11",
+      "time": "19:30",
+      "city": "Санкт-Петербург",
+      "venue": "Театр имени Ленсовета",
+      "price": 1600,
+      "image": "assets/img/events/theatre.jpg",
+      "category": "Театр",
+      "availableTickets": 67
+    },
+    {
+      "id": 9,
+      "title": "Open Air «Белые ночи Sound»",
+      "description": "Летний музыкальный open air с несколькими сценами, танцевальной зоной и вечерним световым оформлением. Событие собрано под формат длинного городского уикенда и рассчитано на молодую аудиторию.",
+      "date": "2026-06-13",
+      "time": "17:00",
+      "city": "Санкт-Петербург",
+      "venue": "Парк 300-летия Санкт-Петербурга",
+      "price": 2200,
+      "image": "assets/img/events/open-air.jpg",
+      "category": "Фестиваль",
+      "availableTickets": 415
+    }
+  ],
+  "orders": [
+    {
+      "id": 1,
+      "userId": 1,
+      "eventId": 1,
+      "quantity": 2,
+      "totalPrice": 2400,
+      "createdAt": "2026-03-10T12:40:00+03:00",
+      "status": "confirmed"
+    },
+    {
+      "id": 2,
+      "userId": 2,
+      "eventId": 2,
+      "quantity": 1,
+      "totalPrice": 700,
+      "createdAt": "2026-03-11T18:20:00+03:00",
+      "status": "confirmed"
+    },
+    {
+      "id": 3,
+      "userId": 3,
+      "eventId": 3,
+      "quantity": 3,
+      "totalPrice": 4500,
+      "createdAt": "2026-03-12T09:15:00+03:00",
+      "status": "cancelled"
+    },
+    {
+      "id": 4,
+      "userId": 4,
+      "eventId": 4,
+      "quantity": 2,
+      "totalPrice": 5600,
+      "createdAt": "2026-03-12T14:05:00+03:00",
+      "status": "confirmed"
+    },
+    {
+      "id": 5,
+      "userId": 5,
+      "eventId": 5,
+      "quantity": 4,
+      "totalPrice": 2000,
+      "createdAt": "2026-03-13T10:30:00+03:00",
+      "status": "confirmed"
+    },
+    {
+      "id": 6,
+      "userId": 6,
+      "eventId": 6,
+      "quantity": 2,
+      "totalPrice": 1800,
+      "createdAt": "2026-03-13T16:25:00+03:00",
+      "status": "confirmed"
+    },
+    {
+      "id": 7,
+      "userId": 7,
+      "eventId": 7,
+      "quantity": 1,
+      "totalPrice": 1900,
+      "createdAt": "2026-03-14T11:45:00+03:00",
+      "status": "confirmed"
+    },
+    {
+      "id": 8,
+      "userId": 8,
+      "eventId": 8,
+      "quantity": 2,
+      "totalPrice": 3200,
+      "createdAt": "2026-03-14T18:40:00+03:00",
+      "status": "cancelled"
+    },
+    {
+      "id": 9,
+      "userId": 9,
+      "eventId": 9,
+      "quantity": 3,
+      "totalPrice": 6600,
+      "createdAt": "2026-03-15T13:05:00+03:00",
+      "status": "confirmed"
+    },
+    {
+      "id": 10,
+      "userId": 10,
+      "eventId": 1,
+      "quantity": 1,
+      "totalPrice": 1200,
+      "createdAt": "2026-03-15T20:10:00+03:00",
+      "status": "confirmed"
+    },
+    {
+      "id": 11,
+      "userId": 11,
+      "eventId": 2,
+      "quantity": 2,
+      "totalPrice": 1400,
+      "createdAt": "2026-03-16T09:25:00+03:00",
+      "status": "confirmed"
+    },
+    {
+      "id": 12,
+      "userId": 12,
+      "eventId": 3,
+      "quantity": 2,
+      "totalPrice": 3000,
+      "createdAt": "2026-03-16T17:35:00+03:00",
+      "status": "confirmed"
+    },
+    {
+      "id": 13,
+      "userId": 13,
+      "eventId": 4,
+      "quantity": 1,
+      "totalPrice": 2800,
+      "createdAt": "2026-03-17T12:00:00+03:00",
+      "status": "confirmed"
+    },
+    {
+      "id": 14,
+      "userId": 14,
+      "eventId": 5,
+      "quantity": 2,
+      "totalPrice": 1000,
+      "createdAt": "2026-03-17T19:10:00+03:00",
+      "status": "cancelled"
+    },
+    {
+      "id": 15,
+      "userId": 15,
+      "eventId": 6,
+      "quantity": 5,
+      "totalPrice": 4500,
+      "createdAt": "2026-03-18T08:50:00+03:00",
+      "status": "confirmed"
+    },
+    {
+      "id": 16,
+      "userId": 16,
+      "eventId": 7,
+      "quantity": 2,
+      "totalPrice": 3800,
+      "createdAt": "2026-03-18T15:45:00+03:00",
+      "status": "confirmed"
+    },
+    {
+      "id": 17,
+      "userId": 17,
+      "eventId": 8,
+      "quantity": 3,
+      "totalPrice": 4800,
+      "createdAt": "2026-03-19T11:20:00+03:00",
+      "status": "confirmed"
+    },
+    {
+      "id": 18,
+      "userId": 18,
+      "eventId": 9,
+      "quantity": 2,
+      "totalPrice": 4400,
+      "createdAt": "2026-03-19T18:00:00+03:00",
+      "status": "confirmed"
+    },
+    {
+      "id": 19,
+      "userId": 19,
+      "eventId": 1,
+      "quantity": 4,
+      "totalPrice": 4800,
+      "createdAt": "2026-03-20T10:10:00+03:00",
+      "status": "confirmed"
+    },
+    {
+      "id": 20,
+      "userId": 20,
+      "eventId": 3,
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-03-20T16:55:00+03:00",
+      "status": "cancelled"
+    },
+    {
+      "id": 21,
+      "userId": 21,
+      "eventId": 2,
+      "quantity": 2,
+      "totalPrice": 1400,
+      "createdAt": "2026-03-21T12:30:00+03:00",
+      "status": "confirmed"
+    },
+    {
+      "id": 22,
+      "userId": 22,
+      "eventId": 7,
+      "quantity": 1,
+      "totalPrice": 1900,
+      "createdAt": "2026-03-22T14:40:00+03:00",
+      "status": "confirmed"
+    },
+    {
+      "id": 23,
+      "userId": 23,
+      "eventId": 8,
+      "quantity": 2,
+      "totalPrice": 3200,
+      "createdAt": "2026-03-23T18:15:00+03:00",
+      "status": "confirmed"
+    },
+    {
+      "id": 24,
+      "userId": 6,
+      "eventId": 5,
+      "quantity": 3,
+      "totalPrice": 1500,
+      "createdAt": "2026-03-24T09:05:00+03:00",
+      "status": "confirmed"
+    }
+  ]
+}
