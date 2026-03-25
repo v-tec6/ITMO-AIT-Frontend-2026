@@ -26,11 +26,7 @@
         <li class="nav-item"><a class="nav-link active" href="organizer.html">Организатору</a></li>
       </ul>
 
-      <div class="d-flex gap-2">
-        <a class="btn btn-outline-secondary" href="login.html">Вход</a>
-        <a class="btn btn-primary" href="register.html">Регистрация</a>
-        <a class="btn btn-outline-primary" href="profile.html">Профиль</a>
-      </div>
+      <div class="d-flex gap-2 align-items-center" data-auth-nav></div>
     </div>
   </div>
 </nav>
@@ -354,6 +350,10 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/auth-service.js"></script>
+<script src="assets/js/auth-ui.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
