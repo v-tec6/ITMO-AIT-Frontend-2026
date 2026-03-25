@@ -17,6 +17,18 @@
     return userToStore;
   }
 
+  function isNetworkError(error) {
+    return !error.response;
+  }
+
+  function getAuthErrorMessage(error, fallbackMessage) {
+    if (isNetworkError(error)) {
+      return 'Сервис временно недоступен. Попробуйте позже.';
+    }
+
+    return error.message || fallbackMessage;
+  }
+
   async function registerUser({ name, email, password }) {
     const normalizedEmail = email.trim().toLowerCase();
     const existingUsersResponse = await apiClient.get('/users', {
@@ -85,6 +97,7 @@
     getCurrentUser,
     logoutUser,
     isAuthenticated,
+    getAuthErrorMessage,
     storageKey: STORAGE_KEY
   };
 })(window);

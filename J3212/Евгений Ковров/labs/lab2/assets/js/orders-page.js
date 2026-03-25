@@ -78,7 +78,7 @@
       `
       : `
         <div class="fw-semibold">Информация о мероприятии недоступна</div>
-        <div class="text-secondary small">Событие с id ${order.eventId} не найдено в mock API.</div>
+        <div class="text-secondary small">Данные о событии не удалось загрузить.</div>
       `;
 
     return `
@@ -154,7 +154,8 @@
       const ordersWithEvents = await Promise.all(orders.map(loadOrderEvent));
       renderOrders(ordersWithEvents);
     } catch (error) {
-      renderState('Ошибка загрузки', 'Не удалось получить ваши заказы. Проверьте, что json-server запущен на http://localhost:3000.', 'text-danger');
+      console.error('Orders loading failed.', error);
+      renderState('Ошибка загрузки', 'Не удалось загрузить ваши заказы. Попробуйте позже.', 'text-danger');
     }
   }
 

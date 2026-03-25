@@ -5,7 +5,7 @@
     return;
   }
 
-  const { loginUser, isAuthenticated } = global.KontramarkaAuth;
+  const { loginUser, isAuthenticated, getAuthErrorMessage } = global.KontramarkaAuth;
   const errorBox = document.getElementById('loginError');
   const submitButton = document.getElementById('loginSubmit');
 
@@ -57,7 +57,8 @@
       await loginUser({ email, password });
       global.location.href = getRedirectTarget();
     } catch (error) {
-      renderError(error.message || 'Не удалось выполнить вход.');
+      console.error('Login failed.', error);
+      renderError(getAuthErrorMessage(error, 'Не удалось выполнить вход. Проверьте введённые данные.'));
     } finally {
       setSubmittingState(false);
     }

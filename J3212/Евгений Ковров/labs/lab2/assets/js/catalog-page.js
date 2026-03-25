@@ -95,7 +95,8 @@
 
       renderEvents(events);
     } catch (error) {
-      renderState('Не удалось загрузить мероприятия. Проверьте, что json-server запущен на http://localhost:3000.', 'text-danger');
+      console.error('Catalog loading failed.', error);
+      renderState('Не удалось загрузить мероприятия. Попробуйте позже.', 'text-danger');
     }
   }
 

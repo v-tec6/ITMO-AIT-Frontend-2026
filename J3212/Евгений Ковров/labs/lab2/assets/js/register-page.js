@@ -5,7 +5,7 @@
     return;
   }
 
-  const { registerUser, isAuthenticated } = global.KontramarkaAuth;
+  const { registerUser, isAuthenticated, getAuthErrorMessage } = global.KontramarkaAuth;
   const errorBox = document.getElementById('registerError');
   const submitButton = document.getElementById('registerSubmit');
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -90,7 +90,8 @@
       await registerUser({ name, email, password });
       global.location.href = 'index.html';
     } catch (error) {
-      renderError(error.message || 'Не удалось зарегистрироваться.');
+      console.error('Registration failed.', error);
+      renderError(getAuthErrorMessage(error, 'Не удалось зарегистрироваться. Проверьте введённые данные.'));
     } finally {
       setSubmittingState(false);
     }

@@ -268,7 +268,8 @@
       currentEvent = updatedEvent;
       setPageMessage('success', 'Покупка оформлена. Заказ создан, а билет добавлен в ваши покупки.');
     } catch (error) {
-      setPageMessage('danger', 'Не удалось оформить покупку. Попробуйте ещё раз.');
+      console.error('Ticket purchase failed.', error);
+      setPageMessage('danger', 'Не удалось оформить билет. Попробуйте ещё раз.');
     } finally {
       isPurchasing = false;
       renderEvent(currentEvent);
@@ -291,7 +292,7 @@
     const eventId = getEventIdFromQuery();
 
     if (!eventId) {
-      renderState('Некорректная ссылка', 'Укажите корректный идентификатор мероприятия в адресе страницы.', 'text-danger');
+      renderState('Некорректная ссылка', 'Не удалось открыть мероприятие по этой ссылке.', 'text-danger');
       return;
     }
 
@@ -300,12 +301,14 @@
       currentEvent = event;
       renderEvent(event);
     } catch (error) {
+      console.error('Event loading failed.', error);
+
       if (error.response && error.response.status === 404) {
-        renderState('Мероприятие не найдено', 'Событие с таким id отсутствует в mock API.', 'text-warning');
+        renderState('Мероприятие не найдено', 'Событие не найдено или было удалено.', 'text-warning');
         return;
       }
 
-      renderState('Ошибка загрузки', 'Не удалось получить данные мероприятия. Проверьте, что json-server запущен на http://localhost:3000.', 'text-danger');
+      renderState('Ошибка загрузки', 'Не удалось загрузить данные мероприятия. Попробуйте позже.', 'text-danger');
     }
   }
 
