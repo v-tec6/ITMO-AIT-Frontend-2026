@@ -16,13 +16,13 @@
   }
 
   function renderUserNav(container, user) {
-    const ticketsLinkClass = getCurrentPage() === 'profile.html'
+    const ticketsLinkClass = getCurrentPage() === 'orders.html'
       ? 'btn btn-outline-primary active'
       : 'btn btn-outline-primary';
 
     container.innerHTML = `
       <span class="navbar-text text-secondary small me-1">${user.name}</span>
-      <a class="${ticketsLinkClass}" href="profile.html">Мои билеты</a>
+      <a class="${ticketsLinkClass}" href="orders.html">Мои билеты</a>
       <button class="btn btn-outline-secondary" type="button" data-auth-logout>Выйти</button>
     `;
   }
