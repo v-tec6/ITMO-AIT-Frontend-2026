@@ -9,6 +9,11 @@
   const errorBox = document.getElementById('loginError');
   const submitButton = document.getElementById('loginSubmit');
 
+  function getRedirectTarget() {
+    const params = new URLSearchParams(global.location.search);
+    return params.get('redirect') || 'index.html';
+  }
+
   function renderError(message) {
     if (!errorBox) {
       return;
@@ -50,7 +55,7 @@
 
     try {
       await loginUser({ email, password });
-      global.location.href = 'index.html';
+      global.location.href = getRedirectTarget();
     } catch (error) {
       renderError(error.message || 'Не удалось выполнить вход.');
     } finally {
@@ -59,7 +64,7 @@
   }
 
   if (isAuthenticated()) {
-    global.location.href = 'index.html';
+    global.location.href = getRedirectTarget();
     return;
   }
 

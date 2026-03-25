@@ -1,11 +1,15 @@
 (function (global) {
   const pageContainer = document.getElementById('eventDetailsPage');
 
-  if (!pageContainer || !global.KontramarkaEventsService) {
+  if (!pageContainer || !global.KontramarkaEventsService || !global.KontramarkaOrdersService) {
     return;
   }
 
   const { getEventById } = global.KontramarkaEventsService;
+  const { createOrder, updateEventTickets } = global.KontramarkaOrdersService;
+  let currentEvent = null;
+  let pageMessage = null;
+  let isPurchasing = false;
 
   function getEventIdFromQuery() {
     const params = new URLSearchParams(global.location.search);
@@ -49,16 +53,46 @@
     return `<span class="badge bg-body-tertiary border">Доступно: ${event.availableTickets}</span>`;
   }
 
+  function getLoginRedirectUrl() {
+    const returnUrl = `${global.location.pathname.split('/').pop()}${global.location.search}`;
+    return `login.html?redirect=${encodeURIComponent(returnUrl)}`;
+  }
+
+  function renderMessage() {
+    if (!pageMessage) {
+      return '';
+    }
+
+    return `
+      <div class="alert alert-${pageMessage.type} mb-4" role="alert">
+        ${pageMessage.text}
+      </div>
+    `;
+  }
+
+  function setPageMessage(type, text) {
+    if (!type || !text) {
+      pageMessage = null;
+      return;
+    }
+
+    pageMessage = {
+      type,
+      text
+    };
+  }
+
   function renderEvent(event) {
     const isSoldOut = event.availableTickets <= 0;
-    const buyButtonText = isSoldOut ? 'Билеты закончились' : 'Купить билет';
+    const buyButtonText = isSoldOut ? 'Билеты закончились' : (isPurchasing ? 'Оформляем...' : 'Купить билет');
     const buyButtonAttributes = isSoldOut
       ? 'class="btn btn-secondary" type="button" disabled'
-      : `class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#buyModal" data-buy="e${event.id}" data-title="${event.title}"`;
+      : `class="btn btn-primary" type="button" data-action="buy-ticket" data-buy="e${event.id}" data-title="${event.title}"${isPurchasing ? ' disabled' : ''}`;
 
     document.title = `Контрамарка — ${event.title}`;
 
     pageContainer.innerHTML = `
+      ${renderMessage()}
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-3">
           <li class="breadcrumb-item"><a href="index.html">События</a></li>
@@ -183,7 +217,7 @@
                 <div class="h5 mb-0 fw-semibold">от ${event.price.toLocaleString('ru-RU')} ₽</div>
               </div>
               <button ${buyButtonAttributes}>
-                ${isSoldOut ? 'Нет билетов' : 'Купить'}
+                ${isSoldOut ? 'Нет билетов' : (isPurchasing ? 'Оформляем...' : 'Купить')}
               </button>
             </div>
           </div>
@@ -198,6 +232,59 @@
     }
   }
 
+  async function handleBuyTicket() {
+    if (!currentEvent || isPurchasing) {
+      return;
+    }
+
+    if (currentEvent.availableTickets <= 0) {
+      setPageMessage('warning', 'Билеты на это мероприятие закончились.');
+      renderEvent(currentEvent);
+      return;
+    }
+
+    if (!global.KontramarkaAuth || !global.KontramarkaAuth.isAuthenticated()) {
+      global.location.href = getLoginRedirectUrl();
+      return;
+    }
+
+    isPurchasing = true;
+    setPageMessage(null, null);
+    renderEvent(currentEvent);
+
+    try {
+      const currentUser = global.KontramarkaAuth.getCurrentUser();
+
+      await createOrder({
+        userId: currentUser.id,
+        eventId: currentEvent.id,
+        quantity: 1,
+        totalPrice: currentEvent.price,
+        createdAt: new Date().toISOString(),
+        status: 'confirmed'
+      });
+
+      const updatedEvent = await updateEventTickets(currentEvent.id, currentEvent.availableTickets - 1);
+      currentEvent = updatedEvent;
+      setPageMessage('success', 'Покупка оформлена. Заказ создан, а билет добавлен в ваши покупки.');
+    } catch (error) {
+      setPageMessage('danger', 'Не удалось оформить покупку. Попробуйте ещё раз.');
+    } finally {
+      isPurchasing = false;
+      renderEvent(currentEvent);
+    }
+  }
+
+  pageContainer.addEventListener('click', (event) => {
+    const buyButton = event.target.closest('[data-action="buy-ticket"]');
+
+    if (!buyButton) {
+      return;
+    }
+
+    handleBuyTicket();
+  });
+
   async function initEventPage() {
     renderState('Загрузка мероприятия...', 'Получаем данные события из mock API.', 'text-secondary');
 
@@ -210,6 +297,7 @@
 
     try {
       const event = await getEventById(eventId);
+      currentEvent = event;
       renderEvent(event);
     } catch (error) {
       if (error.response && error.response.status === 404) {
