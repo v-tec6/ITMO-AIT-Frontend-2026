@@ -1,13 +1,16 @@
 (function () {
-  const buyButtons = document.querySelectorAll('[data-buy]');
   const buyEventName = document.getElementById('buyEventName');
   const buyConfirmButton = document.getElementById('buyConfirmButton');
 
-  buyButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const title = btn.getAttribute('data-title') || 'Мероприятие';
-      if (buyEventName) buyEventName.textContent = title;
-    });
+  document.addEventListener('click', (event) => {
+    const buyButton = event.target.closest('[data-buy]');
+
+    if (!buyButton || !buyEventName) {
+      return;
+    }
+
+    const title = buyButton.getAttribute('data-title') || 'Мероприятие';
+    buyEventName.textContent = title;
   });
 
   if (buyConfirmButton) {
