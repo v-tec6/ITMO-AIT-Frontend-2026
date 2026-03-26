@@ -21,10 +21,11 @@ document.getElementById('loginModal')?.addEventListener('shown.bs.modal', functi
 document.querySelectorAll('.toggle-password').forEach(btn => {
     btn.addEventListener('click', function() {
         const input = document.getElementById(this.dataset.target);
-        const icon = this.querySelector('i');
-        input.type = input.type === 'password' ? 'text' : 'password';
-        icon.classList.toggle('fa-eye');
-        icon.classList.toggle('fa-eye-slash');
+        const useIcon = this.querySelector('use');
+        const isPassword = input.type === 'password';
+
+        input.type = isPassword ? 'text' : 'password';
+        useIcon.setAttribute('href', isPassword ? '#icon-eye-slash' : '#icon-eye');
     });
 });
 
