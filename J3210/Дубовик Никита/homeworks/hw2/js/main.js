@@ -28,19 +28,30 @@ document.querySelectorAll('.toggle-password').forEach(btn => {
     });
 });
 
+function calculatePasswordScore(password) {
+    let score = 0;
+
+    if (password.length >= 6) {
+        score++;
+    }
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) {
+        score++;
+    }
+    if (/\d/.test(password)) {
+        score++;
+    }
+    if (/[^a-zA-Z\d]/.test(password)) {
+        score++;
+    }
+
+    return score;
+}
+
 document.getElementById('registerPassword')?.addEventListener('input', function() {
     const val = this.value;
     const bar = document.querySelector('.strength-bar');
     const text = document.querySelector('.strength-text');
-    let score = 0;
-    if (val.length >= 6)
-        score++;
-    if (val.match(/[a-z]/) && val.match(/[A-Z]/))
-        score++;
-    if (val.match(/\d/))
-        score++;
-    if (val.match(/[^a-zA-Z\d]/))
-        score++;
+    let score = calculatePasswordScore(val);
 
     const colors = ['#ff001a', '#ff7400', '#ffc107', '#389338'];
     const labels = ['Слабый', 'Средний', 'Хороший', 'Отличный'];
