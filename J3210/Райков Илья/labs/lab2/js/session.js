@@ -1,11 +1,11 @@
 export function initSession() {
     const navAuthButtons = document.getElementById("navAuthButtons");
     
-    const currentUserData = localStorage.getItem('edu_current_user');
-    const isLoggedIn = currentUserData !== null;
+    const token = localStorage.getItem('accessToken');
+    const isLoggedIn = !!token;
 
     if (isLoggedIn && navAuthButtons) {
-        const user = JSON.parse(currentUserData);
+        const user = JSON.parse(localStorage.getItem('user'));
         
         navAuthButtons.innerHTML = `
             <span class="text-light me-auto d-none d-md-inline">
@@ -19,7 +19,8 @@ export function initSession() {
             globalLogoutBtn.addEventListener("click", (e) => {
                 e.preventDefault();
                 if (confirm("Выйти из аккаунта?")) {
-                    localStorage.removeItem('edu_current_user');
+                    localStorage.removeItem('accessToken');
+                    localStorage.removeItem('user');
                     window.location.href = "index.html"; 
                 }
             });
@@ -39,6 +40,10 @@ export function initSession() {
 }
 
 export function getCurrentUser() {
-    const data = localStorage.getItem('edu_current_user');
-    return data ? JSON.parse(data) : null;
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
+}
+
+export function getAuthToken() {
+    return localStorage.getItem('accessToken');
 }

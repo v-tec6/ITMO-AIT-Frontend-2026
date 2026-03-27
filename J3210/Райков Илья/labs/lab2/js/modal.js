@@ -1,4 +1,4 @@
-import { getCurrentUser } from "./session.js";
+import { getCurrentUser, getAuthToken } from "./session.js";
 
 export function initModal() {
     const purchaseModalElement = document.getElementById("purchaseModal");
@@ -29,41 +29,64 @@ export function initModal() {
     });
 
     const confirmBtn = document.getElementById("confirmPurchaseBtn");
-    if (confirmBtn) {
-        confirmBtn.addEventListener("click", function () {
+    const newConfirmBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+    if (newConfirmBtn) {
+        newConfirmBtn.addEventListener("click", async function () {
             const user = getCurrentUser();
-            if (!user) {
+            const token = getAuthToken();
+
+            if (!user || !token) {
                 alert("Чтобы купить курс, необходимо войти в систему");
                 window.location.href = "login.html";
                 return;
             }
 
-            let allUsers = JSON.parse(localStorage.getItem("edu_users")) || [];
-            let userIdx = allUsers.findIndex(u => u.email === user.email);
-
-            if (userIdx !== -1) {
-                const alreadyBought = allUsers[userIdx].courses.some(c => c.title === currentSelectedCourse.title);
+            try {
+                const userRes = await fetch(`http://127.0.0.1:3000/users/${user.id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const userData = await userRes.json();
+                
+                const alreadyBought = userData.courses.some(c => c.title === currentSelectedCourse.title);
                 if (alreadyBought) {
                     alert("Вы уже приобрели этот курс");
                     purchaseModal.hide();
                     return;
                 }
 
-                allUsers[userIdx].courses.push(currentSelectedCourse);
-                localStorage.setItem("edu_users", JSON.stringify(allUsers));
-                localStorage.setItem("edu_current_user", JSON.stringify(allUsers[userIdx]));
+                userData.courses.push(currentSelectedCourse);
 
-                confirmBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Обработка платежа...';
-                confirmBtn.disabled = true;
+                newConfirmBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Обработка...';
+                newConfirmBtn.disabled = true;
 
-                setTimeout(() => {
-                    confirmBtn.innerHTML = 'Перейти к оплате';
-                    confirmBtn.disabled = false;
-                    purchaseModal.hide();
+                const updateRes = await fetch(`http://127.0.0.1:3000/users/${user.id}`, {
+                    method: 'PATCH',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` 
+                    },
+                    body: JSON.stringify({ courses: userData.courses })
+                });
+
+                if (updateRes.ok) {
+                    localStorage.setItem("user", JSON.stringify(await updateRes.json()));
                     
+                    purchaseModal.hide();
                     alert("Оплата прошла успешно! Курс добавлен в ваш Личный кабинет.");
                     window.location.href = "dashboard.html";
-                }, 1500);
+                } else {
+                    alert("Ошибка при сохранении курса.");
+                }
+
+            } catch (error) {
+                console.error("Ошибка:", error);
+                alert("Ошибка соединения с сервером");
+            } finally {
+                newConfirmBtn.innerHTML = 'Перейти к оплате';
+                newConfirmBtn.disabled = false;
             }
         });
     }

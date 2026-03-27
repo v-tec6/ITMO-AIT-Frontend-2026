@@ -1,17 +1,35 @@
-export function initDashboard() {
+import { getCurrentUser, getAuthToken } from "./session.js";
+
+export async function initDashboard() {
     if (!window.location.href.includes("dashboard")) return;
 
     const profileName = document.getElementById("profileName");
     if (!profileName) return;
 
-    const currentUserData = localStorage.getItem("edu_current_user");
-    if (!currentUserData) {
+    const localUser = getCurrentUser();
+    const token = getAuthToken();
+
+    if (!localUser || !token) {
         alert("Войдите в систему");
         window.location.href = "login.html";
         return;
     }
 
-    const user = JSON.parse(currentUserData)
+    let user;
+    try {
+        const response = await fetch(`http://127.0.0.1:3000/users/${localUser.id}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (!response.ok) throw new Error("Token expired");
+        
+        user = await response.json();
+        localStorage.setItem("user", JSON.stringify(user));
+    } catch (e) {
+        localStorage.clear();
+        window.location.href = "login.html";
+        return;
+    }
 
     const fullName = `${user.firstName} ${user.lastName}`;
     document.getElementById("profileName").textContent = fullName;
@@ -56,48 +74,60 @@ export function initDashboard() {
 
     const passwordForm = document.getElementById("changePasswordForm");
     if (passwordForm) {
-        passwordForm.addEventListener("submit", function(e) {
+        passwordForm.addEventListener("submit", async function(e) {
             e.preventDefault();
-            const oldPass = document.getElementById("oldPassword").value;
-            const newPass = document.getElementById("newPassword").value;
+            
+            const oldPassInput = document.getElementById("oldPassword").value;
+            const newPassInput = document.getElementById("newPassword").value;
+            const submitBtn = passwordForm.querySelector('button[type="submit"]');
 
-            if (oldPass !== user.password) {
-                alert("Неверный текущий пароль!");
+            if (oldPassInput === newPassInput) {
+                alert("Новый пароль не может совпадать со старым!");
                 return;
             }
 
-            let allUsers = JSON.parse(localStorage.getItem('edu_users')) || [];
-            let userIndex = allUsers.findIndex(u => u.email === user.email);
-            
-            if (userIndex !== -1) {
-                allUsers[userIndex].password = newPass;
-                localStorage.setItem('edu_users', JSON.stringify(allUsers));
-                
-                user.password = newPass;
-                localStorage.setItem('edu_current_user', JSON.stringify(user));
-                
-                alert("Пароль успешно изменен!");
-                passwordForm.reset();
-            }
-        });
-    }
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Проверка...';
 
-    const certsContainer = document.getElementById("certsContainer");
-    if (!user.certificates || user.certificates.length === 0) {
-        certsContainer.innerHTML = `
-            <div class="col-12 text-center py-5">
-                <p class="text-muted">У вас пока нет сертификатов. Пройдите курс до конца, чтобы получить его!</p>
-            </div>
-        `;
-    }
+            try {
+                const checkRes = await fetch('http://127.0.0.1:3000/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        email: user.email, 
+                        password: oldPassInput 
+                    })
+                });
 
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", function(event) {
-            event.preventDefault();
-            if (confirm("Вы уверены, что хотите выйти из аккаунта?")) {
-                localStorage.removeItem("edu_current_user");
-                window.location.href = "index.html";
+                if (!checkRes.ok) {
+                    alert("Текущий пароль введен неверно!");
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Сохранить изменения';
+                    return;
+                }
+
+                const patchRes = await fetch(`http://127.0.0.1:3000/users/${user.id}`, {
+                    method: 'PATCH',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ password: newPassInput })
+                });
+
+                if (patchRes.ok) {
+                    alert("Пароль успешно изменен!");
+                    passwordForm.reset();
+                } else {
+                    alert("Ошибка при сохранении нового пароля");
+                }
+
+            } catch (err) {
+                console.error(err);
+                alert("Ошибка связи с сервером");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Сохранить изменения';
             }
         });
     }

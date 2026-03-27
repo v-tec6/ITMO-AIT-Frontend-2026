@@ -1,10 +1,18 @@
-import { COURSES_DATA } from "./data.js";
 import { initModal } from "./modal.js";
 
-export function initFilters() {
+export async function initFilters() {
     const filterForm = document.getElementById("filterForm");
     const coursesContainer = document.querySelector(".col-lg-9 .row.g-4");
     if (!filterForm || !coursesContainer) return;
+
+    let COURSES_DATA = [];
+    try {
+        const response = await fetch('http://127.0.0.1:3000/courses');
+        COURSES_DATA = await response.json();
+    } catch (error) {
+        coursesContainer.innerHTML = `<div class="col-12 text-center text-danger py-5"><h4>Ошибка загрузки курсов сервера</h4></div>`;
+        return;
+    }
 
     const minPriceInput = document.getElementById("minPriceInput");
     const maxPriceInput = document.getElementById("maxPriceInput");
@@ -69,11 +77,8 @@ export function initFilters() {
         event.preventDefault();
         
         const searchText = document.getElementById("searchInput").value.toLowerCase();
-        
         const selectedCategories = Array.from(document.querySelectorAll('#categoryFilters input:checked')).map(cb => cb.value);
-        
         const selectedLevels = Array.from(document.querySelectorAll('input[id^="lvl-"]:checked')).map(cb => cb.value);
-        
         const minPrice = parseInt(minPriceInput.value);
         const maxPrice = parseInt(maxPriceInput.value);
 
@@ -94,6 +99,6 @@ export function initFilters() {
         minPriceInput.value = 0;
         maxPriceInput.value = 50000;
         updateSlider();
-        renderCourses(COURSES_DATA)
-    })
+        renderCourses(COURSES_DATA);
+    });
 }

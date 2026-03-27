@@ -3,69 +3,61 @@ export function initAuth() {
     handleLogin();
 }
 
-function getUsers() {
-    return JSON.parse(localStorage.getItem("edu_users")) || [];
-}
-
-function saveUser(user) {
-    const users = getUsers();
-    users.push(user);
-    localStorage.setItem("edu_users", JSON.stringify(users))
-}
-
 function handleRegistration() {
     const registerForm = document.getElementById("registerForm");
     if (!registerForm) return;
 
-    const firstNameInput = document.getElementById("regFirstName");
-    const lastNameInput = document.getElementById("regLastName");
-    const emailInput = document.getElementById("regEmail");
-    const passwordInput = document.getElementById("regPassword");
-    const confirmPasswordInput = document.getElementById("regPasswordConfirm");
-    const registerBtn = document.getElementById("registerBtn");
-
-    registerForm.addEventListener("submit", function (event) {
+    registerForm.addEventListener("submit", async function (event) {
         event.preventDefault();
+        
+        const passwordInput = document.getElementById("regPassword");
+        const confirmPasswordInput = document.getElementById("regPasswordConfirm");
+        confirmPasswordInput.setCustomValidity("");
 
         if (passwordInput.value !== confirmPasswordInput.value) {
             confirmPasswordInput.setCustomValidity("Пароли не совпадают");
-        } else {
-            confirmPasswordInput.setCustomValidity("");
-        }
-
-        const users = getUsers();
-        if (users.some(u => u.email === emailInput.value)) {
-            emailInput.setCustomValidity("Email уже занят");
-        } else {
-            emailInput.setCustomValidity("");
         }
 
         registerForm.classList.add("was-validated");
 
         if (registerForm.checkValidity()) {
-            const originalText = registerBtn.innerHTML;
-            registerBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Регистрация...';
+            const registerBtn = document.getElementById("registerBtn");
             registerBtn.disabled = true;
+            registerBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
 
-            saveUser({
-                firstName: firstNameInput.value,
-                lastName: lastNameInput.value,
-                email: emailInput.value,
+            const userData = {
+                firstName: document.getElementById("regFirstName").value,
+                lastName: document.getElementById("regLastName").value,
+                email: document.getElementById("regEmail").value,
                 password: passwordInput.value,
                 courses: [],
                 certificates: []
-            });
+            };
 
-            registerBtn.innerHTML = originalText;
-            registerBtn.disabled = false;
+            try {
+                const response = await fetch('http://127.0.0.1:3000/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
 
-            alert("Успешно! Теперь вы можете войти");
-            window.location.href = "login.html";
+                if (response.ok) {
+                    window.location.href = "login.html"; 
+                    alert("Регистрация успешна!");
+                } else {
+                    const errorData = await response.json();
+                    alert("Ошибка: " + (errorData || "Email уже занят"));
+                }
+            } catch (error) {
+                alert("Нет связи с сервером");
+            } finally {
+                registerBtn.disabled = false;
+                registerBtn.innerHTML = 'Зарегистрироваться';
+            }
         }
     });
 
-    confirmPasswordInput.addEventListener("input", () => confirmPasswordInput.setCustomValidity(""));
-    emailInput.addEventListener("input", () => emailInput.setCustomValidity(""));
+    document.getElementById("regPasswordConfirm").addEventListener("input", function() { this.setCustomValidity(""); });
 }
 
 function handleLogin() {
@@ -76,35 +68,50 @@ function handleLogin() {
     const passwordInput = document.getElementById("loginPassword");
     const loginBtn = document.getElementById("loginBtn");
 
-    loginForm.addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        emailInput.setCustomValidity("");
+    passwordInput.addEventListener("input", () => {
         passwordInput.setCustomValidity("");
-
-        loginForm.classList.add("was-validated")
-
-        if (loginForm.checkValidity()) {
-            const originalText = loginBtn.innerHTML;
-            loginBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Проверка...';
-            loginBtn.disabled = true;
-
-            const users = getUsers();
-            const foundUser = users.find(u => u.email === emailInput.value && u.password === passwordInput.value);
-
-            if (foundUser) {
-                localStorage.setItem("edu_current_user", JSON.stringify(foundUser));
-                window.location.href = "dashboard.html";
-            } else {
-                loginBtn.innerHTML = originalText;
-                loginBtn.disabled = false;
-
-                passwordInput.setCustomValidity("Неверный email или пароль")
-                loginForm.reportValidity();
-            }
-        }
+        loginForm.classList.remove("was-validated");
     });
 
-    emailInput.addEventListener("input", () => passwordInput.setCustomValidity(""));
-    passwordInput.addEventListener("input", () => passwordInput.setCustomValidity(""));
+    loginForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        
+        passwordInput.setCustomValidity("");
+
+        if (!loginForm.checkValidity()) {
+            loginForm.classList.add("was-validated");
+            return;
+        }
+
+        loginBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+        loginBtn.disabled = true;
+
+        try {
+            const response = await fetch('http://127.0.0.1:3000/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: emailInput.value,
+                    password: passwordInput.value
+                })
+            });
+
+            if (response.ok) {
+                const { accessToken, user } = await response.json();
+                user.password = passwordInput.value; 
+                localStorage.setItem("accessToken", accessToken);
+                localStorage.setItem("user", JSON.stringify(user));
+                window.location.href = "dashboard.html";
+            } else {
+                passwordInput.setCustomValidity("Неверный пароль");
+                loginForm.classList.add("was-validated");
+                loginForm.reportValidity(); 
+            }
+        } catch (error) {
+            alert("Ошибка сети");
+        } finally {
+            loginBtn.innerHTML = 'Войти';
+            loginBtn.disabled = false;
+        }
+    });
 }
