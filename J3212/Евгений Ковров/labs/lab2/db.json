@@ -1,5 +1,11 @@
 {
   "users": [
+    {
+      "name": "123 456",
+      "email": "qwe@rty.com",
+      "password": "qwerty123",
+      "id": "8fAOn_ZAQb4"
+    }
   ],
   "events": [
     {
@@ -13,7 +19,7 @@
       "price": 1200,
       "image": "assets/img/events/jazz.jpg",
       "category": "Концерт",
-      "availableTickets": 44
+      "availableTickets": 43
     },
     {
       "id": "2",
@@ -121,6 +127,15 @@
     }
   ],
   "orders": [
+    {
+      "userId": "8fAOn_ZAQb4",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1200,
+      "createdAt": "2026-03-27T09:39:03.553Z",
+      "status": "confirmed",
+      "id": "P2PAu_nhBbc"
+    }
   ],
   "$schema": "./node_modules/json-server/schema.json"
 }

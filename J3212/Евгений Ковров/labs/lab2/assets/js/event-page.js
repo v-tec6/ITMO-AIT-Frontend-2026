@@ -10,6 +10,7 @@
   let currentEvent = null;
   let pageMessage = null;
   let isPurchasing = false;
+  let pageMessageTimeoutId = null;
 
   function getEventIdFromQuery() {
     const params = new URLSearchParams(global.location.search);
@@ -71,6 +72,11 @@
   }
 
   function setPageMessage(type, text) {
+    if (pageMessageTimeoutId) {
+      global.clearTimeout(pageMessageTimeoutId);
+      pageMessageTimeoutId = null;
+    }
+
     if (!type || !text) {
       pageMessage = null;
       return;
@@ -80,6 +86,21 @@
       type,
       text
     };
+  }
+
+  function scheduleMessageClear(delay = 2800) {
+    if (pageMessageTimeoutId) {
+      global.clearTimeout(pageMessageTimeoutId);
+    }
+
+    pageMessageTimeoutId = global.setTimeout(() => {
+      pageMessage = null;
+      pageMessageTimeoutId = null;
+
+      if (currentEvent && !isPurchasing) {
+        renderEvent(currentEvent);
+      }
+    }, delay);
   }
 
   function renderEvent(event) {
@@ -267,6 +288,7 @@
       const updatedEvent = await updateEventTickets(currentEvent.id, currentEvent.availableTickets - 1);
       currentEvent = updatedEvent;
       setPageMessage('success', 'Покупка оформлена. Заказ создан, а билет добавлен в ваши покупки.');
+      scheduleMessageClear();
     } catch (error) {
       console.error('Ticket purchase failed.', error);
       setPageMessage('danger', 'Не удалось оформить билет. Попробуйте ещё раз.');
