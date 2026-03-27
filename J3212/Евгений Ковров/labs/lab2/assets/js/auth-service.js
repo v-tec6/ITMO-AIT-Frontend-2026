@@ -29,6 +29,12 @@
     return error.message || fallbackMessage;
   }
 
+  function createAuthError(code, message) {
+    const error = new Error(message);
+    error.code = code;
+    return error;
+  }
+
   async function registerUser({ name, email, password }) {
     const normalizedEmail = email.trim().toLowerCase();
     const existingUsersResponse = await apiClient.get('/users', {
@@ -38,7 +44,7 @@
     });
 
     if (existingUsersResponse.data.length > 0) {
-      throw new Error('Пользователь с таким email уже существует.');
+      throw createAuthError('EMAIL_EXISTS', 'Пользователь с таким email уже существует.');
     }
 
     const createUserResponse = await apiClient.post('/users', {
@@ -62,7 +68,7 @@
     const user = response.data[0];
 
     if (!user) {
-      throw new Error('Неверный email или пароль.');
+      throw createAuthError('INVALID_CREDENTIALS', 'Неверный email или пароль.');
     }
 
     return saveCurrentUser(user);

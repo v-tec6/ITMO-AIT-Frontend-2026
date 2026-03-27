@@ -58,6 +58,12 @@
       global.location.href = getRedirectTarget();
     } catch (error) {
       console.error('Login failed.', error);
+
+       if (error.code === 'INVALID_CREDENTIALS') {
+        renderError('Неверная электронная почта или пароль.');
+        return;
+      }
+
       renderError(getAuthErrorMessage(error, 'Не удалось выполнить вход. Проверьте введённые данные.'));
     } finally {
       setSubmittingState(false);

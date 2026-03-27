@@ -91,6 +91,12 @@
       global.location.href = 'index.html';
     } catch (error) {
       console.error('Registration failed.', error);
+
+      if (error.code === 'EMAIL_EXISTS') {
+        renderError('Пользователь с такой электронной почтой уже существует.');
+        return;
+      }
+
       renderError(getAuthErrorMessage(error, 'Не удалось зарегистрироваться. Проверьте введённые данные.'));
     } finally {
       setSubmittingState(false);
