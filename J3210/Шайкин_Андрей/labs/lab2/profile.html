@@ -15,20 +15,19 @@
         <div class="container-fluid">
             <a class="navbar-brand fw-bold text-white fs-4" href="index.html">🌌 NexusEdu</a>
             <div class="d-flex gap-3 align-items-center">
-                <span class="text-white d-none d-md-inline">Привет, Андрей!</span>
-                <a href="auth.html" class="btn btn-sm btn-outline-light rounded-pill">Выйти</a>
+                <span class="text-white d-none d-md-inline">Привет, <span class="user-name-display">Андрей</span>!</span>
+                <button onclick="logout()" class="btn btn-sm btn-outline-light rounded-pill">Выйти</button>
             </div>
         </div>
     </nav>
 
     <div class="container mt-5 mb-5">
         <div class="row g-4">
-            
             <aside class="col-lg-4">
                 <div class="glass p-4 text-center">
                     <div class="rounded-circle mx-auto mb-3 default-avatar" style="width:120px; height:120px; font-size: 3rem;">👤</div>
-                    <h4 class="fw-bold">Андрей Шайкин</h4>
-                    <p class="text-white-50 mb-4">student@itmo.ru</p>
+                    <h4 class="fw-bold user-name-display">Загрузка...</h4>
+                    <p class="text-white-50 mb-4 user-email-display"></p>
                     <div class="d-flex justify-content-center gap-4 text-start border-top border-secondary border-opacity-25 pt-4">
                         <div class="text-center">
                             <span class="d-block text-white-50 small">Курсов</span>
@@ -43,6 +42,8 @@
             </aside>
 
             <main class="col-lg-8">
+                <div id="externalApiContainer"></div>
+
                 <div class="glass p-4">
                     <ul class="nav nav-pills mb-4 border-bottom border-secondary border-opacity-25 pb-3" id="roleTabs">
                         <li class="nav-item">

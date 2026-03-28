@@ -1,4 +1,5 @@
 const API_URL = "http://localhost:3000";
+let allCourses = []; 
 
 function getAuthToken() { return localStorage.accessToken; }
 
@@ -17,45 +18,135 @@ function logout() {
 
 async function register(event) {
     event.preventDefault();
-    const formData = new FormData(event.target);
-    const registerData = {};
-    formData.forEach((value, key) => registerData[key] = value);
-
+    const data = Object.fromEntries(new FormData(event.target));
     try {
-        const response = await fetch(`${API_URL}/register`, {
-            method: "POST",
-            body: JSON.stringify(registerData),
-            headers: { 'Content-Type': 'application/json' }
+        const res = await fetch(`${API_URL}/register`, {
+            method: "POST", body: JSON.stringify(data), headers: { 'Content-Type': 'application/json' }
         });
-        if (!response.ok) { alert(await response.json()); return; }
-        const data = await response.json();
-        localStorage.accessToken = data.accessToken;
-        localStorage.user = JSON.stringify(data.user);
+        if (!res.ok) { alert(await res.json()); return; }
+        const result = await res.json();
+        localStorage.accessToken = result.accessToken;
+        localStorage.user = JSON.stringify(result.user);
         window.location.href = "profile.html";
     } catch (e) { console.error(e); }
 }
 
 async function login(event) {
     event.preventDefault();
-    const formData = new FormData(event.target);
-    const loginData = {};
-    formData.forEach((value, key) => loginData[key] = value);
-
+    const data = Object.fromEntries(new FormData(event.target));
     try {
-        const response = await fetch(`${API_URL}/login`, {
-            method: "POST",
-            body: JSON.stringify(loginData),
-            headers: { 'Content-Type': 'application/json' }
+        const res = await fetch(`${API_URL}/login`, {
+            method: "POST", body: JSON.stringify(data), headers: { 'Content-Type': 'application/json' }
         });
-        if (!response.ok) { alert("Неверный логин или пароль"); return; }
-        const data = await response.json();
-        localStorage.accessToken = data.accessToken;
-        localStorage.user = JSON.stringify(data.user);
+        if (!res.ok) { alert("Ошибка входа"); return; }
+        const result = await res.json();
+        localStorage.accessToken = result.accessToken;
+        localStorage.user = JSON.stringify(result.user);
         window.location.href = "profile.html";
     } catch (e) { console.error(e); }
+}
+
+async function fetchAdviceQuote() {
+    const container = document.getElementById('externalApiContainer');
+    if (!container) return;
+    try {
+        const response = await fetch('https://api.adviceslip.com/advice');
+        const data = await response.json();
+        container.innerHTML = `<div class="glass p-3 mb-4 border-info border-opacity-25"><small class="text-info d-block mb-1">Совет дня (Внешнее API):</small><span class="fst-italic text-white">"${data.slip.advice}"</span></div>`;
+    } catch (e) { console.error(e); }
+}
+
+function renderCourses(courses) {
+    const container = document.querySelector("#coursesContainer");
+    if (!container) return;
+    
+    container.innerHTML = "";
+    if (courses.length === 0) {
+        container.innerHTML = '<div class="col-12"><h5 class="text-white-50 text-center mt-5">По вашему запросу ничего не найдено</h5></div>';
+        return;
+    }
+
+    courses.forEach((course) => {
+        const cardHTML = `
+        <div class="col-md-6 col-xl-4 d-flex mb-4">
+            <div class="glass glass-hover w-100 d-flex flex-column">
+                <img src="${course.image}" class="glass-img-top w-100" style="height: 180px;" alt="Course">
+                <div class="p-4 d-flex flex-column flex-grow-1">
+                    <span class="badge ${course.badge} bg-opacity-25 rounded-pill mb-3 border border-opacity-25 d-inline-block" style="width: fit-content;">
+                        ${course.category} • ${course.level}
+                    </span>
+                    <h5 class="fw-bold text-white fs-5">${course.title}</h5>
+                    <p class="text-white-50 small flex-grow-1">${course.desc}</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-secondary border-opacity-25">
+                        <span class="fw-bold text-white fs-5">${course.price.toLocaleString('ru-RU')} ₽</span>
+                        <a href="course.html" class="btn btn-sm glass-btn px-3 py-2">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        container.insertAdjacentHTML('beforeend', cardHTML);
+    });
+}
+
+async function fetchAndRenderCourses() {
+    try {
+        const headers = { 'Content-Type': 'application/json' };
+        if (getAuthToken()) headers['Authorization'] = `Bearer ${getAuthToken()}`;
+        const res = await fetch(`${API_URL}/courses`, { headers });
+        allCourses = await res.json();
+        renderCourses(allCourses);
+    } catch (e) {
+        document.querySelector("#coursesContainer").innerHTML = '<h5 class="text-danger text-center mt-5">Сервер недоступен</h5>';
+    }
+}
+
+function applyFilters(event) {
+    if (event) event.preventDefault();
+    
+    const searchTxt = document.getElementById('searchCourse').value.toLowerCase();
+    const categoryVal = document.getElementById('categoryFilter').value;
+    const maxPrice = Number(document.getElementById('priceRange').value);
+    
+    const checkedLevels = [];
+    if (document.getElementById('lvl1').checked) checkedLevels.push('Junior');
+    if (document.getElementById('lvl2').checked) checkedLevels.push('Middle');
+    if (document.getElementById('lvl3').checked) checkedLevels.push('Senior');
+
+    const filtered = allCourses.filter(course => {
+        const matchSearch = course.title.toLowerCase().includes(searchTxt) || course.desc.toLowerCase().includes(searchTxt);
+        const matchCat = categoryVal === "" || course.category === categoryVal;
+        const matchPrice = course.price <= maxPrice;
+        const matchLvl = checkedLevels.length === 0 || checkedLevels.includes(course.level);
+        
+        return matchSearch && matchCat && matchPrice && matchLvl;
+    });
+
+    renderCourses(filtered);
+}
+
+function search(event) {
+    applyFilters(event);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
     const isProfile = window.location.pathname.includes('profile.html');
     checkAuth(isProfile);
+
+    if (isProfile && localStorage.user) {
+        const user = JSON.parse(localStorage.user);
+        document.querySelectorAll('.user-name-display').forEach(el => el.textContent = user.firstName + ' ' + user.lastName);
+        document.querySelectorAll('.user-email-display').forEach(el => el.textContent = user.email);
+        fetchAdviceQuote(); 
+    }
+
+    if (document.getElementById('coursesContainer')) {
+        fetchAndRenderCourses(); 
+        
+        const priceRange = document.getElementById('priceRange');
+        if (priceRange) {
+            priceRange.addEventListener('input', (e) => {
+                document.getElementById('priceValue').textContent = `До ${Number(e.target.value).toLocaleString('ru-RU')} ₽`;
+            });
+        }
+    }
 });
