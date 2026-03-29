@@ -22,7 +22,7 @@
             </h2>
             <h4 class="text-center mb-3 text-custom">Finance assistance</h4>
             <h5 class="text-center mb-3">Регистрация аккаунта</h5>
-            <form action="dash.html">
+            <form id="regForm" action="dash.html">
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="floatingName" placeholder="Иван Иванов" required>
                     <label for="floatingName">Ваше имя</label>
@@ -55,4 +55,52 @@
 </main>
 
 </body>
+<script>
+    document.getElementById('regForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const name = document.getElementById('floatingName').value;
+        const email = document.getElementById('floatingEmail').value;
+        const password = document.getElementById('floatingPassword').value;
+        const confPassword = document.getElementById('floatingPasswordConfirm').value;
+
+        if (password !== confPassword) {
+            alert('Пароли не совпадают!');
+            return;
+        }
+
+        if (length(password) < 8) {
+            alert('Пароль должен содержать 8 символов, хотя бы одну букву и цифру')
+        }
+
+        const hasLetter = /[a-zA-Zа-яА-Я]/.test(password);
+        const hasNumber = /[0-9]/.test(password);
+
+        if (!hasLetter || !hasNumber) {
+            alert('Ошибка: Пароль должен содержать как минимум одну букву и одну цифру!');
+            return;
+        }
+
+        const checkRes = await fetch(`http://localhost:3000/users?email=${email}`);
+        const existingUsers = await checkRes.json();
+
+        if (existingUsers.length > 0) {
+            alert('Пользователь с таким email уже существует!');
+            return;
+        }
+
+        const newUser = { name, email, password };
+
+        const res = await fetch('http://localhost:3000/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newUser)
+        });
+
+        if (res.ok) {
+            alert('Регистрация успешна! Теперь войдите в систему.');
+            window.location.href = 'login.html';
+        }
+    });
+</script>
 </html>

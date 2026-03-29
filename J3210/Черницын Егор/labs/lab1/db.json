@@ -1,0 +1,50 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "email": "user@mail.ru",
+      "password": "ivan1234",
+      "name": "Иван"
+    },
+    {
+      "name": "Арег",
+      "email": "abc@mail.ru",
+      "password": "bebra2228",
+      "id": "JQs5mvfzbpg"
+    }
+  ],
+  "accounts": [
+    {
+      "id": "1",
+      "userId": 1,
+      "name": "Дебетовая карта T-Bank",
+      "balance": 45200,
+      "currency": "₽"
+    },
+    {
+      "id": "2",
+      "userId": 1,
+      "name": "Накопительный",
+      "balance": 80000,
+      "currency": "₽"
+    },
+    {
+      "id": "3",
+      "userId": 1,
+      "name": "Наличные",
+      "balance": 20000,
+      "currency": "₽"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "1",
+      "accountId": 1,
+      "userId": 1,
+      "type": "expense",
+      "amount": 1500,
+      "category": "Продукты"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

@@ -21,16 +21,17 @@
                 <img style="transform: translateY(-4px);" src="imgs/2.png" alt="Логотип MFF" width="35">
             </h2>
             <h5 class="text-center mb-3">Вход в систему</h5>
-            <form action="dash.html">
+
+            <form id="loginForm" action="dash.html">
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" required>
-                    <label for="floatingInput">Email адрес</label>
+                    <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" required>
+                    <label for="floatingEmail">Email адрес</label>
                 </div>
                 <div class="form-floating mb-3">
                     <input type="password" class="form-control" id="floatingPassword" placeholder="Password" required>
                     <label for="floatingPassword">Пароль</label>
                 </div>
-                <button class="btn btn-custom w-100 py-2 mb-3" type="submit">Войти</button>
+                <button type="submit" class="btn btn-custom w-100 py-2 mb-3">Войти</button>
                 <div class="text-center text-custom">
                     <span class="text-muted">Нет аккаунта?</span>
                     <a href="reg.html" class="text-decoration-none text-custom fw-bold">Зарегистрироваться</a>
@@ -41,4 +42,34 @@
 </main>
 
 </body>
+<script>
+    const loginForm = document.getElementById('loginForm');
+
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const email = document.getElementById('floatingEmail').value;
+        const password = document.getElementById('floatingPassword').value;
+
+        try {
+            const response = await fetch(`http://localhost:3000/users?email=${email}&password=${password}`);
+            console.log(`http://localhost:3000/users?email=${email}&password=${password}`)
+            const users = await response.json();
+
+            if (users.length > 0) {
+                const user = users[0];
+                localStorage.setItem('mff_user_id', user.id);
+                localStorage.setItem('mff_user_name', user.name);
+
+                alert(`Добро пожаловать, ${user.name}!`);
+                window.location.href = 'dash.html';
+            } else {
+                alert('Неверный email или пароль!');
+            }
+        } catch (error) {
+            console.error('Ошибка при подключении к серверу:', error);
+            alert('Ошибка сервера. Проверьте, запущен ли json-server.');
+        }
+    });
+</script>
 </html>
