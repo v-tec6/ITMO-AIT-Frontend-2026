@@ -12,9 +12,9 @@
 <nav class="navbar navbar-expand-lg shadow-sm bg-white">
   <div class="container">
     <a class="navbar-brand text-custom fw-bold d-flex align-items-center gap-2" href="dash.html">
-      <img style="transform: translateY(-2px);"  src="imgs/1.png" alt="Логотип MFF" width="35">
-      <span class="fs-3 fw-bolder" >MFF</span>
-      <img style="transform: translateY(-2px);" src="imgs/2.png" alt="Логотип MFF" width="35">
+      <img class="nav-logo" src="imgs/1.png" alt="Логотип MFF" width="35">
+      <span class="fs-3 fw-bolder">MFF</span>
+      <img class="nav-logo" src="imgs/2.png" alt="Логотип MFF" width="35">
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
@@ -42,40 +42,33 @@
 
   <div class="card shadow-sm border-0 rounded-4 mb-4">
     <div class="card-body">
-      <form class="row g-3">
+      <form id="filterForm" class="row g-3">
         <div class="col-md-2">
           <label class="form-label text-muted small mb-1">Поиск</label>
-          <input type="text" class="form-control" placeholder="Ключевые слова...">
+          <input id="searchInput" type="text" class="form-control" placeholder="Ключевые слова...">
         </div>
         <div class="col-md-2">
           <label class="form-label text-muted small mb-1">Категория</label>
-          <select class="form-select">
-            <option selected>Все категории</option>
-            <option>Продукты</option>
-            <option>Транспорт</option>
-            <option>Сервисы</option>
-            <option>Переводы</option>
+          <select class="form-select" id="categoryFilter">
+            <option value="all">Все категории</option>
           </select>
         </div>
         <div class="col-md-2">
           <label class="form-label text-muted small mb-1">От даты</label>
-          <input type="date" class="form-control">
+          <input id="dateFrom" type="date" class="form-control">
         </div>
         <div class="col-md-2">
           <label class="form-label text-muted small mb-1">До даты</label>
-          <input type="date" class="form-control">
+          <input id="dateTo" type="date" class="form-control">
         </div>
         <div class="col-md-2">
           <label class="form-label text-muted small mb-1">Счёт</label>
-          <select class="form-select">
-            <option selected>Все счета</option>
-            <option>*4567</option>
-            <option>Накопительный счёт</option>
-            <option>Наличные</option>
+          <select class="form-select" id="accountFilter">
+            <option value="all">Все счета</option>
           </select>
         </div>
         <div class="col-md-2 d-flex align-items-end">
-          <button type="submit" class="btn btn-secondary w-100">Применить</button>
+          <button id="applyFilterBtn" type="submit" class="btn btn-secondary w-100">Применить</button>
         </div>
       </form>
     </div>
@@ -83,81 +76,19 @@
 
   <div class="card shadow-sm border-0 rounded-4">
     <div class="card-body p-0">
-      <div class="table-responsive">
+      <div class="table-responsive table-scroll-container">
         <table class="table table-hover align-middle mb-0">
-          <thead class="table-light">
+          <thead class="table-light sticky-table-header">
           <tr>
             <th class="ps-4 py-3">Дата</th>
             <th class="py-3">Описание</th>
             <th class="py-3">Счет</th>
             <th class="py-3">Категория</th>
-            <th class="text-end pe-4 py-3">Сумма</th>
+            <th class="pe-4 py-3">Сумма</th>
           </tr>
           </thead>
-          <tbody>
-          <tr>
-            <td class="ps-4 text-muted">15.03.2026</td>
-            <td class="fw-bold">Яндекс.Пей</td>
-            <td>Карта *4567</td>
-            <td><span class="badge bg-secondary rounded-pill">Сервисы</span></td>
-            <td class="text-danger text-end pe-4 fw-bold">- 990 ₽</td>
-          </tr>
-          <tr>
-            <td class="ps-4 text-muted">14.03.2026</td>
-            <td class="fw-bold">Зарплата</td>
-            <td>Счет ЗП</td>
-            <td><span class="badge bg-success rounded-pill">Перевод</span></td>
-            <td class="text-success text-end pe-4 fw-bold">+ 255,000 ₽</td>
-          </tr>
-          <tr>
-            <td class="ps-4 text-muted">14.03.2026</td>
-            <td class="fw-bold">Яндекс.Пей</td>
-            <td>Карта *4567</td>
-            <td><span class="badge bg-secondary rounded-pill">Сервисы</span></td>
-            <td class="text-danger text-end pe-4 fw-bold">- 990 ₽</td>
-          </tr>
-          <tr>
-            <td class="ps-4 text-muted">15.03.2026</td>
-            <td class="fw-bold">Пятерочка</td>
-            <td>Карта *4567</td>
-            <td><span class="badge bg-secondary rounded-pill">Продукты</span></td>
-            <td class="text-danger text-end pe-4 fw-bold">- 1,200 ₽</td>
-          </tr>
-          <tr>
-            <td class="ps-4 text-muted">13.03.2026</td>
-            <td class="fw-bold">Такси</td>
-            <td>Карта *4567</td>
-            <td><span class="badge bg-secondary rounded-pill">Транспорт</span></td>
-            <td class="text-danger text-end pe-4 fw-bold">- 450 ₽</td>
-          </tr>
-          <tr>
-            <td class="ps-4 text-muted">12.03.2026</td>
-            <td class="fw-bold">Яндекс.Пей</td>
-            <td>Карта *4567</td>
-            <td><span class="badge bg-secondary rounded-pill">Сервисы</span></td>
-            <td class="text-danger text-end pe-4 fw-bold">- 990 ₽</td>
-          </tr>
-          <tr>
-            <td class="ps-4 text-muted">12.03.2026</td>
-            <td class="fw-bold">Лента</td>
-            <td>Карта *4567</td>
-            <td><span class="badge bg-secondary rounded-pill">Продукты</span></td>
-            <td class="text-danger text-end pe-4 fw-bold">- 1400 ₽</td>
-          </tr>
-          <tr>
-            <td class="ps-4 text-muted">11.03.2026</td>
-            <td class="fw-bold">Бабушка</td>
-            <td>Карта *4567</td>
-            <td><span class="badge bg-success rounded-pill">Перевод</span></td>
-            <td class="text-success text-end pe-4 fw-bold">+ 2000 ₽</td>
-          </tr>
-          <tr>
-            <td class="ps-4 text-muted">11.03.2026</td>
-            <td class="fw-bold">Яндекс.Пей</td>
-            <td>Карта *4567</td>
-            <td><span class="badge bg-success rounded-pill">Кэшбек</span></td>
-            <td class="text-success text-end pe-4 fw-bold">+ 1000 ₽</td>
-          </tr>
+          <tbody id="transTable">
+
           </tbody>
         </table>
       </div>
@@ -170,50 +101,49 @@
     <div class="modal-content rounded-4 border-0 shadow-lg">
 
       <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
-        <h5 class="modal-title fw-bold" style="color: #333333;">Новая транзакция</h5>
+        <h5 class="modal-title fw-bold text-dark-custom">Новая транзакция</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
       </div>
 
       <div class="modal-body p-4">
-        <form>
+        <form id="addTransactionForm">
           <div class="mb-3">
-            <label class="form-label text-muted small fw-bold text-uppercase mb-1" style="letter-spacing: 1px;">Название</label>
-            <input type="text" class="form-control bg-light border-0" placeholder="Например: поход в вольчек">
+            <label class="form-label text-muted small fw-bold text-uppercase mb-1 letter-spacing-1">Описание</label>
+            <input type="text" id="newTransDesc" class="form-control bg-light border-0" placeholder="Например: поход в вольчек" required>
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-6">
+              <label class="form-label text-muted small fw-bold text-uppercase mb-1 letter-spacing-1">Категория</label>
+              <input type="text" id="newTransCategory" list="categoryList" class="form-control bg-light border-0" placeholder="Выберите или введите..." autocomplete="off" required>
+              <datalist id="categoryList"></datalist>
+            </div>
+            <div class="col-6">
+              <label class="form-label text-muted small fw-bold text-uppercase mb-1 letter-spacing-1">Дата</label>
+              <input type="date" id="newTransDate" class="form-control bg-light border-0" required>
+            </div>
           </div>
 
           <div class="mb-3">
-            <label class="form-label text-muted small fw-bold text-uppercase mb-1" style="letter-spacing: 1px;">Счёт списания</label>
-            <select class="form-select bg-light border-0">
-              <option>*4567</option>
-              <option>Накопительный счет T-bank</option>
-              <option>Наличные</option>
+            <label class="form-label text-muted small fw-bold text-uppercase mb-1 letter-spacing-1">Счёт</label>
+            <select id="newTransAccount" class="form-select bg-light border-0" required>
             </select>
           </div>
 
           <div class="mb-3">
-            <label class="form-label text-muted small fw-bold text-uppercase mb-1" style="letter-spacing: 1px;">Операция</label>
-            <select class="form-select bg-light border-0">
-              <option>Доход</option>
-              <option>Списание</option>
+            <label class="form-label text-muted small fw-bold text-uppercase mb-1 letter-spacing-1">Операция</label>
+            <select id="newTransType" class="form-select bg-light border-0" required>
+              <option value="expense">Расход</option>
+              <option value="income">Доход</option>
             </select>
           </div>
 
-          <div class="row g-2 mb-4">
-            <div class="col-8">
-              <label class="form-label text-muted small fw-bold text-uppercase mb-1" style="letter-spacing: 1px;">Сумма</label>
-              <input type="number" class="form-control form-control-lg bg-light border-0" placeholder="0.00">
-            </div>
-            <div class="col-4">
-              <label class="form-label text-muted small fw-bold text-uppercase mb-1" style="letter-spacing: 1px;">Валюта</label>
-              <select class="form-select bg-light border-0">
-                <option>₽ RUB</option>
-                <option>$ USD</option>
-                <option>€ EUR</option>
-              </select>
-            </div>
+          <div class="mb-4">
+            <label class="form-label text-muted small fw-bold text-uppercase mb-1 letter-spacing-1">Сумма (₽)</label>
+            <input type="number" id="newTransAmount" class="form-control form-control-lg bg-light border-0" placeholder="0.00" required>
           </div>
 
-          <button type="button" class="btn btn-custom w-100 py-3 rounded-pill fw-bold" data-bs-dismiss="modal">
+          <button type="submit" class="btn btn-custom w-100 py-3 mb-3">
             Сохранить транзакцию
           </button>
         </form>
@@ -225,4 +155,202 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+<script>
+  const userId = localStorage.getItem('mff_user_id');
+  let allTransactions = [];
+  let accountMap = {};
+  let allAccounts = [];
+
+  async function loadTransactions() {
+    try {
+      const [transRes, accRes] = await Promise.all([
+        fetch(`http://localhost:3000/transactions?userId=${userId}`),
+        fetch(`http://localhost:3000/accounts?userId=${userId}`)
+      ]);
+
+      allTransactions = await transRes.json();
+
+      allTransactions.reverse();
+      allTransactions.sort((a, b) => {
+        return new Date(b.date) - new Date(a.date);
+      });
+
+      const uniqueCategories = [...new Set(allTransactions.map(t => t.category))].filter(Boolean);
+
+      const filterSelect = document.getElementById('categoryFilter');
+      if (filterSelect) {
+        filterSelect.innerHTML = '<option value="all">Все категории</option>';
+        uniqueCategories.forEach(cat => {
+          filterSelect.innerHTML += `<option value="${cat}">${cat}</option>`;
+        });
+      }
+
+      const datalist = document.getElementById('categoryList');
+      if (datalist) {
+        datalist.innerHTML = '';
+        uniqueCategories.forEach(cat => {
+          datalist.innerHTML += `<option value="${cat}">`;
+        });
+      }
+
+      allAccounts = await accRes.json();
+
+      allAccounts.forEach(acc => { accountMap[acc.id] = acc.name; });
+
+      const accSelect = document.getElementById('accountFilter');
+      if (accSelect) {
+        accSelect.innerHTML = '<option value="all">Все счета</option>';
+        allAccounts.forEach(acc => {
+          accSelect.innerHTML += `<option value="${acc.id}">${acc.name}</option>`;
+        });
+      }
+
+      const newTransAccSelect = document.getElementById('newTransAccount');
+      if (newTransAccSelect) {
+        newTransAccSelect.innerHTML = '';
+        allAccounts.forEach(acc => {
+          newTransAccSelect.innerHTML += `<option value="${acc.id}">${acc.name} (${acc.balance} ₽)</option>`;
+        });
+      }
+      const urlParams = new URLSearchParams(window.location.search);
+      const filterAccountId = urlParams.get('accountId');
+
+      if (filterAccountId) {
+        document.getElementById('accountFilter').value = filterAccountId;
+        const filtered = allTransactions.filter(t => String(t.accountId) === filterAccountId);
+        renderTable(filtered);
+      } else {
+        renderTable(allTransactions);
+      }
+    } catch (e) {
+      console.error('Ошибка загрузки:', e);
+    }
+  }
+
+  function renderTable(data) {
+    const tbody = document.getElementById('transTable');
+    tbody.innerHTML = '';
+
+    data.forEach(t => {
+      const accName = accountMap[t.accountId] || 'Неизвестный счет';
+      const sign = t.type === 'expense' ? '-' : '+';
+      const colorClass = t.type === 'expense' ? 'text-danger' : 'text-success';
+
+      let displayDate = t.date;
+      if (t.date) {
+        const dateObj = new Date(t.date);
+        if (!isNaN(dateObj)) {
+          displayDate = dateObj.toLocaleDateString('ru-RU');
+        }
+      }
+
+      tbody.innerHTML += `
+                <tr>
+                    <td class="align-middle">${displayDate || 'Нет даты'}</td>
+                    <td class="align-middle">${t.description || t.category}</td>
+                    <td class="align-middle">${accName}</td>
+                    <td class="align-middle">${t.category}</td>
+                    <td class="align-middle ${colorClass} fw-bold">${sign}${t.amount} ₽</td>
+                </tr>
+            `;
+    });
+  }
+
+  document.getElementById('filterForm')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+    let category = document.getElementById('categoryFilter').value;
+    let accountId = document.getElementById('accountFilter').value;
+    const dateFrom = document.getElementById('dateFrom').value;
+    const dateTo = document.getElementById('dateTo').value;
+
+    if (category === 'Все категории') category = 'all';
+    if (accountId === 'Все счета') accountId = 'all';
+
+    const filtered = allTransactions.filter(t => {
+      const textMatch = !keyword ||
+              (t.description && t.description.toLowerCase().includes(keyword)) ||
+              (t.category && t.category.toLowerCase().includes(keyword));
+
+      const catMatch = category === 'all' || category === '' || t.category === category;
+
+      const accMatch = accountId === 'all' || accountId === '' || String(t.accountId) === accountId;
+
+      let dateMatch = true;
+      if (t.date && (dateFrom || dateTo)) {
+        const trDate = new Date(t.date);
+        if (dateFrom && trDate < new Date(dateFrom)) dateMatch = false;
+        if (dateTo && trDate > new Date(dateTo)) dateMatch = false;
+      }
+
+      return textMatch && catMatch && accMatch && dateMatch;
+    });
+
+    renderTable(filtered);
+  });
+
+  document.getElementById('addTransactionForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const desc = document.getElementById('newTransDesc').value;
+    const category = document.getElementById('newTransCategory').value;
+    const date = document.getElementById('newTransDate').value;
+    const accountId = document.getElementById('newTransAccount').value;
+    const type = document.getElementById('newTransType').value;
+    const amount = Number(document.getElementById('newTransAmount').value);
+
+    const selectedAccount = allAccounts.find(a => String(a.id) === String(accountId));
+    const accCurrency = selectedAccount ? selectedAccount.currency : '��';
+
+    const newTx = {
+      userId: Number(userId),
+      accountId: accountId.match(/^[0-9]+$/) ? Number(accountId) : accountId,
+      type: type,
+      amount: amount,
+      currency: accCurrency,
+      category: category,
+      description: desc,
+      date: date
+    };
+
+
+    try {
+      await fetch('http://localhost:3000/transactions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newTx)
+      });
+
+      const accRes = await fetch(`http://localhost:3000/accounts/${accountId}`);
+      const account = await accRes.json();
+
+      let newBalance = account.balance;
+      if (type === 'expense') {
+        newBalance -= amount;
+      } else {
+        newBalance += amount;
+      }
+
+      await fetch(`http://localhost:3000/accounts/${accountId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ balance: newBalance })
+      });
+
+      const modalEl = document.getElementById('addTransactionModal');
+      const modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+      modalInstance.hide();
+
+      this.reset();
+      loadTransactions();
+
+    } catch (error) {
+      console.error('Ошибка сохранения:', error);
+      alert('Произошла ошибка при сохранении транзакции.');
+    }
+  });
+
+  loadTransactions();
+</script>
 </html>

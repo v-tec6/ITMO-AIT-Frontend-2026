@@ -13,9 +13,9 @@
 <nav class="navbar navbar-expand-lg shadow-sm bg-white">
     <div class="container">
         <a class="navbar-brand text-custom fw-bold d-flex align-items-center gap-2" href="dash.html">
-            <img style="transform: translateY(-2px);"  src="imgs/1.png" alt="Логотип MFF" width="35">
-            <span class="fs-3 fw-bolder" >MFF</span>
-            <img style="transform: translateY(-2px);" src="imgs/2.png" alt="Логотип MFF" width="35">
+            <img class="nav-logo" src="imgs/1.png" alt="Логотип MFF" width="35">
+            <span class="fs-3 fw-bolder">MFF</span>
+            <img class="nav-logo" src="imgs/2.png" alt="Логотип MFF" width="35">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -34,27 +34,40 @@
 </nav>
 
 <div class="container mt-4">
-    <h3 class="mb-4">Обзор финансов</h3>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0">Обзор финансов</h3>
+
+        <div class="d-flex gap-3">
+        <span class="badge bg-white text-dark shadow-sm px-3 py-2 border border-light rounded-pill d-flex align-items-center gap-2 currency-badge">
+            <img src="https://flagcdn.com/us.svg" width="22" class="rounded-1 shadow-sm" alt="US">
+            <span>$ <span id="usdRateDisplay" class="fw-bold">...</span> ₽ <span id="usdTrend"></span></span>
+        </span>
+            <span class="badge bg-white text-dark shadow-sm px-3 py-2 border border-light rounded-pill d-flex align-items-center gap-2 currency-badge">
+            <img src="https://flagcdn.com/eu.svg" width="22" class="rounded-1 shadow-sm" alt="EU">
+            <span>€ <span id="eurRateDisplay" class="fw-bold">...</span> ₽ <span id="eurTrend"></span></span>
+        </span>
+        </div>
+    </div>
 
     <div class="row mb-4">
         <div class="col-lg-4 mb-4 mb-lg-0">
-            <div class="card text-white shadow-sm h-100 border-0 rounded-4 d-flex flex-column justify-content-center align-items-center p-4" style="background-color: #740707;">
+            <div class="card text-white shadow-sm h-100 border-0 rounded-4 d-flex flex-column justify-content-center align-items-center p-4 bg-custom">
                 <h5 class="opacity-75 mb-2 fw-normal">Общий баланс</h5>
-                <h1 class="display-6 fw-bold mb-0">376,300 ₽</h1>
-                <span class="badge bg-white mt-3 rounded-pill px-3 py-2 fs-6 shadow-sm" style="color: #740707;">
-                    + 227,500 ₽ за этот месяц
-                </span>
+                <h1 id="totalBalance" class="display-6 fw-bold mb-0">0 ₽</h1>
+                <span id="monthDiff" class="badge bg-white mt-3 rounded-pill px-3 py-2 fs-6 shadow-sm text-custom">
+            + 0 ₽ за этот месяц
+        </span>
             </div>
         </div>
 
         <div class="col-lg-4 mb-4 mb-lg-0">
             <div class="card shadow-sm border-0 rounded-4 h-100 p-4">
                 <div class="text-center mb-3">
-                    <div class="text-muted small fw-bold text-uppercase mb-1" style="letter-spacing: 1px;">Доходы</div>
-                    <h2 class="fw-bolder mb-0" style="color: #333333;">258,000 ₽</h2>
+                    <div class="text-muted small fw-bold text-uppercase mb-1 letter-spacing-1">Доходы</div>
+                    <h2 id="totalIncome" class="fw-bolder mb-0 text-dark-custom">0 ₽</h2>
                 </div>
 
-                <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+                <div class="d-flex justify-content-center align-items-center chart-container">
                     <canvas id="incomeChart"></canvas>
                 </div>
             </div>
@@ -63,11 +76,11 @@
         <div class="col-lg-4">
             <div class="card shadow-sm border-0 rounded-4 h-100 p-4">
                 <div class="text-center mb-3">
-                    <div class="text-muted small fw-bold text-uppercase mb-1" style="letter-spacing: 1px;">Расходы</div>
-                    <h2 class="fw-bolder mb-0" style="color: #333333;">32,500 ₽</h2>
+                    <div class="text-muted small fw-bold text-uppercase mb-1 letter-spacing-1">Расходы</div>
+                    <h2 id="totalExpense" class="fw-bolder mb-0 text-dark-custom">0 ₽</h2>
                 </div>
 
-                <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+                <div class="d-flex justify-content-center align-items-center chart-container">
                     <canvas id="expensesChart"></canvas>
                 </div>
             </div>
@@ -81,37 +94,15 @@
                     <h5 class="mb-0">Последние операции</h5>
                     <a href="transact.html" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Смотреть все</a>
                 </div>
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
-                            <div>
-                                <h6 class="mb-0 fw-bold">Яндекс.Пей</h6>
-                                <small class="text-muted">15 марта • Сервисы</small>
-                            </div>
-                            <span class="text-danger fw-bold">- 990 ₽</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
-                            <div>
-                                <h6 class="mb-0 fw-bold">Зарплата ООО "тмыв средств"</h6>
-                                <small class="text-muted">14 марта • Доход</small>
-                            </div>
-                            <span class="text-success fw-bold">+ 255,000 ₽</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
-                            <div>
-                                <h6 class="mb-0 fw-bold">Яндекс.Пей</h6>
-                                <small class="text-muted">14 марта • Сервисы</small>
-                            </div>
-                            <span class="text-danger fw-bold">- 990 ₽</span>
-                        </li>
-                    </ul>
+                <div id="recentOps" class="card-body">
+
                 </div>
             </div>
         </div>
 
         <div class="col-lg-4 mb-4">
             <div class="card shadow-sm border-0 rounded-4 bg-white h-100 d-flex flex-column justify-content-center align-items-center p-4 text-center">
-                <h5 class="mb-2 fw-bold" style="color: #333333;">Авто-импорт операций</h5>
+                <h5 class="mb-2 fw-bold text-dark-custom">Авто-импорт операций</h5>
                 <p class="small text-muted mb-4">Подключите свой банк для автоматической загрузки транзакций и аналитики.</p>
 
                 <button class="btn btn-custom w-100 rounded-pill py-2" data-bs-toggle="modal" data-bs-target="#addBankModal">
@@ -127,7 +118,7 @@
         <div class="modal-content rounded-4 border-0 shadow-lg">
 
             <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
-                <h5 class="modal-title fw-bold" style="color: #333333;">Импорт операций</h5>
+                <h5 class="modal-title fw-bold text-dark-custom">Импорт операций</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
             </div>
 
@@ -136,7 +127,7 @@
                 <form>
 
                     <div class="mb-4">
-                        <label class="form-label text-muted small fw-bold text-uppercase mb-1" style="letter-spacing: 1px;">Выберите банк</label>
+                        <label class="form-label text-muted small fw-bold text-uppercase mb-1 letter-spacing-1">Выберите банк</label>
                         <select class="form-select bg-light border-0">
                             <option>Тинькофф</option>
                             <option>Сбербанк</option>
@@ -146,18 +137,18 @@
                     </div>
 
                     <div class="mb-2">
-                        <label class="form-label text-muted small fw-bold text-uppercase mb-1" style="letter-spacing: 1px;">API Токен (Автоматически)</label>
+                        <label class="form-label text-muted small fw-bold text-uppercase mb-1 letter-spacing-1">API Токен (Автоматически)</label>
                         <input type="password" class="form-control bg-light border-0" placeholder="Вставьте ваш токен">
                     </div>
 
                     <div class="d-flex align-items-center my-4">
                         <hr class="flex-grow-1 text-muted opacity-25">
-                        <span class="mx-3 text-muted small fw-bold text-uppercase" style="letter-spacing: 2px;">или</span>
+                        <span class="mx-3 text-muted small fw-bold text-uppercase letter-spacing-2">или</span>
                         <hr class="flex-grow-1 text-muted opacity-25">
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label text-muted small fw-bold text-uppercase mb-1" style="letter-spacing: 1px;">Загрузить выписку (Вручную)</label>
+                        <label class="form-label text-muted small fw-bold text-uppercase mb-1 letter-spacing-1">Загрузить выписку (Вручную)</label>
                         <input class="form-control bg-light border-0 text-muted" type="file" id="statementFile" accept=".csv, .xls, .xlsx">
                         <div class="form-text small mt-2">Поддерживаемые форматы: CSV или Excel.</div>
                     </div>
@@ -172,51 +163,175 @@
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const commonChartOptions = {
-        maintainAspectRatio: false,
-        cutout: '65%',
-        plugins: {
-            legend: {
-                position: 'bottom',
-                labels: {
-                    usePointStyle: true,
-                    padding: 20,
-                    color: '#4a4a4a',
-                    font: { size: 13, weight: 'bold' }
+    const currentUserId = localStorage.getItem('mff_user_id');
+    if (!currentUserId) window.location.href = 'login.html';
+    let usdRate = 90;
+    let eurRate = 100;
+
+    function convertToRubles(amount, currency) {
+        if (currency === '$') return amount * usdRate;
+        if (currency === '€') return amount * eurRate;
+        return amount;
+    }
+
+    async function loadDashboardData() {
+        try {
+            try {
+                const cbrRes = await fetch('https://www.cbr-xml-daily.ru/daily_json.js');
+                const cbrData = await cbrRes.json();
+
+                usdRate = cbrData.Valute.USD.Value;
+                const usdPrev = cbrData.Valute.USD.Previous;
+
+                eurRate = cbrData.Valute.EUR.Value;
+                const eurPrev = cbrData.Valute.EUR.Previous;
+
+                const renderTrend = (elementId, current, prev) => {
+                    const el = document.getElementById(elementId);
+                    if (!el) return;
+
+                    if (current > prev) {
+                        el.innerHTML = '<span class="text-success ms-1 trend-icon">▲</span>';
+                    } else if (current < prev) {
+                        el.innerHTML = '<span class="text-danger ms-1 trend-icon">▼</span>';
+                    }
+                };
+
+                const usdEl = document.getElementById('usdRateDisplay');
+                const eurEl = document.getElementById('eurRateDisplay');
+                if(usdEl) usdEl.innerText = usdRate.toFixed(2);
+                if(eurEl) eurEl.innerText = eurRate.toFixed(2);
+
+                renderTrend('usdTrend', usdRate, usdPrev);
+                renderTrend('eurTrend', eurRate, eurPrev);
+
+            } catch (e) {
+                console.warn('Не удалось загрузить живой курс', e);
+            }
+            const accRes = await fetch(`http://localhost:3000/accounts?userId=${currentUserId}`);
+            const accounts = await accRes.json();
+
+            let totalBalance = 0;
+            accounts.forEach(acc => {
+                totalBalance += convertToRubles(acc.balance, acc.currency);
+            });
+
+            document.getElementById('totalBalance').innerText = totalBalance.toLocaleString('ru-RU') + ' ₽';
+
+            const transRes = await fetch(`http://localhost:3000/transactions?userId=${currentUserId}`);
+            const transactions = await transRes.json();
+
+            let totalIncomeSum = 0;
+            let totalExpenseSum = 0;
+            const incomeData = {};
+            const expenseData = {};
+
+            transactions.forEach(t => {
+                const amountInRubles = convertToRubles(t.amount, t.currency || '₽');
+
+                if (t.type === 'income') {
+                    totalIncomeSum += amountInRubles;
+                    incomeData[t.category] = (incomeData[t.category] || 0) + amountInRubles;
+                } else if (t.type === 'expense') {
+                    totalExpenseSum += amountInRubles;
+                    expenseData[t.category] = (expenseData[t.category] || 0) + amountInRubles;
                 }
+            });
+
+            document.getElementById('totalIncome').innerText = totalIncomeSum.toLocaleString('ru-RU') + ' ₽';
+            document.getElementById('totalExpense').innerText = totalExpenseSum.toLocaleString('ru-RU') + ' ₽';
+
+            const monthDifference = totalIncomeSum - totalExpenseSum;
+            const diffSign = monthDifference >= 0 ? '+' : '';
+            document.getElementById('monthDiff').innerText = `${diffSign} ${monthDifference.toLocaleString('ru-RU')} ₽ за этот месяц`;
+
+            const recentContainer = document.getElementById('recentOps');
+            if (recentContainer && transactions.length > 0) {
+                recentContainer.innerHTML = '';
+
+                const recentTx = transactions.slice(-4).reverse();
+
+                recentTx.forEach(t => {
+                    const sign = t.type === 'expense' ? '-' : '+';
+                    const color = t.type === 'expense' ? 'text-danger' : 'text-success';
+
+                    recentContainer.innerHTML += `
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                <div class="d-flex align-items-center gap-3">
+                    <div>
+                        <h6 class="mb-0 fw-bold">${t.description || t.type}</h6>
+                        <small class="text-muted">${t.date || 'Сегодня'} • ${t.category}</small>
+                    </div>
+                </div>
+                <div class="${color} fw-bold">${sign}${t.amount} ₽</div>
+            </div>
+        `;
+                });
+            }
+
+            drawChart('incomeChart', incomeData, ['#c5a059', '#d4ba80', '#e3d4ab', '#f6f3dc']);
+            drawChart('expensesChart', expenseData, ['#740707', '#a01c1c', '#cf4c4c', '#f1bcbc']);
+
+        } catch (error) {
+            console.error('Ошибка:', error);
+        }
+    }
+
+    function drawChart(canvasId, dataObject, colors) {
+        const ctx = document.getElementById(canvasId);
+        if (!ctx) return;
+
+        let sortedEntries = Object.entries(dataObject).sort((a, b) => b[1] - a[1]);
+
+        let labels = [];
+        let data = [];
+
+        if (sortedEntries.length === 0) {
+            labels = ['Нет данных'];
+            data = [1];
+            colors = ['#e9ecef'];
+        } else {
+            const top3 = sortedEntries.slice(0, 3);
+            const others = sortedEntries.slice(3);
+
+            labels = top3.map(item => item[0]);
+            data = top3.map(item => item[1]);
+
+            if (others.length > 0) {
+                const othersSum = others.reduce((sum, item) => sum + item[1], 0);
+                labels.push('Прочее');
+                data.push(othersSum);
             }
         }
-    };
 
-    const incomeCtx = document.getElementById('incomeChart').getContext('2d');
-    new Chart(incomeCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Зарплата', 'Переводы', 'Кешбэк'],
-            datasets: [{
-                data: [70000, 12000, 3000],
-                backgroundColor: ['#c5a059', '#d4ba80', '#e3d4ab'],
-                borderWidth: 0
-            }]
-        },
-        options: commonChartOptions
-    });
+        const commonChartOptions = {
+            maintainAspectRatio: false,
+            cutout: '65%',
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 20,
+                        color: '#4a4a4a',
+                        font: { size: 13, weight: 'bold' }
+                    }
+                }
+            }
+        };
 
-    const expensesCtx = document.getElementById('expensesChart').getContext('2d');
-    new Chart(expensesCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Продукты', 'Транспорт', 'Сервисы'],
-            datasets: [{
-                data: [15000, 3000, 14500],
-                backgroundColor: ['#740707', '#a01c1c', '#cf4c4c'],
-                borderWidth: 0
-            }]
-        },
-        options: commonChartOptions
-    });
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{ data: data, backgroundColor: colors, borderWidth: 0 }]
+            },
+            options: commonChartOptions
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', loadDashboardData);
 </script>
 </body>
 </html>
