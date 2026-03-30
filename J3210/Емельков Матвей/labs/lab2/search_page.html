@@ -1,5 +1,5 @@
 <!Doctype html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,18 +18,16 @@
 
             <div class="sidebar__scroll-wrapper">
 
-                <nav class="sidebar__nav">
-                    <nav class="sidebar__nav">
-                        <a href="index.html" class="sidebar__link">
-                            Личный кабинет
-                        </a>
-                        <a href="search_page.html" class="sidebar__link sidebar__link--active">
-                            Эксперименты
-                        </a>
-                        <a href="models.html" class="sidebar__link">
-                            Модели
-                        </a>
-                    </nav>
+                <nav class="sidebar__nav" aria-label="Главное меню">
+                    <a href="index.html" class="sidebar__link">
+                        Личный кабинет
+                    </a>
+                    <a href="search_page.html" class="sidebar__link sidebar__link--active">
+                        Эксперименты
+                    </a>
+                    <a href="models.html" class="sidebar__link">
+                        Модели
+                    </a>
                 </nav>
 
                 <footer class="sidebar__footer dropdown">
@@ -66,7 +64,8 @@
 
                     <div class="col-md-3">
                         <label for="dateFilter" class="form-label text-muted small">Дата создания</label>
-                        <input type="date" class="form-control" id="dateFilter">
+                        <input type="date" class="form-control" id="dateFilter" aria-describedby="dateHelp">
+                        <div id="dateHelp" class="form-text visually-hidden">Выберите дату создания эксперимента</div>
                     </div>
 
                     <div class="col-md-3">
@@ -81,7 +80,7 @@
                     </div>
 
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-outline-primary w-100">Применить</button>
+                        <button type="submit" class="btn btn-secondary w-100">Применить</button>
                     </div>
 
                 </form>

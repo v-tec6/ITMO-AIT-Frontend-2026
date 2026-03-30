@@ -97,7 +97,7 @@ async function fetchAndRenderDashboard() {
                 <td>${exp.duration || "-"}</td>
                 <td><span class="badge ${exp.status === 'success' ? 'bg-success' : 'bg-warning text-dark'}">${exp.status}</span></td>
                 <td>
-                    <button class="btn btn-sm text-danger" onclick="deleteExp('${exp.id}')">🗑</button>
+                    <button class="btn btn-sm text-danger" aria-label="Удалить эксперимент" onclick="deleteExp('${exp.id}')">🗑</button>
                 </td>
             `;
                 tableBody.appendChild(tr);
@@ -116,7 +116,7 @@ async function fetchAndRenderDashboard() {
                         <div>
                             <div class="d-flex align-items-center gap-2">
                                 <h5 class="mb-0 text-primary">${model.name}</h5>
-                                <button class="btn btn-sm text-danger p-0 border-0" title="Удалить модель" onclick="deleteModel('${model.id}')">🗑</button>
+                                <button class="btn btn-sm text-danger p-0 border-0" title="Удалить модель" aria-label="Удалить модель" onclick="deleteModel('${model.id}')">🗑</button>
                             </div>
                             <small class="text-muted">Последнее обновление: ${model.date || 'Неизвестно'}</small>
                         </div>

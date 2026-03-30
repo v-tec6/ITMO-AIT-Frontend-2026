@@ -1,5 +1,5 @@
 <!Doctype html>
-<html lang="en">
+<html lang="ru">
 
 <head>
     <meta charset="UTF-8">
@@ -18,7 +18,7 @@
 
             <div class="sidebar__scroll-wrapper">
 
-                <nav class="sidebar__nav">
+                <nav class="sidebar__nav" aria-label="Главное меню">
                     <a href="index.html" class="sidebar__link sidebar__link--active">
                         Личный кабинет
                     </a>
@@ -40,7 +40,7 @@
                                 Настройки
                             </a>
                         </li>
-                        <li><a class="dropdown-item text-danger" id="logoutBtn"     href="login.html">Выйти</a></li>
+                        <li><a class="dropdown-item text-danger" id="logoutBtn" href="login.html">Выйти</a></li>
                     </ul>
                 </footer>
             </div>
@@ -57,13 +57,13 @@
             <section class="row mb-4">
                 <div class="col-md-4">
                     <div class="stat-card">
-                        <h3 id="stat-experiments">0</h3>
+                        <h2 id="stat-experiments">0</h2>
                         <p>Всего экспериментов</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="stat-card">
-                        <h3 id="stat-models">0</h3>
+                        <h2 id="stat-models">0</h2>
                         <p>Всего моделей</p>
                     </div>
                 </div>
@@ -91,7 +91,7 @@
 
 
                 <div class="d-flex justify-content-end mt-3">
-                    <a href="search_page.html" class="btn btn-outline-primary btn-min-width">
+                    <a href="search_page.html" class="btn btn-secondary btn-min-width">
                         Все эксперименты
                     </a>
                 </div>

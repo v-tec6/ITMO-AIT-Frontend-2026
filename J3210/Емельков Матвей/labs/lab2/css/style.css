@@ -7,7 +7,7 @@ body {
 
 .app-layout {
     display: flex;
-    min-height: 100vh;
+    height: 100vh;
 }
 
 
@@ -40,7 +40,7 @@ body {
 }
 
 .sidebar__link {
-    color: darkgrey;
+    color: #e0e0e0;
     text-decoration: none;
     padding: 12px 20px;
     display: flex;
