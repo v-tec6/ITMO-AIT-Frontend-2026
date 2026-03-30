@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const auth = window.SchoolAuth;
+    const api = window.SchoolApi;
     const title = document.getElementById("adminUserTitle");
     const eventsGrid = document.getElementById("adminEventsGrid");
     const teachersWrap = document.getElementById("teachersList");
@@ -25,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (
         !auth ||
+        !api ||
         !title ||
         !eventsGrid ||
         !teachersWrap ||
@@ -50,9 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    auth.ensureTestUsers();
     const currentUser = auth.getCurrentUser();
-
     if (!currentUser?.id) {
         window.location.href = "login.html";
         return;
@@ -67,15 +67,20 @@ document.addEventListener("DOMContentLoaded", () => {
         proposalLink.href = auth.PROPOSAL_FORM_URL;
     }
 
+    let users = [];
+    let events = [];
+    let registrations = [];
     let selectedClass = "all";
 
     title.textContent = "Список мероприятий";
 
-    renderAll();
     bindStudentFilters();
     bindEventDropdowns();
+    teacherFormReset.addEventListener("click", resetTeacherForm);
+    document.getElementById("studentFormReset").addEventListener("click", resetStudentForm);
+    document.getElementById("studentIsExternal").addEventListener("change", toggleStudentSchoolFields);
 
-    teacherForm.addEventListener("submit", (event) => {
+    teacherForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
         const firstName = String(document.getElementById("teacherFirstName").value || "").trim();
@@ -89,53 +94,54 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        const users = auth.getUsers();
-        const existing = users.find((user) => String(user.email) === email && String(user.id) !== editingTeacherId);
-        if (existing) {
+        if (users.some((user) => String(user.email) === email && String(user.id) !== editingTeacherId)) {
             showMessage(teacherMessage, "Пользователь с такой почтой уже существует.", false);
             return;
         }
 
         const password = passwordInput || createTempPassword();
 
-        if (editingTeacherId) {
-            const updatedUsers = users.map((user) => {
-                if (String(user.id) !== editingTeacherId) {
-                    return user;
-                }
-
-                return {
-                    ...user,
+        try {
+            if (editingTeacherId) {
+                const existingTeacher = getUserById(editingTeacherId);
+                const payload = {
                     firstName,
                     lastName,
                     email,
-                    password: passwordInput ? password : user.password || password,
-                    role: "teacher"
+                    role: "teacher",
+                    passwordText: passwordInput ? password : existingTeacher?.passwordText || ""
                 };
-            });
 
-            auth.setUsers(updatedUsers);
-            showMessage(
-                teacherMessage,
-                `Данные учителя обновлены. Логин: ${email}${passwordInput ? `, новый пароль: ${password}` : ""}`,
-                true
-            );
-        } else {
-            const newTeacher = auth.normalizeUser({
-                id: createId("teacher"),
-                firstName,
-                lastName,
-                email,
-                password,
-                role: "teacher"
-            });
+                if (passwordInput) {
+                    payload.password = password;
+                }
 
-            auth.setUsers([...users, newTeacher]);
-            showMessage(teacherMessage, `Учитель добавлен. Логин: ${email}, пароль: ${password}`, true);
+                await api.updateUser(editingTeacherId, payload);
+                showMessage(
+                    teacherMessage,
+                    `Данные учителя обновлены. Логин: ${email}${passwordInput ? `, новый пароль: ${password}` : ""}`,
+                    true
+                );
+            } else {
+                await api.createUser(
+                    auth.normalizeUser({
+                        id: createId("teacher"),
+                        firstName,
+                        lastName,
+                        email,
+                        password,
+                        role: "teacher",
+                        passwordText: password
+                    })
+                );
+                showMessage(teacherMessage, `Учитель добавлен. Логин: ${email}, пароль: ${password}`, true);
+            }
+
+            resetTeacherForm();
+            await renderAll();
+        } catch {
+            showMessage(teacherMessage, "Не удалось сохранить учителя.", false);
         }
-
-        resetTeacherForm();
-        renderAll();
     });
 
     eventForm.addEventListener("submit", async (event) => {
@@ -167,43 +173,39 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        const teacher = auth.getUserById(responsibleTeacherId);
+        const teacher = getUserById(responsibleTeacherId);
         if (!teacher || teacher.role !== "teacher") {
             showMessage(eventMessage, "Выберите существующего учителя.", false);
             return;
         }
 
-        let imageDataUrl = "";
         try {
-            imageDataUrl = await readFileAsDataUrl(imageFile);
+            const image = await readFileAsDataUrl(imageFile);
+            await api.createEvent(
+                auth.normalizeEvent({
+                    id: createId("event"),
+                    title: titleValue,
+                    description,
+                    image,
+                    date,
+                    goal,
+                    place,
+                    audience: audience || "5–11 классы",
+                    capacity: Number.isFinite(capacity) && capacity > 0 ? capacity : 30,
+                    responsibleTeacherId
+                })
+            );
+
+            eventForm.reset();
+            resetEventDropdowns();
+            showMessage(eventMessage, "Мероприятие добавлено в общий список.", true);
+            await renderAll();
         } catch {
-            showMessage(eventMessage, "Не удалось загрузить фото. Попробуйте другой файл.", false);
-            return;
+            showMessage(eventMessage, "Не удалось сохранить мероприятие.", false);
         }
-
-        const events = auth.getEvents();
-        const newEvent = auth.normalizeEvent({
-            id: createId("event"),
-            title: titleValue,
-            description,
-            image: imageDataUrl,
-            date,
-            goal,
-            place,
-            audience: audience || "5–11 классы",
-            capacity: Number.isFinite(capacity) && capacity > 0 ? capacity : 30,
-            responsibleTeacherId,
-            responsibleTeacherName: `${teacher.firstName} ${teacher.lastName}`.trim()
-        }, events.length);
-
-        auth.setEvents([...events, newEvent]);
-        eventForm.reset();
-        resetEventDropdowns();
-        showMessage(eventMessage, "Мероприятие добавлено в общий список.", true);
-        renderAll();
     });
 
-    studentForm.addEventListener("submit", (event) => {
+    studentForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
         const firstName = String(document.getElementById("studentFirstName").value || "").trim();
@@ -232,67 +234,52 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        const users = auth.getUsers();
-        const emailConflict = users.find(
-            (user) => String(user.email) === email && String(user.id) !== editingStudentId
-        );
-        if (emailConflict) {
+        if (users.some((user) => String(user.email) === email && String(user.id) !== editingStudentId)) {
             showMessage(studentMessage, "Пользователь с такой почтой уже существует.", false);
             return;
         }
 
-        if (editingStudentId) {
-            const updatedUsers = users.map((user) => {
-                if (String(user.id) !== editingStudentId) {
-                    return user;
-                }
-
-                return {
-                    ...user,
+        try {
+            if (editingStudentId) {
+                const existingStudent = getUserById(editingStudentId);
+                await api.updateUser(editingStudentId, {
                     firstName,
                     lastName,
                     email,
+                    role: "student",
                     isExternal,
                     studentClass: isExternal ? null : Number(studentClass),
                     studentLetter: isExternal ? null : studentLetter,
-                    role: "student"
-                };
-            });
+                    passwordText: existingStudent?.passwordText || ""
+                });
+                showMessage(studentMessage, "Данные ученика сохранены.", true);
+            } else {
+                const password = createTempPassword();
+                await api.createUser(
+                    auth.normalizeUser({
+                        id: createId("student"),
+                        firstName,
+                        lastName,
+                        email,
+                        password,
+                        role: "student",
+                        isExternal,
+                        studentClass: isExternal ? null : Number(studentClass),
+                        studentLetter: isExternal ? null : studentLetter,
+                        passwordText: password
+                    })
+                );
+                showMessage(studentMessage, `Ученик добавлен. Логин: ${email}`, true);
+            }
 
-            auth.setUsers(updatedUsers);
-            showMessage(studentMessage, "Данные ученика сохранены.", true);
-        } else {
-            const newStudent = auth.normalizeUser({
-                id: createId("student"),
-                firstName,
-                lastName,
-                email,
-                password: createTempPassword(),
-                role: "student",
-                isExternal,
-                studentClass: isExternal ? null : Number(studentClass),
-                studentLetter: isExternal ? null : studentLetter
-            });
-
-            auth.setUsers([...users, newStudent]);
-            showMessage(studentMessage, `Ученик добавлен. Логин: ${email}`, true);
+            resetStudentForm();
+            await renderAll();
+        } catch {
+            showMessage(studentMessage, "Не удалось сохранить ученика.", false);
         }
-
-        resetStudentForm();
-        renderAll();
     });
 
-    teacherFormReset.addEventListener("click", () => {
-        resetTeacherForm();
-    });
-
-    document.getElementById("studentFormReset").addEventListener("click", () => {
-        resetStudentForm();
-    });
-
-    document.getElementById("studentIsExternal").addEventListener("change", () => {
-        toggleStudentSchoolFields();
-    });
+    renderAll();
 
     function bindStudentFilters() {
         searchInput.addEventListener("input", renderStudents);
@@ -330,12 +317,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const goalOption = event.target.closest(".event-goal-option");
             if (goalOption) {
                 event.preventDefault();
-
                 document.getElementById("eventGoalInput").value = goalOption.dataset.value;
                 eventGoalDropdownButton.textContent = goalOption.textContent.trim();
-                document
-                    .querySelectorAll(".event-goal-option")
-                    .forEach((item) => item.classList.remove("active-option"));
+                document.querySelectorAll(".event-goal-option").forEach((item) => item.classList.remove("active-option"));
                 goalOption.classList.add("active-option");
                 return;
             }
@@ -343,12 +327,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const placeOption = event.target.closest(".event-place-option");
             if (placeOption) {
                 event.preventDefault();
-
                 document.getElementById("eventPlaceInput").value = placeOption.dataset.value;
                 eventPlaceDropdownButton.textContent = placeOption.textContent.trim();
-                document
-                    .querySelectorAll(".event-place-option")
-                    .forEach((item) => item.classList.remove("active-option"));
+                document.querySelectorAll(".event-place-option").forEach((item) => item.classList.remove("active-option"));
                 placeOption.classList.add("active-option");
                 return;
             }
@@ -356,12 +337,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const teacherOption = event.target.closest(".event-teacher-option");
             if (teacherOption) {
                 event.preventDefault();
-
                 document.getElementById("eventTeacherInput").value = teacherOption.dataset.value;
                 eventTeacherDropdownButton.textContent = teacherOption.textContent.trim();
-                document
-                    .querySelectorAll(".event-teacher-option")
-                    .forEach((item) => item.classList.remove("active-option"));
+                document.querySelectorAll(".event-teacher-option").forEach((item) => item.classList.remove("active-option"));
                 teacherOption.classList.add("active-option");
             }
         });
@@ -376,29 +354,38 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function renderAll() {
+    async function renderAll() {
+        await loadData();
         renderEvents();
         renderTeachers();
         fillTeacherSelect();
         renderStudents();
     }
 
-    function renderEvents() {
-        const events = auth.getEvents().sort((a, b) => new Date(a.date) - new Date(b.date));
-        const teachers = auth.getTeachers();
+    async function loadData() {
+        try {
+            const result = await Promise.all([api.getUsers(), api.getEvents(), api.getRegistrations()]);
+            users = result[0].map((user) => auth.normalizeUser(user)).filter(Boolean);
+            events = result[1].map((event) => auth.normalizeEvent(event)).filter(Boolean);
+            registrations = result[2];
+        } catch {
+            users = [];
+            events = [];
+            registrations = [];
+        }
+    }
 
-        eventsGrid.innerHTML = events
+    function renderEvents() {
+        const teachers = getTeachers();
+
+        eventsGrid.innerHTML = [...events]
+            .sort((a, b) => new Date(a.date) - new Date(b.date))
             .map((event) => {
-                const registeredCount = auth.getEventRegistrations(event.id).length;
+                const teacherName = getTeacherNameById(event.responsibleTeacherId);
                 const teacherOptions = teachers
                     .map((teacher) => `
                         <li>
-                            <button
-                                class="dropdown-item custom-filter-item event-card-teacher-option ${String(teacher.id) === String(event.responsibleTeacherId) ? "active-option" : ""}"
-                                type="button"
-                                data-event-id="${escapeHtml(event.id)}"
-                                data-value="${escapeHtml(teacher.id)}"
-                            >
+                            <button class="dropdown-item custom-filter-item event-card-teacher-option ${String(teacher.id) === String(event.responsibleTeacherId) ? "active-option" : ""}" type="button" data-event-id="${escapeHtml(event.id)}" data-value="${escapeHtml(teacher.id)}">
                                 ${escapeHtml(getUserName(teacher))}
                             </button>
                         </li>
@@ -423,30 +410,18 @@ document.addEventListener("DOMContentLoaded", () => {
                                         <span class="event-meta-pill">${escapeHtml(auth.formatDate(event.date))}</span>
                                     </div>
                                 </a>
-                                <div class="dashboard-card-note mb-2">Ответственный: ${escapeHtml(event.responsibleTeacherName)}</div>
-                                <div class="dashboard-card-note mb-3">Записано: ${registeredCount} / ${event.capacity}</div>
+                                <div class="dashboard-card-note mb-2">Ответственный: ${escapeHtml(teacherName)}</div>
+                                <div class="dashboard-card-note mb-3">Записано: ${getEventRegistrations(event.id).length} / ${event.capacity}</div>
                                 <div class="dashboard-row-actions">
                                     <input type="hidden" data-event-teacher-input="${escapeHtml(event.id)}" value="${escapeHtml(event.responsibleTeacherId)}">
                                     <div class="dropdown custom-filter-dropdown dashboard-inline-dropdown">
-                                        <button
-                                            class="btn custom-filter-toggle dropdown-toggle text-start"
-                                            type="button"
-                                            data-event-teacher-button="${escapeHtml(event.id)}"
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false"
-                                        >
-                                            ${escapeHtml(event.responsibleTeacherName || "Выберите учителя")}
+                                        <button class="btn custom-filter-toggle dropdown-toggle text-start" type="button" data-event-teacher-button="${escapeHtml(event.id)}" data-bs-toggle="dropdown" aria-expanded="false">
+                                            ${escapeHtml(teacherName)}
                                         </button>
-                                        <ul class="dropdown-menu custom-filter-menu w-100">
-                                            ${teacherOptions}
-                                        </ul>
+                                        <ul class="dropdown-menu custom-filter-menu w-100">${teacherOptions}</ul>
                                     </div>
-                                    <button type="button" class="subtle-button dashboard-action-button" data-delete-event="${escapeHtml(event.id)}">
-                                        Удалить
-                                    </button>
-                                    <button type="button" class="subtle-button dashboard-action-button" data-save-event-teacher="${escapeHtml(event.id)}">
-                                        Сохранить
-                                    </button>
+                                    <button type="button" class="subtle-button dashboard-action-button" data-delete-event="${escapeHtml(event.id)}">Удалить</button>
+                                    <button type="button" class="subtle-button dashboard-action-button" data-save-event-teacher="${escapeHtml(event.id)}">Сохранить</button>
                                 </div>
                             </div>
                         </article>
@@ -456,69 +431,53 @@ document.addEventListener("DOMContentLoaded", () => {
             .join("");
 
         eventsGrid.querySelectorAll("[data-save-event-teacher]").forEach((button) => {
-            button.addEventListener("click", () => {
+            button.addEventListener("click", async () => {
                 const eventId = button.getAttribute("data-save-event-teacher");
                 const cardBody = button.closest(".event-card-body");
-                const input = cardBody?.querySelector("[data-event-teacher-input]");
-                const teacherId = String(input?.value || "").trim();
-                const teacher = auth.getUserById(teacherId);
+                const teacherId = String(cardBody?.querySelector("[data-event-teacher-input]")?.value || "").trim();
+                const teacher = getUserById(teacherId);
 
                 if (!teacher || teacher.role !== "teacher") {
                     showMessage(eventMessage, "Выберите существующего учителя для мероприятия.", false);
                     return;
                 }
 
-                const updatedEvents = auth.getEvents().map((event) => {
-                    if (String(event.id) !== String(eventId)) {
-                        return event;
-                    }
-
-                    return auth.normalizeEvent({
-                        ...event,
-                        responsibleTeacherId: teacher.id,
-                        responsibleTeacherName: getUserName(teacher)
-                    });
-                });
-                const updatedEvent = updatedEvents.find((event) => String(event.id) === String(eventId));
-
-                auth.setEvents(updatedEvents);
-                showMessage(
-                    eventMessage,
-                    `Ответственный для мероприятия «${updatedEvent?.title || "Без названия"}» обновлен.`,
-                    true
-                );
-                renderAll();
+                try {
+                    await api.updateEvent(eventId, { responsibleTeacherId: teacher.id });
+                    showMessage(eventMessage, `Ответственный для мероприятия «${getEventById(eventId)?.title || "Без названия"}» обновлен.`, true);
+                    await renderAll();
+                } catch {
+                    showMessage(eventMessage, "Не удалось обновить ответственного.", false);
+                }
             });
         });
 
         eventsGrid.querySelectorAll("[data-delete-event]").forEach((button) => {
-            button.addEventListener("click", () => {
+            button.addEventListener("click", async () => {
                 const eventId = button.getAttribute("data-delete-event");
-                const eventToDelete = auth.getEvents().find((event) => String(event.id) === String(eventId));
+                const eventToDelete = getEventById(eventId);
 
                 if (!eventToDelete) {
                     showMessage(eventMessage, "Мероприятие не найдено.", false);
                     return;
                 }
 
-                const shouldDelete = window.confirm(
-                    `Удалить мероприятие «${eventToDelete.title}»? Это также уберет все связанные записи учеников.`
-                );
-                if (!shouldDelete) {
+                if (!window.confirm(`Удалить мероприятие «${eventToDelete.title}»? Это также уберет все связанные записи учеников.`)) {
                     return;
                 }
 
-                const updatedEvents = auth
-                    .getEvents()
-                    .filter((event) => String(event.id) !== String(eventId));
-                const updatedRegistrations = auth
-                    .getRegistrations()
-                    .filter((registration) => String(registration.eventId) !== String(eventId));
-
-                auth.setEvents(updatedEvents);
-                auth.setRegistrations(updatedRegistrations);
-                showMessage(eventMessage, `Мероприятие «${eventToDelete.title}» удалено.`, true);
-                renderAll();
+                try {
+                    await Promise.all(
+                        registrations
+                            .filter((registration) => String(registration.eventId) === String(eventId))
+                            .map((registration) => api.deleteRegistration(registration.id))
+                    );
+                    await api.deleteEvent(eventId);
+                    showMessage(eventMessage, `Мероприятие «${eventToDelete.title}» удалено.`, true);
+                    await renderAll();
+                } catch {
+                    showMessage(eventMessage, "Не удалось удалить мероприятие.", false);
+                }
             });
         });
 
@@ -527,8 +486,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 event.preventDefault();
 
                 const eventId = option.getAttribute("data-event-id");
-                const teacherId = option.getAttribute("data-value");
-                const teacher = auth.getUserById(teacherId);
+                const teacher = getUserById(option.getAttribute("data-value"));
                 const cardBody = option.closest(".event-card-body");
                 const input = cardBody?.querySelector("[data-event-teacher-input]");
                 const button = cardBody?.querySelector("[data-event-teacher-button]");
@@ -539,7 +497,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 input.value = teacher.id;
                 button.textContent = getUserName(teacher);
-
                 eventsGrid
                     .querySelectorAll(`.event-card-teacher-option[data-event-id="${cssEscape(eventId)}"]`)
                     .forEach((item) => item.classList.remove("active-option"));
@@ -549,30 +506,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function renderTeachers() {
-        const teachers = auth.getTeachers();
+        const teachers = getTeachers();
 
         teachersWrap.innerHTML = teachers.length
             ? teachers
-                .map((teacher) => {
-                    const assignedEvents = auth
-                        .getEvents()
-                        .filter((event) => String(event.responsibleTeacherId) === String(teacher.id)).length;
-
-                    return `
-                        <div class="dashboard-list-row">
-                            <div>
-                                <div class="dashboard-list-title">${escapeHtml(getUserName(teacher))}</div>
-                                <div class="dashboard-list-subtitle">${escapeHtml(teacher.email || "Почта не указана")}</div>
-                                <div class="dashboard-list-subtitle">Пароль: ${escapeHtml(teacher.password || "Не указан")}</div>
-                            </div>
-                            <div class="dashboard-row-actions">
-                                <span class="event-meta-pill">Мероприятий: ${assignedEvents}</span>
-                                <button type="button" class="subtle-button dashboard-action-button" data-edit-teacher="${escapeHtml(teacher.id)}">Редактировать</button>
-                                <button type="button" class="subtle-button dashboard-action-button" data-delete-teacher="${escapeHtml(teacher.id)}">Удалить</button>
-                            </div>
+                .map((teacher) => `
+                    <div class="dashboard-list-row">
+                        <div>
+                            <div class="dashboard-list-title">${escapeHtml(getUserName(teacher))}</div>
+                            <div class="dashboard-list-subtitle">${escapeHtml(teacher.email || "Почта не указана")}</div>
+                            <div class="dashboard-list-subtitle">Пароль: ${escapeHtml(teacher.passwordText || "Не указан")}</div>
                         </div>
-                    `;
-                })
+                        <div class="dashboard-row-actions">
+                            <span class="event-meta-pill">Мероприятий: ${events.filter((event) => String(event.responsibleTeacherId) === String(teacher.id)).length}</span>
+                            <button type="button" class="subtle-button dashboard-action-button" data-edit-teacher="${escapeHtml(teacher.id)}">Редактировать</button>
+                            <button type="button" class="subtle-button dashboard-action-button" data-delete-teacher="${escapeHtml(teacher.id)}">Удалить</button>
+                        </div>
+                    </div>
+                `)
                 .join("")
             : `
                 <div class="profile-state-card mb-0">
@@ -582,7 +533,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         teachersWrap.querySelectorAll("[data-edit-teacher]").forEach((button) => {
             button.addEventListener("click", () => {
-                const teacher = auth.getUserById(button.getAttribute("data-edit-teacher"));
+                const teacher = getUserById(button.getAttribute("data-edit-teacher"));
                 if (!teacher) {
                     return;
                 }
@@ -591,56 +542,42 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("teacherFirstName").value = teacher.firstName || "";
                 document.getElementById("teacherLastName").value = teacher.lastName || "";
                 document.getElementById("teacherEmail").value = teacher.email || "";
-                document.getElementById("teacherPassword").value = teacher.password || "";
+                document.getElementById("teacherPassword").value = teacher.passwordText || "";
                 document.getElementById("teacherFormTitle").textContent = "Редактировать учителя";
                 document.getElementById("teacherSubmitText").textContent = "Сохранить изменения";
-                showMessage(
-                    teacherMessage,
-                    "Измените данные учителя и при необходимости укажите новый пароль.",
-                    true
-                );
+                showMessage(teacherMessage, "Измените данные учителя и при необходимости укажите новый пароль.", true);
             });
         });
 
         teachersWrap.querySelectorAll("[data-delete-teacher]").forEach((button) => {
-            button.addEventListener("click", () => {
+            button.addEventListener("click", async () => {
                 const teacherId = button.getAttribute("data-delete-teacher");
-                const teacher = auth.getUserById(teacherId);
+                const teacher = getUserById(teacherId);
 
                 if (!teacher) {
                     showMessage(teacherMessage, "Учитель не найден.", false);
                     return;
                 }
 
-                const assignedEvents = auth
-                    .getEvents()
-                    .filter((event) => String(event.responsibleTeacherId) === String(teacherId));
-
-                if (assignedEvents.length) {
-                    showMessage(
-                        teacherMessage,
-                        "Сначала переназначьте мероприятия этого учителя, потом его можно удалить.",
-                        false
-                    );
+                if (events.some((event) => String(event.responsibleTeacherId) === String(teacherId))) {
+                    showMessage(teacherMessage, "Сначала переназначьте мероприятия этого учителя, потом его можно удалить.", false);
                     return;
                 }
 
-                const shouldDelete = window.confirm(`Удалить учителя «${getUserName(teacher)}»?`);
-                if (!shouldDelete) {
+                if (!window.confirm(`Удалить учителя «${getUserName(teacher)}»?`)) {
                     return;
                 }
 
-                const updatedUsers = auth
-                    .getUsers()
-                    .filter((user) => String(user.id) !== String(teacherId));
-
-                if (String(document.getElementById("teacherEditingId").value || "") === String(teacherId)) {
-                    resetTeacherForm();
+                try {
+                    await api.deleteUser(teacherId);
+                    if (String(document.getElementById("teacherEditingId").value || "") === String(teacherId)) {
+                        resetTeacherForm();
+                    }
+                    showMessage(teacherMessage, `Учитель «${getUserName(teacher)}» удален.`, true);
+                    await renderAll();
+                } catch {
+                    showMessage(teacherMessage, "Не удалось удалить учителя.", false);
                 }
-
-                auth.setUsers(updatedUsers);
-                showMessage(teacherMessage, `Учитель «${getUserName(teacher)}» удален.`, true);
-                renderAll();
             });
         });
     }
@@ -648,16 +585,12 @@ document.addEventListener("DOMContentLoaded", () => {
     function fillTeacherSelect() {
         const input = document.getElementById("eventTeacherInput");
         const currentValue = input.value;
-        const teachers = auth.getTeachers();
+        const teachers = getTeachers();
 
         eventTeacherMenu.innerHTML = teachers
             .map((teacher) => `
                 <li>
-                    <button
-                        class="dropdown-item custom-filter-item event-teacher-option ${teacher.id === currentValue ? "active-option" : ""}"
-                        type="button"
-                        data-value="${escapeHtml(teacher.id)}"
-                    >
+                    <button class="dropdown-item custom-filter-item event-teacher-option ${teacher.id === currentValue ? "active-option" : ""}" type="button" data-value="${escapeHtml(teacher.id)}">
                         ${escapeHtml(getUserName(teacher))}
                     </button>
                 </li>
@@ -665,28 +598,24 @@ document.addEventListener("DOMContentLoaded", () => {
             .join("");
 
         const selectedTeacher = teachers.find((teacher) => teacher.id === currentValue);
-        eventTeacherDropdownButton.textContent = selectedTeacher
-            ? getUserName(selectedTeacher)
-            : "Выберите учителя";
+        eventTeacherDropdownButton.textContent = selectedTeacher ? getUserName(selectedTeacher) : "Выберите учителя";
         input.value = selectedTeacher ? selectedTeacher.id : "";
     }
 
     function renderStudents() {
         const searchValue = String(searchInput.value || "").trim().toLowerCase();
-        const students = auth.getStudents().filter((student) => {
+        const students = getStudents().filter((student) => {
             const name = getUserName(student).toLowerCase();
             const classLabel = getStudentClassLabel(student).toLowerCase();
-            const matchesSearch = !searchValue || name.includes(searchValue) || classLabel.includes(searchValue);
-            const matchesClass =
-                selectedClass === "all" ||
-                (selectedClass === "external" && student.isExternal) ||
-                String(student.studentClass || "") === selectedClass;
-
-            return matchesSearch && matchesClass;
+            return (
+                (!searchValue || name.includes(searchValue) || classLabel.includes(searchValue)) &&
+                (selectedClass === "all" ||
+                    (selectedClass === "external" && student.isExternal) ||
+                    String(student.studentClass || "") === selectedClass)
+            );
         });
 
         studentsCounter.textContent = `Найдено учеников: ${students.length}`;
-
         studentsWrap.innerHTML = students.length
             ? students
                 .map((student) => `
@@ -694,7 +623,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div>
                             <div class="dashboard-list-title">${escapeHtml(getUserName(student))}</div>
                             <div class="dashboard-list-subtitle">${escapeHtml(getStudentClassLabel(student))}</div>
-                            <div class="dashboard-list-subtitle">Пароль: ${escapeHtml(student.password || "Не указан")}</div>
+                            <div class="dashboard-list-subtitle">Пароль: ${escapeHtml(student.passwordText || "Не указан")}</div>
                         </div>
                         <div class="dashboard-row-actions">
                             <span class="event-meta-pill">${escapeHtml(student.email || "Почта не указана")}</span>
@@ -712,7 +641,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         studentsWrap.querySelectorAll("[data-edit-student]").forEach((button) => {
             button.addEventListener("click", () => {
-                const student = auth.getUserById(button.getAttribute("data-edit-student"));
+                const student = getUserById(button.getAttribute("data-edit-student"));
                 if (!student) {
                     return;
                 }
@@ -732,35 +661,34 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         studentsWrap.querySelectorAll("[data-delete-student]").forEach((button) => {
-            button.addEventListener("click", () => {
+            button.addEventListener("click", async () => {
                 const studentId = button.getAttribute("data-delete-student");
-                const student = auth.getUserById(studentId);
+                const student = getUserById(studentId);
 
                 if (!student) {
                     showMessage(studentMessage, "Ученик не найден.", false);
                     return;
                 }
 
-                const shouldDelete = window.confirm(`Удалить ученика «${getUserName(student)}»?`);
-                if (!shouldDelete) {
+                if (!window.confirm(`Удалить ученика «${getUserName(student)}»?`)) {
                     return;
                 }
 
-                const updatedUsers = auth
-                    .getUsers()
-                    .filter((user) => String(user.id) !== String(studentId));
-                const updatedRegistrations = auth
-                    .getRegistrations()
-                    .filter((registration) => String(registration.userId) !== String(studentId));
-
-                if (String(document.getElementById("studentEditingId").value || "") === String(studentId)) {
-                    resetStudentForm();
+                try {
+                    await Promise.all(
+                        registrations
+                            .filter((registration) => String(registration.userId) === String(studentId))
+                            .map((registration) => api.deleteRegistration(registration.id))
+                    );
+                    await api.deleteUser(studentId);
+                    if (String(document.getElementById("studentEditingId").value || "") === String(studentId)) {
+                        resetStudentForm();
+                    }
+                    showMessage(studentMessage, `Ученик «${getUserName(student)}» удален.`, true);
+                    await renderAll();
+                } catch {
+                    showMessage(studentMessage, "Не удалось удалить ученика.", false);
                 }
-
-                auth.setUsers(updatedUsers);
-                auth.setRegistrations(updatedRegistrations);
-                showMessage(studentMessage, `Ученик «${getUserName(student)}» удален.`, true);
-                renderAll();
             });
         });
     }
@@ -770,9 +698,7 @@ document.addEventListener("DOMContentLoaded", () => {
         teacherForm.reset();
         document.getElementById("teacherFormTitle").textContent = "Добавить учителя";
         document.getElementById("teacherSubmitText").textContent = "Добавить учителя";
-        teacherMessage.textContent = "";
-        teacherMessage.classList.add("d-none");
-        teacherMessage.classList.remove("auth-form-msg--error", "auth-form-msg--success");
+        hideMessage(teacherMessage);
     }
 
     function resetStudentForm() {
@@ -781,9 +707,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("studentFormTitle").textContent = "Добавить ученика";
         document.getElementById("studentSubmitText").textContent = "Добавить ученика";
         toggleStudentSchoolFields();
-        studentMessage.textContent = "";
-        studentMessage.classList.add("d-none");
-        studentMessage.classList.remove("auth-form-msg--error", "auth-form-msg--success");
+        hideMessage(studentMessage);
     }
 
     function toggleStudentSchoolFields() {
@@ -798,6 +722,34 @@ document.addEventListener("DOMContentLoaded", () => {
             classInput.value = "";
             letterInput.value = "";
         }
+    }
+
+    function getTeachers() {
+        return users.filter((user) => user.role === "teacher");
+    }
+
+    function getStudents() {
+        return users.filter((user) => user.role === "student");
+    }
+
+    function getUserById(id) {
+        return users.find((user) => String(user.id) === String(id)) || null;
+    }
+
+    function getEventById(id) {
+        return events.find((event) => String(event.id) === String(id)) || null;
+    }
+
+    function getEventRegistrations(eventId) {
+        return registrations.filter(
+            (registration) =>
+                String(registration.eventId) === String(eventId) && registration.status === "active"
+        );
+    }
+
+    function getTeacherNameById(id) {
+        const teacher = getUserById(id);
+        return teacher ? getUserName(teacher) : "Не назначен";
     }
 
     function getUserName(user) {
@@ -851,15 +803,10 @@ document.addEventListener("DOMContentLoaded", () => {
         eventGoalDropdownButton.textContent = "Развлекательные";
         eventPlaceDropdownButton.textContent = "Актовый зал";
         eventTeacherDropdownButton.textContent = "Выберите учителя";
-        document
-            .querySelectorAll(".event-goal-option")
-            .forEach((item) => item.classList.remove("active-option"));
-        document
-            .querySelectorAll(".event-place-option")
-            .forEach((item) => item.classList.remove("active-option"));
-        document
-            .querySelectorAll(".event-teacher-option")
-            .forEach((item) => item.classList.remove("active-option"));
+        document.querySelectorAll(".event-goal-option").forEach((item) => item.classList.remove("active-option"));
+        document.querySelectorAll(".event-place-option").forEach((item) => item.classList.remove("active-option"));
+        document.querySelectorAll(".event-teacher-option").forEach((item) => item.classList.remove("active-option"));
+
         const defaultGoal = document.querySelector('.event-goal-option[data-value="fun"]');
         const defaultPlace = document.querySelector('.event-place-option[data-value="assembly"]');
         if (defaultGoal) {
@@ -893,6 +840,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         return String(value).replace(/"/g, '\\"');
+    }
+
+    function hideMessage(element) {
+        element.textContent = "";
+        element.classList.add("d-none");
+        element.classList.remove("auth-form-msg--error", "auth-form-msg--success");
     }
 
     function showMessage(element, text, isSuccess) {
