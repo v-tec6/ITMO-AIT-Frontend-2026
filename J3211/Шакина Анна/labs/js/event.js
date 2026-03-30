@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const auth = window.SchoolAuth;
+    const api = window.SchoolApi;
     const els = {
         image: document.getElementById("eventImage"),
         title: document.getElementById("eventTitle"),
@@ -16,32 +17,25 @@ document.addEventListener("DOMContentLoaded", () => {
         btnRegister: document.getElementById("btnRegister"),
         btnCancel: document.getElementById("btnCancel")
     };
-    const params = new URLSearchParams(window.location.search);
-    const eventId = params.get("id");
+    const eventId = new URLSearchParams(window.location.search).get("id");
 
-    if (!auth || Object.values(els).some((element) => !element)) {
+    if (!auth || !api || Object.values(els).some((element) => !element)) {
         return;
     }
 
-    auth.ensureTestUsers();
     document.querySelectorAll("[data-proposal-link]").forEach((link) => {
         link.setAttribute("href", auth.PROPOSAL_FORM_URL);
     });
 
-    const event = auth.getEvents().find((item) => String(item.id) === String(eventId));
-    if (!event) {
-        renderNotFound();
-        return;
-    }
-
     const currentUser = auth.getCurrentUser();
     const userId = currentUser?.id ? String(currentUser.id) : "";
     const isStudent = currentUser?.role === "student";
+    let currentEvent = null;
+    let registrations = [];
 
-    renderEvent(event);
-    syncRegistrationState();
+    init();
 
-    els.btnRegister.addEventListener("click", () => {
+    els.btnRegister.addEventListener("click", async () => {
         if (!userId) {
             window.location.href = "login.html";
             return;
@@ -52,7 +46,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        const registrations = auth.getRegistrations();
         const alreadyRegistered = registrations.find(
             (registration) =>
                 String(registration.eventId) === String(eventId) &&
@@ -61,33 +54,33 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         if (alreadyRegistered) {
-            syncRegistrationState();
+            await syncRegistrationState();
             return;
         }
 
-        if (auth.getEventRegistrations(eventId).length >= event.capacity) {
+        if (getEventRegistrations(eventId).length >= currentEvent.capacity) {
             els.hint.textContent = "Свободных мест нет.";
             return;
         }
 
-        registrations.push({
-            id: createId(),
-            eventId: String(eventId),
-            userId,
-            status: "active",
-            createdAt: new Date().toISOString()
-        });
-
-        auth.setRegistrations(registrations);
-        syncRegistrationState();
+        try {
+            await api.createRegistration({
+                id: createId(),
+                eventId: String(eventId),
+                userId,
+                status: "active"
+            });
+            await syncRegistrationState();
+        } catch {
+            els.hint.textContent = "Не удалось выполнить запись.";
+        }
     });
 
-    els.btnCancel.addEventListener("click", () => {
+    els.btnCancel.addEventListener("click", async () => {
         if (!userId) {
             return;
         }
 
-        const registrations = auth.getRegistrations();
         const registration = registrations.find(
             (item) =>
                 String(item.eventId) === String(eventId) &&
@@ -96,20 +89,37 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         if (!registration) {
-            syncRegistrationState();
+            await syncRegistrationState();
             return;
         }
 
-        registration.status = "cancelled";
-        registration.cancelledAt = new Date().toISOString();
-        auth.setRegistrations(registrations);
-        syncRegistrationState();
+        try {
+            await api.updateRegistration(registration.id, { status: "cancelled" });
+            await syncRegistrationState();
+        } catch {
+            els.hint.textContent = "Не удалось отменить запись.";
+        }
     });
 
+    async function init() {
+        try {
+            currentEvent = auth.normalizeEvent(await api.getEventById(eventId));
+        } catch {
+            renderNotFound();
+            return;
+        }
+
+        if (!currentEvent?.id) {
+            renderNotFound();
+            return;
+        }
+
+        await syncRegistrationState();
+        renderEvent(currentEvent);
+    }
+
     function renderEvent(item) {
-        const shortDescription = String(item.short || item.shortDescription || item.description || "")
-            .trim()
-            .slice(0, 140);
+        const shortDescription = String(item.short || item.shortDescription || item.description || "").trim().slice(0, 140);
 
         els.image.src = item.image;
         els.image.alt = item.title;
@@ -120,12 +130,17 @@ document.addEventListener("DOMContentLoaded", () => {
         els.goalBadge.className = "badge text-bg-light border rounded-pill event-meta-badge goal-badge";
         els.placeBadge.textContent = auth.getPlaceLabel(item.place);
         els.dateBadge.textContent = auth.formatDate(item.date);
-        els.participants.textContent = `${auth.getEventRegistrations(item.id).length} / ${item.capacity}`;
+        els.participants.textContent = `${getEventRegistrations(item.id).length} / ${item.capacity}`;
         els.audience.textContent = item.audience;
     }
 
-    function syncRegistrationState() {
-        const registrations = auth.getRegistrations();
+    async function syncRegistrationState() {
+        try {
+            registrations = await api.getRegistrations({ eventId });
+        } catch {
+            registrations = [];
+        }
+
         const activeRegistration = userId
             ? registrations.find(
                 (registration) =>
@@ -135,8 +150,17 @@ document.addEventListener("DOMContentLoaded", () => {
             )
             : null;
 
-        els.participants.textContent = `${auth.getEventRegistrations(eventId).length} / ${event.capacity}`;
+        if (currentEvent) {
+            els.participants.textContent = `${getEventRegistrations(eventId).length} / ${currentEvent.capacity}`;
+        }
         updateStatusUI(Boolean(activeRegistration), isStudent);
+    }
+
+    function getEventRegistrations(id) {
+        return registrations.filter(
+            (registration) =>
+                String(registration.eventId) === String(id) && registration.status === "active"
+        );
     }
 
     function updateStatusUI(isRegistered, isCurrentUserStudent) {

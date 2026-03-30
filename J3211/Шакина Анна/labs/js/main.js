@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const auth = window.SchoolAuth;
+    const api = window.SchoolApi;
     const carouselInner = document.getElementById("carouselInner");
     const carouselIndicators = document.getElementById("carouselIndicators");
     const eventSearch = document.getElementById("eventSearch");
@@ -14,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (
         !auth ||
+        !api ||
         !carouselInner ||
         !carouselIndicators ||
         !eventSearch ||
@@ -29,15 +31,23 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    auth.ensureTestUsers();
-
     let selectedGoal = "all";
     let selectedPlace = "all";
-    const allEvents = sortByDate(auth.getEvents());
+    let allEvents = [];
 
-    renderCarousel(getTopEvents(allEvents));
-    renderEvents(allEvents);
-    bindFilters();
+    init();
+
+    async function init() {
+        try {
+            allEvents = sortByDate((await api.getEvents()).map((event) => auth.normalizeEvent(event)).filter(Boolean));
+        } catch {
+            allEvents = [];
+        }
+
+        renderCarousel(getTopEvents(allEvents));
+        renderEvents(allEvents);
+        bindFilters();
+    }
 
     function bindFilters() {
         eventSearch.addEventListener("input", applyFilters);
@@ -97,18 +107,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function applyFilters() {
         const searchValue = eventSearch.value.trim().toLowerCase();
-
-        const filteredEvents = allEvents.filter((event) => {
-            const haystack = `${event.title} ${event.description}`.toLowerCase();
-
-            const matchesSearch = !searchValue || haystack.includes(searchValue);
-            const matchesGoal = selectedGoal === "all" || event.goal === selectedGoal;
-            const matchesPlace = selectedPlace === "all" || event.place === selectedPlace;
-
-            return matchesSearch && matchesGoal && matchesPlace;
-        });
-
-        renderEvents(sortByDate(filteredEvents));
+        renderEvents(
+            sortByDate(
+                allEvents.filter((event) => {
+                    const haystack = `${event.title} ${event.description}`.toLowerCase();
+                    return (
+                        (!searchValue || haystack.includes(searchValue)) &&
+                        (selectedGoal === "all" || event.goal === selectedGoal) &&
+                        (selectedPlace === "all" || event.place === selectedPlace)
+                    );
+                })
+            )
+        );
     }
 
     function renderCarousel(eventsToRender) {
@@ -168,18 +178,12 @@ document.addEventListener("DOMContentLoaded", () => {
                         <a class="event-card-link" href="event.html?id=${encodeURIComponent(event.id)}">
                             <article class="event-card-custom">
                                 <div class="event-card-image-wrap">
-                                    <img
-                                        src="${escapeHtml(event.image)}"
-                                        alt="${escapeHtml(event.title)}"
-                                        class="event-card-image"
-                                    >
+                                    <img src="${escapeHtml(event.image)}" alt="${escapeHtml(event.title)}" class="event-card-image">
                                     <span class="badge text-bg-light border rounded-pill goal-badge position-absolute top-0 start-0 m-3">${escapeHtml(auth.getGoalLabel(event.goal))}</span>
                                 </div>
-
                                 <div class="event-card-body">
                                     <h3 class="event-card-title">${escapeHtml(event.title)}</h3>
                                     <p class="event-card-text">${escapeHtml(event.description)}</p>
-
                                     <div class="event-card-meta">
                                         <span class="event-meta-pill">${escapeHtml(auth.getPlaceLabel(event.place))}</span>
                                         <span class="event-meta-pill">${escapeHtml(auth.formatDate(event.date))}</span>
@@ -198,14 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
         today.setHours(0, 0, 0, 0);
 
         const upcoming = events
-            .filter((event) => {
-                if (!event.date || !event.title || !event.image) {
-                    return false;
-                }
-
-                const eventDate = new Date(event.date);
-                return !Number.isNaN(eventDate.getTime()) && eventDate >= today;
-            })
+            .filter((event) => event.date && event.title && event.image && new Date(event.date) >= today)
             .sort((a, b) => new Date(a.date) - new Date(b.date))
             .slice(0, 3);
 
