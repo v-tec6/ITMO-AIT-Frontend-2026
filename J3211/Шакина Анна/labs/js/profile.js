@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const auth = window.SchoolAuth;
+    const api = window.SchoolApi;
     const profileCounter = document.getElementById("profileCounter");
     const profileEventsGrid = document.getElementById("profileEventsGrid");
     const profileStateCard = document.getElementById("profileStateCard");
@@ -9,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (
         !auth ||
+        !api ||
         !profileCounter ||
         !profileEventsGrid ||
         !profileStateCard ||
@@ -19,20 +21,13 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    auth.ensureTestUsers();
     document.querySelectorAll("[data-proposal-link]").forEach((link) => {
         link.setAttribute("href", auth.PROPOSAL_FORM_URL);
     });
 
     const currentUser = auth.getCurrentUser();
     if (!currentUser?.id) {
-        showState(
-            "Вход не выполнен",
-            "Список ваших мероприятий доступен после входа в аккаунт.",
-            "Войти",
-            "login.html",
-            "guest"
-        );
+        showState("Вход не выполнен", "Список ваших мероприятий доступен после входа в аккаунт.", "Войти", "login.html", "guest");
         profileCounter.textContent = "Записей: 0";
         return;
     }
@@ -42,33 +37,40 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    const events = auth.getEvents();
-    const registrations = auth.getRegistrations();
-    const userId = String(currentUser.id);
-    const activeRegistrations = registrations.filter(
-        (registration) => String(registration.userId) === userId && registration.status === "active"
-    );
-    const activeEventIds = [...new Set(activeRegistrations.map((registration) => String(registration.eventId)))];
-    const myEvents = activeEventIds
-        .map((id) => events.find((event) => String(event.id) === id))
-        .filter(Boolean)
-        .sort((a, b) => new Date(a.date) - new Date(b.date));
+    init();
 
-    profileCounter.textContent = `Записей: ${myEvents.length}`;
+    async function init() {
+        try {
+            const userId = String(currentUser.id);
+            const [events, registrations] = await Promise.all([
+                api.getEvents(),
+                api.getRegistrations({ userId, status: "active" })
+            ]);
+            const eventsById = new Map(
+                events.map((event) => {
+                    const normalizedEvent = auth.normalizeEvent(event);
+                    return [String(normalizedEvent.id), normalizedEvent];
+                })
+            );
+            const myEvents = [...new Set(registrations.map((registration) => String(registration.eventId)))]
+                .map((id) => eventsById.get(id))
+                .filter(Boolean)
+                .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    if (!myEvents.length) {
-        showState(
-            "Записей нет",
-            "Вы еще не выбрали ни одного мероприятия.",
-            "Перейти к мероприятиям",
-            "index.html",
-            "empty"
-        );
-        return;
+            profileCounter.textContent = `Записей: ${myEvents.length}`;
+
+            if (!myEvents.length) {
+                showState("Записей нет", "Вы еще не выбрали ни одного мероприятия.", "Перейти к мероприятиям", "index.html");
+                return;
+            }
+
+            hideState();
+            renderEvents(myEvents);
+        } catch {
+            profileCounter.textContent = "Записей: 0";
+            showState("Не удалось загрузить записи", "Попробуйте открыть страницу позже или проверьте mock API.", "К мероприятиям", "index.html");
+        }
     }
-
-    hideState();
-    renderEvents(myEvents);
 
     function renderEvents(items) {
         profileEventsGrid.innerHTML = "";
@@ -81,18 +83,12 @@ document.addEventListener("DOMContentLoaded", () => {
                         <a class="event-card-link" href="event.html?id=${encodeURIComponent(event.id)}">
                             <article class="event-card-custom">
                                 <div class="event-card-image-wrap">
-                                    <img
-                                        src="${escapeHtml(event.image)}"
-                                        alt="${escapeHtml(event.title)}"
-                                        class="event-card-image"
-                                    >
+                                    <img src="${escapeHtml(event.image)}" alt="${escapeHtml(event.title)}" class="event-card-image">
                                     <span class="badge text-bg-light border rounded-pill goal-badge position-absolute top-0 start-0 m-3">${escapeHtml(auth.getGoalLabel(event.goal))}</span>
                                 </div>
-
                                 <div class="event-card-body">
                                     <h3 class="event-card-title">${escapeHtml(event.title)}</h3>
                                     <p class="event-card-text">${escapeHtml(event.description)}</p>
-
                                     <div class="event-card-meta">
                                         <span class="event-meta-pill">${escapeHtml(auth.getPlaceLabel(event.place))}</span>
                                         <span class="event-meta-pill">${escapeHtml(auth.formatDate(event.date))}</span>
