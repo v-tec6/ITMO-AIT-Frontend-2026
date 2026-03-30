@@ -4,63 +4,56 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    auth.ensureTestUsers();
-
     const currentUser = auth.getCurrentUser();
-    const isLoggedIn = Boolean(currentUser && currentUser.id);
-    const profileHomeHref = isLoggedIn ? auth.getHomePageForUser(currentUser) : "profile.html";
+    const accessToken = localStorage.getItem("accessToken");
+    const isLoggedIn = Boolean(accessToken && currentUser?.id);
+    const pageName = window.location.pathname.split("/").pop() || "index.html";
+    const protectedPages = ["profile.html", "teacher.html", "admin.html"];
 
-    const profileLinks = document.querySelectorAll('a[href="profile.html"]');
-    profileLinks.forEach((link) => {
-        link.setAttribute("href", profileHomeHref);
+    if (!isLoggedIn && protectedPages.includes(pageName)) {
+        auth.logout();
+        window.location.href = "login.html";
+        return;
+    }
+
+    if (isLoggedIn && pageName === "login.html") {
+        auth.redirectToUserHome(currentUser);
+        return;
+    }
+
+    document.querySelectorAll('a[href="profile.html"]').forEach((link) => {
+        link.setAttribute("href", isLoggedIn ? auth.getHomePageForUser(currentUser) : "profile.html");
     });
 
-    const proposalLinks = document.querySelectorAll("[data-proposal-link]");
-    proposalLinks.forEach((link) => {
+    document.querySelectorAll("[data-proposal-link]").forEach((link) => {
         link.setAttribute("href", auth.PROPOSAL_FORM_URL);
     });
 
-    const loginButtons = document.querySelectorAll(".login-button");
-    loginButtons.forEach((button) => {
+    document.querySelectorAll(".login-button").forEach((button) => {
         if (!isLoggedIn) {
             button.textContent = "Войти";
             button.setAttribute("href", "login.html");
             return;
         }
 
-        const displayName = getDisplayName(currentUser);
+        const displayName = `${String(currentUser.firstName || "").trim()} ${String(currentUser.lastName || "").trim()}`.trim()
+            || String(currentUser.email || "").trim()
+            || "Профиль";
+
         button.textContent = displayName;
-        button.setAttribute("href", profileHomeHref);
+        button.setAttribute("href", auth.getHomePageForUser(currentUser));
         button.classList.add("login-button--profile");
         button.setAttribute("title", `Профиль: ${displayName}`);
     });
 
-    const logoutButtons = document.querySelectorAll("[data-auth-logout]");
-    if (!logoutButtons.length) {
-        return;
-    }
-
-    logoutButtons.forEach((button) => {
+    document.querySelectorAll("[data-auth-logout]").forEach((button) => {
         if (isLoggedIn) {
             button.classList.add("is-visible");
         }
 
         button.addEventListener("click", () => {
-            auth.setCurrentUser(null);
+            auth.logout();
             window.location.href = "login.html";
         });
     });
-
-    function getDisplayName(user) {
-        const firstName = String(user.firstName || "").trim();
-        const lastName = String(user.lastName || "").trim();
-        const fullName = `${firstName} ${lastName}`.trim();
-
-        if (fullName) {
-            return fullName;
-        }
-
-        const email = String(user.email || "").trim();
-        return email || "Профиль";
-    }
 });

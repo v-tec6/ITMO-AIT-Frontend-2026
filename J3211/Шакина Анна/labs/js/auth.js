@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const auth = window.SchoolAuth;
+    const api = window.SchoolApi;
     const loginForm = document.getElementById("loginForm");
     const signupForm = document.getElementById("signupForm");
     const loginMessage = document.getElementById("loginMessage");
@@ -11,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (
         !auth ||
+        !api ||
         !loginForm ||
         !signupForm ||
         !loginMessage ||
@@ -23,12 +25,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    auth.ensureTestUsers();
-
     toggleSchoolFields();
 
-    const forms = document.querySelectorAll(".needs-validation");
-    forms.forEach((form) => {
+    document.querySelectorAll(".needs-validation").forEach((form) => {
         form.addEventListener("submit", (event) => {
             if (!form.checkValidity()) {
                 event.preventDefault();
@@ -45,12 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     studentLetterInput.addEventListener("input", () => {
-        const normalizedLetter = String(studentLetterInput.value || "")
-            .trim()
-            .toUpperCase()
-            .slice(0, 1);
-
-        studentLetterInput.value = normalizedLetter;
+        studentLetterInput.value = String(studentLetterInput.value || "").trim().toUpperCase().slice(0, 1);
         studentLetterInput.setCustomValidity("");
     });
 
@@ -58,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
         studentClassInput.setCustomValidity("");
     });
 
-    loginForm.addEventListener("submit", (event) => {
+    loginForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
         if (!loginForm.checkValidity()) {
@@ -66,35 +60,24 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        const email = String(document.getElementById("loginEmail")?.value || "")
-            .trim()
-            .toLowerCase();
+        const email = String(document.getElementById("loginEmail")?.value || "").trim().toLowerCase();
         const password = String(document.getElementById("loginPass")?.value || "");
 
-        const allUsers = auth.getUsers();
-        const foundUser = allUsers.find(
-            (user) => String(user.email || "").toLowerCase() === email
-        );
+        try {
+            const response = await api.login(email, password);
+            if (response?.accessToken) {
+                localStorage.setItem("accessToken", response.accessToken);
+            }
 
-        if (!foundUser) {
-            showMessage(loginMessage, "Пользователь с такой почтой не найден.", false);
-            return;
-        }
-
-        if (String(foundUser.password || "") !== password) {
-            showMessage(loginMessage, "Неверный пароль.", false);
-            return;
-        }
-
-        const currentUser = auth.setCurrentUser(foundUser);
-        showMessage(loginMessage, "Вы вошли в аккаунт.", true);
-
-        setTimeout(() => {
+            const currentUser = auth.setCurrentUser(response?.user);
+            showMessage(loginMessage, "Вы вошли в аккаунт.", true);
             auth.redirectToUserHome(currentUser);
-        }, 450);
+        } catch {
+            showMessage(loginMessage, "Неверная почта или пароль.", false);
+        }
     });
 
-    signupForm.addEventListener("submit", (event) => {
+    signupForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
         if (!signupForm.checkValidity()) {
@@ -104,23 +87,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const firstName = String(document.getElementById("firstName")?.value || "").trim();
         const lastName = String(document.getElementById("lastName")?.value || "").trim();
-        const email = String(document.getElementById("signupEmail")?.value || "")
-            .trim()
-            .toLowerCase();
+        const email = String(document.getElementById("signupEmail")?.value || "").trim().toLowerCase();
         const password = String(document.getElementById("signupPass")?.value || "");
         const isExternal = isExternalStudent.checked;
         const studentClass = studentClassInput.value.trim();
         const studentLetter = studentLetterInput.value.trim().toUpperCase();
-
-        const allUsers = auth.getUsers();
-        const alreadyExists = allUsers.some(
-            (user) => String(user.email || "").toLowerCase() === email
-        );
-
-        if (alreadyExists) {
-            showMessage(signupMessage, "Почта уже зарегистрирована. Войдите в аккаунт.", false);
-            return;
-        }
 
         if (!isExternal) {
             const classNumber = Number(studentClass);
@@ -140,29 +111,31 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        const newUser = {
-            id: createId(),
-            firstName,
-            lastName,
-            email,
-            password,
-            role: "student",
-            isExternal,
-            studentClass: isExternal ? null : Number(studentClass),
-            studentLetter: isExternal ? null : studentLetter,
-            createdAt: new Date().toISOString()
-        };
+        try {
+            const response = await api.register(
+                auth.normalizeUser({
+                    firstName,
+                    lastName,
+                    email,
+                    password,
+                    role: "student",
+                    isExternal,
+                    studentClass: isExternal ? null : Number(studentClass),
+                    studentLetter: isExternal ? null : studentLetter,
+                    passwordText: password
+                })
+            );
 
-        const normalizedUser = auth.normalizeUser(newUser);
-        allUsers.push(normalizedUser);
-        auth.setUsers(allUsers);
+            if (response?.accessToken) {
+                localStorage.setItem("accessToken", response.accessToken);
+            }
 
-        const currentUser = auth.setCurrentUser(normalizedUser);
-        showMessage(signupMessage, "Регистрация завершена.", true);
-
-        setTimeout(() => {
+            const currentUser = auth.setCurrentUser(response?.user);
+            showMessage(signupMessage, "Регистрация завершена.", true);
             auth.redirectToUserHome(currentUser);
-        }, 450);
+        } catch {
+            showMessage(signupMessage, "Не удалось зарегистрироваться. Возможно, такая почта уже занята.", false);
+        }
     });
 
     function toggleSchoolFields() {
@@ -173,18 +146,13 @@ document.addEventListener("DOMContentLoaded", () => {
         studentLetterInput.disabled = shouldHideSchoolFields;
         studentClassInput.required = !shouldHideSchoolFields;
         studentLetterInput.required = !shouldHideSchoolFields;
-
-        resetSchoolFieldValidity();
+        studentClassInput.setCustomValidity("");
+        studentLetterInput.setCustomValidity("");
 
         if (shouldHideSchoolFields) {
             studentClassInput.value = "";
             studentLetterInput.value = "";
         }
-    }
-
-    function resetSchoolFieldValidity() {
-        studentClassInput.setCustomValidity("");
-        studentLetterInput.setCustomValidity("");
     }
 
     function showMessage(el, text, isSuccess) {
@@ -198,14 +166,4 @@ document.addEventListener("DOMContentLoaded", () => {
         el.classList.add("d-none");
         el.classList.remove("auth-form-msg--error", "auth-form-msg--success");
     }
-    function createId() {
-        if (window.crypto && typeof window.crypto.randomUUID === "function") {
-            return window.crypto.randomUUID();
-        }
-
-        return `user-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-    }
 });
-
-
-
