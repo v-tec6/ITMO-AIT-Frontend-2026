@@ -181,3 +181,20 @@ select.glass-input option {
 #themeToggle span {
     filter: drop-shadow(0 0 2px rgba(255,255,255,0.2));
 }
+
+.btn svg, 
+.nav-link svg, 
+.navbar-brand svg,
+.accordion-button svg {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+    position: relative;
+    top: -1px;
+}
+
+.btn, .nav-link, .navbar-brand {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 0.5rem; 
+}
