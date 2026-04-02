@@ -194,6 +194,8 @@
   }
 
   async function handleBuyConfirm() {
+    console.error('HANDLE BUY CONFIRM START');
+
     if (isSubmitting) {
       console.error('Buy confirmation ignored because submission is already in progress.');
       return;
@@ -299,18 +301,40 @@
         createdAt: new Date().toISOString(),
         status: 'confirmed'
       });
+      console.error('CREATE ORDER FINISHED');
 
       await delay(700);
+      console.error('DELAY FINISHED');
       showBuyMessage('info', 'Оплата подтверждена. Завершаем оформление билета...');
+      console.error('SHOW BUY MESSAGE FINISHED');
 
       const nextAvailableTickets = Math.max(0, latestAvailableTickets - quantity);
+      console.error('BEFORE UPDATE EVENT TICKETS', {
+        eventId: activeBuyState.eventId,
+        latestAvailableTickets,
+        quantity,
+        nextAvailableTickets
+      });
+
+      console.error('ORDER CREATED SUCCESSFULLY');
+      console.error('BEFORE UPDATE EVENT TICKETS', {
+        latestAvailableTickets,
+        quantity,
+        eventId: activeBuyState.eventId
+      });
+
       const updatedEvent = await ordersService.updateEventTickets(
         activeBuyState.eventId,
         nextAvailableTickets
       );
       const updatedAvailableTickets = Number(updatedEvent.availableTickets);
 
+      console.error('UPDATE EVENT TICKETS FINISHED', updatedEvent);
+
       activeBuyState.availableTickets = updatedAvailableTickets;
+      if (lastBuyTriggerButton) {
+        lastBuyTriggerButton.setAttribute('data-available-tickets', String(updatedAvailableTickets));
+      }
       syncBuyButtons(activeBuyState.eventId, updatedAvailableTickets);
       updateEventPageAvailability(updatedAvailableTickets);
       if (window.KontramarkaEventPage?.applyPurchaseResult) {

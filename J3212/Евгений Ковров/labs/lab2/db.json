@@ -31,7 +31,7 @@
       "price": 1500,
       "image": "https://placehold.co/800x500/1f2633/e6edf6?text=%D0%94%D0%B6%D0%B0%D0%B7",
       "category": "Концерт",
-      "availableTickets": 100,
+      "availableTickets": 91,
       "capacity": 100,
       "age": "18+",
       "status": "Опубликовано"
@@ -546,15 +546,207 @@
       "createdAt": "2026-04-02T12:46:25.483Z",
       "status": "confirmed",
       "id": "v91zkcSd7ag"
+    },
+    {
+      "userId": "-oSzNQwd7xs",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-02T12:52:38.107Z",
+      "status": "confirmed",
+      "id": "a-WxmRserO0"
+    },
+    {
+      "userId": "-oSzNQwd7xs",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-02T12:54:30.629Z",
+      "status": "confirmed",
+      "id": "VcpCM69aZPk"
+    },
+    {
+      "userId": "-oSzNQwd7xs",
+      "eventId": "2",
+      "quantity": 1,
+      "totalPrice": 700,
+      "createdAt": "2026-04-02T12:54:41.932Z",
+      "status": "confirmed",
+      "id": "7aCzbgrgLMc"
+    },
+    {
+      "userId": "-oSzNQwd7xs",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-02T13:03:00.946Z",
+      "status": "confirmed",
+      "id": "NpGRjJTa_gE"
+    },
+    {
+      "userId": "-oSzNQwd7xs",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-02T13:04:10.565Z",
+      "status": "confirmed",
+      "id": "R4dv-e4lrHs"
+    },
+    {
+      "userId": "-oSzNQwd7xs",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-02T13:04:44.784Z",
+      "status": "confirmed",
+      "id": "EPYlhhbB1us"
+    },
+    {
+      "userId": "-oSzNQwd7xs",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-02T13:08:13.387Z",
+      "status": "confirmed",
+      "id": "ziBe9emmrgE"
+    },
+    {
+      "userId": "-oSzNQwd7xs",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-02T13:22:41.144Z",
+      "status": "confirmed",
+      "id": "btrHP3rpEe8"
+    },
+    {
+      "userId": "-oSzNQwd7xs",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-02T13:23:42.805Z",
+      "status": "confirmed",
+      "id": "2o5Li0IElQM"
+    },
+    {
+      "userId": "-oSzNQwd7xs",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-02T13:27:13.945Z",
+      "status": "confirmed",
+      "id": "OWkcmj6fQHI"
+    },
+    {
+      "userId": "-oSzNQwd7xs",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-02T13:28:16.105Z",
+      "status": "confirmed",
+      "id": "YBFyzEv2czE"
+    },
+    {
+      "userId": "-oSzNQwd7xs",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-02T13:28:59.707Z",
+      "status": "confirmed",
+      "id": "kVpgRjKWBb4"
+    },
+    {
+      "userId": "-oSzNQwd7xs",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-02T13:29:25.186Z",
+      "status": "confirmed",
+      "id": "R2iUCatf5Jw"
+    },
+    {
+      "userId": "-oSzNQwd7xs",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-02T13:32:07.570Z",
+      "status": "confirmed",
+      "id": "jfmMAKRicug"
+    },
+    {
+      "userId": "-oSzNQwd7xs",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-02T13:35:00.518Z",
+      "status": "confirmed",
+      "id": "Fu6UUfoGmTM"
+    },
+    {
+      "userId": "-oSzNQwd7xs",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-02T13:35:13.182Z",
+      "status": "confirmed",
+      "id": "e_EOGPUwsyA"
+    },
+    {
+      "userId": "-oSzNQwd7xs",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-02T13:36:54.022Z",
+      "status": "confirmed",
+      "id": "j1FIXx2g5DA"
+    },
+    {
+      "userId": "-oSzNQwd7xs",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-02T13:39:31.651Z",
+      "status": "confirmed",
+      "id": "A8ra7C61zJo"
+    },
+    {
+      "userId": "8fAOn_ZAQb4",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-02T13:50:20.753Z",
+      "status": "confirmed",
+      "id": "FuO_jM5QnhM"
+    },
+    {
+      "userId": "8fAOn_ZAQb4",
+      "eventId": "1",
+      "quantity": 4,
+      "totalPrice": 6000,
+      "createdAt": "2026-04-02T13:50:49.069Z",
+      "status": "confirmed",
+      "id": "nys1d2xL640"
+    },
+    {
+      "userId": "8fAOn_ZAQb4",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-02T14:36:51.953Z",
+      "status": "confirmed",
+      "id": "B3BllZOQLco"
+    },
+    {
+      "userId": "8fAOn_ZAQb4",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-02T14:38:44.415Z",
+      "status": "confirmed",
+      "id": "Zpr2iiLgcI4"
     }
   ],
   "favorites": [
-    {
-      "id": "fav1",
-      "userId": "8fAOn_ZAQb4",
-      "eventId": "1",
-      "createdAt": "2026-03-28T17:10:00.000Z"
-    },
     {
       "id": "fav2",
       "userId": "-oSzNQwd7xs",

@@ -15,6 +15,10 @@
   const { getOrdersByUser } = global.KontramarkaOrdersService;
   const { getEventById } = global.KontramarkaEventsService;
   const { getFavoritesByUser } = global.KontramarkaFavoritesService;
+  const DEFAULT_VISIBLE_ORDERS_COUNT = 3;
+  let currentOrdersWithEvents = [];
+  let currentFavoritesWithEvents = [];
+  let isOrdersExpanded = false;
 
   function getLoginRedirectUrl() {
     return `login.html?redirect=${encodeURIComponent('orders.html')}`;
@@ -181,13 +185,50 @@
     `;
   }
 
-  function renderOrdersAndFavorites(ordersWithEvents, favoritesWithEvents) {
-    const ordersContent = ordersWithEvents.length
-      ? `<div class="d-grid gap-3">${ordersWithEvents.map(createOrderCard).join('')}</div>`
+  function sortOrdersByNewest(ordersWithEvents) {
+    return [...ordersWithEvents].sort((left, right) => {
+      const leftDate = new Date(left.order.createdAt).getTime();
+      const rightDate = new Date(right.order.createdAt).getTime();
+      return rightDate - leftDate;
+    });
+  }
+
+  function getOrdersToggleButton(totalCount) {
+    if (totalCount <= DEFAULT_VISIBLE_ORDERS_COUNT) {
+      return '';
+    }
+
+    return `
+      <div class="text-center mt-3">
+        <button class="btn btn-outline-secondary" type="button" id="ordersToggleButton">
+          ${isOrdersExpanded ? 'Свернуть список ▲' : 'Показать все заказы ▼'}
+        </button>
+      </div>
+    `;
+  }
+
+  function createOrdersContent(ordersWithEvents) {
+    if (!ordersWithEvents.length) {
+      return renderEmptySection('Пока нет заказов. После покупки билетов они появятся в этом разделе.');
+    }
+
+    const visibleOrders = isOrdersExpanded
+      ? ordersWithEvents
+      : ordersWithEvents.slice(0, DEFAULT_VISIBLE_ORDERS_COUNT);
+
+    return `
+      <div class="d-grid gap-3">${visibleOrders.map(createOrderCard).join('')}</div>
+      ${getOrdersToggleButton(ordersWithEvents.length)}
+    `;
+  }
+
+  function renderOrdersAndFavorites() {
+    const ordersContent = currentOrdersWithEvents.length
+      ? createOrdersContent(currentOrdersWithEvents)
       : renderEmptySection('Пока нет заказов. После покупки билетов они появятся в этом разделе.');
 
-    const favoritesContent = favoritesWithEvents.length
-      ? `<div class="row row-cols-1 row-cols-md-2 g-3">${favoritesWithEvents.map(createFavoriteCard).join('')}</div>`
+    const favoritesContent = currentFavoritesWithEvents.length
+      ? `<div class="row row-cols-1 row-cols-md-2 g-3">${currentFavoritesWithEvents.map(createFavoriteCard).join('')}</div>`
       : renderEmptySection('В избранном пока пусто. Добавляйте интересные события со страницы мероприятия.');
 
     pageContent.innerHTML = `
@@ -242,12 +283,25 @@
         Promise.all(favorites.map(loadFavoriteEvent))
       ]);
 
-      renderOrdersAndFavorites(ordersWithEvents, favoritesWithEvents);
+      currentOrdersWithEvents = sortOrdersByNewest(ordersWithEvents);
+      currentFavoritesWithEvents = favoritesWithEvents;
+      renderOrdersAndFavorites();
     } catch (error) {
       console.error('Orders page loading failed.', error);
       renderState('Ошибка загрузки', 'Не удалось загрузить ваши данные. Попробуйте позже.', 'text-danger');
     }
   }
+
+  document.addEventListener('click', (event) => {
+    const toggleButton = event.target.closest('#ordersToggleButton');
+
+    if (!toggleButton) {
+      return;
+    }
+
+    isOrdersExpanded = !isOrdersExpanded;
+    renderOrdersAndFavorites();
+  });
 
   initOrdersPage();
 })(window);
