@@ -14,7 +14,7 @@
       <span class="badge brand-badge text-white">КМ</span>
       Контрамарка
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav" aria-label="Открыть навигацию">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="topNav">
@@ -37,6 +37,7 @@
       <div class="col-lg-5">
         <div class="input-group input-group-lg">
           <span class="input-group-text">🔎</span>
+          <label class="visually-hidden" for="catalogSearch">Поиск мероприятий</label>
           <input type="text" class="form-control" id="catalogSearch" placeholder="Поиск по названию, артисту или площадке">
           <button class="btn btn-outline-secondary d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#filtersCanvas">
             Фильтры
@@ -63,7 +64,7 @@
             <button class="btn btn-sm btn-outline-secondary" type="button" id="catalogResetButton">Сброс</button>
           </div>
 
-          <label class="form-label mt-2">Тип</label>
+          <label class="form-label mt-2" for="catalogCategory">Тип</label>
           <select class="form-select" id="catalogCategory">
             <option selected>Все</option>
             <option>Концерт</option>
@@ -74,7 +75,7 @@
             <option>Фестиваль</option>
           </select>
 
-          <label class="form-label mt-3">Город</label>
+          <label class="form-label mt-3" for="catalogCity">Город</label>
           <select class="form-select" id="catalogCity">
             <option selected>Все</option>
             <option>Санкт-Петербург</option>
@@ -83,12 +84,18 @@
 
           <label class="form-label mt-3">Дата</label>
           <div class="row g-2">
-            <div class="col-6"><input type="date" class="form-control" id="catalogDateFrom"></div>
-            <div class="col-6"><input type="date" class="form-control" id="catalogDateTo"></div>
+            <div class="col-6">
+              <label class="visually-hidden" for="catalogDateFrom">Дата от</label>
+              <input type="date" class="form-control" id="catalogDateFrom">
+            </div>
+            <div class="col-6">
+              <label class="visually-hidden" for="catalogDateTo">Дата до</label>
+              <input type="date" class="form-control" id="catalogDateTo">
+            </div>
           </div>
 
           <div class="mt-3">
-            <label class="form-label">Цена</label>
+            <label class="form-label" for="catalogPriceRange">Цена</label>
             <input type="range" class="form-range" min="0" max="20000" value="20000" id="catalogPriceRange">
             <div class="d-flex justify-content-between text-secondary small">
               <span>0 ₽</span><span id="catalogPriceValue">20 000 ₽</span>
@@ -111,6 +118,7 @@
       <section class="col-lg-9">
         <div class="d-flex align-items-center justify-content-between mb-3">
           <h2 class="h5 mb-0" id="catalogTitle">Мероприятия</h2>
+          <label class="visually-hidden" for="catalogSort">Сортировка мероприятий</label>
           <select class="form-select form-select-sm w-auto" id="catalogSort">
             <option selected>Сначала популярные</option>
             <option>Сначала дешёвые</option>
@@ -134,10 +142,10 @@
 <div class="offcanvas offcanvas-end" tabindex="-1" id="filtersCanvas">
   <div class="offcanvas-header">
     <h5 class="offcanvas-title">Фильтры</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Закрыть фильтры"></button>
   </div>
   <div class="offcanvas-body">
-    <label class="form-label">Тип</label>
+    <label class="form-label" for="catalogCategoryMobile">Тип</label>
     <select class="form-select mb-3" id="catalogCategoryMobile">
       <option selected>Все</option>
       <option>Концерт</option>
@@ -148,7 +156,7 @@
       <option>Фестиваль</option>
     </select>
 
-    <label class="form-label">Город</label>
+    <label class="form-label" for="catalogCityMobile">Город</label>
     <select class="form-select mb-3" id="catalogCityMobile">
       <option selected>Все</option>
       <option>Санкт-Петербург</option>
@@ -164,14 +172,14 @@
     <div class="modal-content rounded-4">
       <div class="modal-header">
         <h5 class="modal-title">Покупка билета</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть окно покупки"></button>
       </div>
       <div class="modal-body">
         <div class="text-secondary">Мероприятие:</div>
         <div class="fw-semibold" id="buyEventName">—</div>
         <div class="text-secondary small mt-1" id="buyEventMeta">Выберите количество билетов и подтвердите заказ.</div>
         <hr>
-        <label class="form-label">Количество</label>
+        <label class="form-label" for="buyQuantitySelect">Количество</label>
         <select class="form-select" id="buyQuantitySelect">
           <option selected>1</option>
         </select>

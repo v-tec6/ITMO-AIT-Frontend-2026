@@ -16,7 +16,7 @@
       Контрамарка
     </a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav" aria-label="Открыть навигацию">
       <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -81,13 +81,13 @@
         <div class="border rounded-4 p-3 p-lg-4 mt-4">
           <h2 class="h6 mb-3">Быстрые настройки</h2>
           <form id="organizerSettingsForm">
-            <label class="form-label">Имя организатора</label>
+            <label class="form-label" for="organizerNameInput">Имя организатора</label>
             <input class="form-control mb-3" id="organizerNameInput" value="Северная Сцена">
 
-            <label class="form-label">Эл. почта для уведомлений</label>
+            <label class="form-label" for="organizerEmailInput">Эл. почта для уведомлений</label>
             <input class="form-control mb-3" id="organizerEmailInput" value="team@severscene.ru">
 
-            <label class="form-label">Телефон поддержки</label>
+            <label class="form-label" for="organizerPhoneInput">Телефон поддержки</label>
             <input class="form-control mb-3" id="organizerPhoneInput" value="+7 812 600-12-12">
 
             <div class="alert d-none mb-3" id="organizerSettingsMessage" role="alert"></div>
@@ -102,7 +102,9 @@
             <h2 class="h6 mb-0">Мои события</h2>
 
             <div class="d-flex gap-2">
+              <label class="visually-hidden" for="organizerSearchInput">Поиск событий организатора</label>
               <input class="form-control form-control-sm" id="organizerSearchInput" placeholder="Поиск по названию">
+              <label class="visually-hidden" for="organizerStatusFilter">Фильтр статуса событий</label>
               <select class="form-select form-select-sm w-auto" id="organizerStatusFilter">
                 <option selected>Все статусы</option>
                 <option>Опубликовано</option>
@@ -143,18 +145,18 @@
     <div class="modal-content rounded-4">
       <div class="modal-header">
         <h5 class="modal-title">Создать событие</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть окно события"></button>
       </div>
 
       <div class="modal-body">
         <form id="createEventForm">
           <div class="row g-3">
             <div class="col-md-8">
-              <label class="form-label">Название</label>
+              <label class="form-label" for="createEventTitle">Название</label>
               <input class="form-control" id="createEventTitle" placeholder="Например, Джаз в Полуторке: весенний вечер" required>
             </div>
             <div class="col-md-4">
-              <label class="form-label">Тип</label>
+              <label class="form-label" for="createEventCategory">Тип</label>
               <select class="form-select" id="createEventCategory">
                 <option selected>Концерт</option>
                 <option>Стендап</option>
@@ -166,33 +168,33 @@
             </div>
 
             <div class="col-md-6">
-              <label class="form-label">Город</label>
+              <label class="form-label" for="createEventCity">Город</label>
               <input class="form-control" id="createEventCity" placeholder="Санкт-Петербург" required>
             </div>
             <div class="col-md-6">
-              <label class="form-label">Площадка</label>
+              <label class="form-label" for="createEventVenue">Площадка</label>
               <input class="form-control" id="createEventVenue" placeholder="Новая Голландия, сцена «Полуторка»" required>
             </div>
 
             <div class="col-md-6">
-              <label class="form-label">Дата</label>
+              <label class="form-label" for="createEventDate">Дата</label>
               <input type="date" class="form-control" id="createEventDate" required>
             </div>
             <div class="col-md-6">
-              <label class="form-label">Время</label>
+              <label class="form-label" for="createEventTime">Время</label>
               <input type="time" class="form-control" id="createEventTime" required>
             </div>
 
             <div class="col-md-4">
-              <label class="form-label">Вместимость</label>
+              <label class="form-label" for="createEventCapacity">Вместимость</label>
               <input type="number" class="form-control" id="createEventCapacity" value="120" min="1">
             </div>
             <div class="col-md-4">
-              <label class="form-label">Цена от</label>
+              <label class="form-label" for="createEventPrice">Цена от</label>
               <input type="number" class="form-control" id="createEventPrice" value="1200" min="0">
             </div>
             <div class="col-md-4">
-              <label class="form-label">Возраст</label>
+              <label class="form-label" for="createEventAge">Возраст</label>
               <select class="form-select" id="createEventAge">
                 <option selected>18+</option>
                 <option>16+</option>
@@ -202,11 +204,11 @@
             </div>
 
             <div class="col-12">
-              <label class="form-label">Описание</label>
+              <label class="form-label" for="createEventDescription">Описание</label>
               <textarea class="form-control" rows="4" id="createEventDescription" placeholder="Коротко: что это, почему стоит прийти, что важно знать."></textarea>
             </div>
             <div class="col-12">
-              <label class="form-label">Изображение</label>
+              <label class="form-label" for="createEventImage">Изображение</label>
               <input class="form-control" id="createEventImage" placeholder="https://placehold.co/800x500/1f2633/e6edf6?text=Событие">
             </div>
             <div class="col-12">
@@ -229,7 +231,7 @@
     <div class="modal-content rounded-4">
       <div class="modal-header">
         <h5 class="modal-title">Управление событием</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть окно управления событием"></button>
       </div>
 
       <div class="modal-body">
@@ -259,17 +261,17 @@
     <div class="modal-content rounded-4">
       <div class="modal-header">
         <h5 class="modal-title">Выплаты</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть окно выплат"></button>
       </div>
 
       <div class="modal-body">
         <div class="text-secondary mb-2">Доступно к выплате</div>
         <div class="h4 fw-semibold mb-3" id="payoutAvailableAmount">—</div>
 
-        <label class="form-label">Сумма</label>
+        <label class="form-label" for="payoutAmountInput">Сумма</label>
         <input class="form-control mb-3" type="number" id="payoutAmountInput" value="56000" min="0">
 
-        <label class="form-label">Счёт</label>
+        <label class="form-label" for="payoutAccountInput">Счёт</label>
         <input class="form-control mb-1" id="payoutAccountInput" placeholder="40817 810 0 0000 0000000">
         <div class="alert d-none mt-3 mb-0" id="payoutMessage" role="alert"></div>
       </div>

@@ -5,8 +5,8 @@
   --border-soft: #2B3342;
 
   --text-primary: #E6EDF6;
-  --text-secondary: #AEB8C8;
-  --text-muted: #7C8797;
+  --text-secondary: #C2CBD9;
+  --text-muted: #98A4B7;
 
   --accent-primary: #C9783B;
   --accent-hover: #D98C55;
@@ -99,6 +99,13 @@ body {
 
 .text-muted {
   color: var(--text-muted) !important;
+}
+
+.form-text,
+.form-label,
+.form-check-label,
+::placeholder {
+  color: var(--text-secondary) !important;
 }
 
 .btn-primary {

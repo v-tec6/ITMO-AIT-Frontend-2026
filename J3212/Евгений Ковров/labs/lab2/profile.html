@@ -16,7 +16,7 @@
       Контрамарка
     </a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav" aria-label="Открыть навигацию">
       <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -122,7 +122,7 @@
     <div class="modal-content rounded-4">
       <div class="modal-header">
         <h5 class="modal-title">Возврат билета</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть окно возврата"></button>
       </div>
       <div class="modal-body">
         <div class="text-secondary">Билет:</div>
@@ -130,15 +130,15 @@
 
         <hr>
 
-        <label class="form-label">Причина</label>
-        <select class="form-select mb-3">
+        <label class="form-label" for="refundReason">Причина</label>
+        <select class="form-select mb-3" id="refundReason">
           <option selected>Не могу прийти</option>
           <option>Ошибка при покупке</option>
           <option>Перенос/отмена события</option>
         </select>
 
-        <label class="form-label">Комментарий</label>
-        <textarea class="form-control" rows="3" placeholder="Коротко поясни..."></textarea>
+        <label class="form-label" for="refundComment">Комментарий</label>
+        <textarea class="form-control" rows="3" id="refundComment" placeholder="Коротко поясни..."></textarea>
 
         <div class="form-text">Заявка появится в разделе «Возвраты».</div>
       </div>

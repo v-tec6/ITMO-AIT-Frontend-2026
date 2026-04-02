@@ -16,7 +16,7 @@
       Контрамарка
     </a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav" aria-label="Открыть навигацию">
       <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -44,14 +44,14 @@
     <div class="modal-content rounded-4">
       <div class="modal-header">
         <h5 class="modal-title">Покупка билета</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть окно покупки"></button>
       </div>
       <div class="modal-body">
         <div class="text-secondary">Мероприятие:</div>
         <div class="fw-semibold" id="buyEventName">—</div>
         <div class="text-secondary small mt-1" id="buyEventMeta">Выберите количество билетов и подтвердите заказ.</div>
         <hr>
-        <label class="form-label">Количество</label>
+        <label class="form-label" for="buyQuantitySelect">Количество</label>
         <select class="form-select" id="buyQuantitySelect">
           <option selected>1</option>
         </select>
@@ -83,10 +83,10 @@
     <div class="modal-content rounded-4">
       <div class="modal-header">
         <h5 class="modal-title">Поделиться</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть окно поделиться"></button>
       </div>
       <div class="modal-body">
-        <label class="form-label">Ссылка</label>
+        <label class="form-label" for="shareEventLink">Ссылка</label>
         <input class="form-control" id="shareEventLink" value="https://Контрамарка.local/events" readonly>
         <div class="form-text">Можно отправить другу или сохранить для себя.</div>
       </div>
@@ -103,15 +103,15 @@
     <div class="modal-content rounded-4">
       <div class="modal-header">
         <h5 class="modal-title">Отзыв</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть окно отзыва"></button>
       </div>
       <form id="reviewForm">
       <div class="modal-body">
-        <label class="form-label">Оценка</label>
+        <label class="form-label" for="reviewRating">Оценка</label>
         <select class="form-select mb-3" id="reviewRating" required>
           <option selected>5</option><option>4</option><option>3</option><option>2</option><option>1</option>
         </select>
-        <label class="form-label">Текст</label>
+        <label class="form-label" for="reviewText">Текст</label>
         <textarea class="form-control" rows="4" id="reviewText" placeholder="Коротко и по делу..." required></textarea>
         <div class="form-text" id="reviewHint">Отзыв появится на странице сразу после отправки.</div>
         <div class="alert d-none mt-3 mb-0" id="reviewMessage" role="alert"></div>
