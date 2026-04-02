@@ -8,9 +8,11 @@ initTheme();
 document.addEventListener('DOMContentLoaded', () => {
 
     const themeBtn = document.getElementById('themeToggleBtn');
-    if (themeBtn) {
+    const themeIconUse = document.getElementById('themeIconUse');
+    
+    if (themeBtn && themeIconUse) {
         const currentTheme = localStorage.getItem('posimax-theme') || 'dark';
-        themeBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+        themeIconUse.setAttribute('href', currentTheme === 'dark' ? 'img/sprite.svg#sun' : 'img/sprite.svg#moon');
 
         themeBtn.addEventListener('click', () => {
             const theme = document.body.getAttribute('data-theme');
@@ -20,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.documentElement.setAttribute('data-bs-theme', newTheme);
             localStorage.setItem('posimax-theme', newTheme);
             
-            themeBtn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+            themeIconUse.setAttribute('href', newTheme === 'dark' ? 'img/sprite.svg#sun' : 'img/sprite.svg#moon');
         });
     }
 
@@ -53,7 +55,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const cardHtml = `
                     <div class="col">
                         <div class="card course-card h-100 bg-dark text-white border-secondary rounded-4 overflow-hidden d-flex flex-column">
-                            <img src="${course.image}" class="card-img-top image-placeholder" alt="Обложка курса: ${course.title}" loading="lazy">
+                            <picture>
+                                <img src="${course.image}" class="card-img-top image-placeholder" alt="Обложка курса: ${course.title}" loading="lazy" style="width: 100%; height: 180px; object-fit: cover;">
+                            </picture>
                             <div class="card-body d-flex flex-column">
                                 <h2 class="card-title h5 fw-bold mb-1">${course.title}</h2>
                                 <div class="text-warning small mb-2" aria-label="Рейтинг: ${course.rating} из 5">
