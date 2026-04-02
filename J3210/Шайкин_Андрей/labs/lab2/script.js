@@ -62,27 +62,27 @@ function renderCourses(courses) {
     
     container.innerHTML = "";
     if (courses.length === 0) {
-        container.innerHTML = '<div class="col-12"><h5 class="text-white-50 text-center mt-5">По вашему запросу ничего не найдено</h5></div>';
+        container.innerHTML = '<div class="col-12"><h2 class="text-white-50 text-center mt-5">По вашему запросу ничего не найдено</h2></div>';
         return;
     }
 
     courses.forEach((course) => {
         const cardHTML = `
         <div class="col-md-6 col-xl-4 d-flex mb-4">
-            <div class="glass glass-hover w-100 d-flex flex-column">
-                <img src="${course.image}" class="glass-img-top w-100" style="height: 180px;" alt="Course">
+            <article class="glass glass-hover w-100 d-flex flex-column">
+                <img src="${course.image}" class="glass-img-top w-100" style="height: 180px;" alt="Обложка курса: ${course.title}">
                 <div class="p-4 d-flex flex-column flex-grow-1">
                     <span class="badge ${course.badge} bg-opacity-25 rounded-pill mb-3 border border-opacity-25 d-inline-block" style="width: fit-content;">
                         ${course.category} • ${course.level}
                     </span>
-                    <h5 class="fw-bold text-white fs-5">${course.title}</h5>
+                    <h3 class="fw-bold text-white fs-5">${course.title}</h3>
                     <p class="text-white-50 small flex-grow-1">${course.desc}</p>
                     <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-secondary border-opacity-25">
-                        <span class="fw-bold text-white fs-5">${course.price.toLocaleString('ru-RU')} ₽</span>
-                        <a href="course.html" class="btn btn-sm glass-btn px-3 py-2">Подробнее</a>
+                        <span class="fw-bold text-white fs-5" aria-label="Цена: ${course.price} рублей">${course.price.toLocaleString('ru-RU')} ₽</span>
+                        <a href="course.html" class="btn btn-sm glass-btn px-3 py-2" aria-label="Подробнее о курсе: ${course.title}">Подробнее</a>
                     </div>
                 </div>
-            </div>
+            </article>
         </div>`;
         container.insertAdjacentHTML('beforeend', cardHTML);
     });
@@ -96,17 +96,15 @@ async function fetchAndRenderCourses() {
         allCourses = await res.json();
         renderCourses(allCourses);
     } catch (e) {
-        document.querySelector("#coursesContainer").innerHTML = '<h5 class="text-danger text-center mt-5">Сервер недоступен</h5>';
+        document.querySelector("#coursesContainer").innerHTML = '<h2 class="text-danger text-center mt-5">Сервер недоступен</h2>';
     }
 }
 
 function applyFilters(event) {
     if (event) event.preventDefault();
-    
     const searchTxt = document.getElementById('searchCourse').value.toLowerCase();
     const categoryVal = document.getElementById('categoryFilter').value;
     const maxPrice = Number(document.getElementById('priceRange').value);
-    
     const checkedLevels = [];
     if (document.getElementById('lvl1').checked) checkedLevels.push('Junior');
     if (document.getElementById('lvl2').checked) checkedLevels.push('Middle');
@@ -117,15 +115,9 @@ function applyFilters(event) {
         const matchCat = categoryVal === "" || course.category === categoryVal;
         const matchPrice = course.price <= maxPrice;
         const matchLvl = checkedLevels.length === 0 || checkedLevels.includes(course.level);
-        
         return matchSearch && matchCat && matchPrice && matchLvl;
     });
-
     renderCourses(filtered);
-}
-
-function search(event) {
-    applyFilters(event);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -141,7 +133,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (document.getElementById('coursesContainer')) {
         fetchAndRenderCourses(); 
-        
         const priceRange = document.getElementById('priceRange');
         if (priceRange) {
             priceRange.addEventListener('input', (e) => {
