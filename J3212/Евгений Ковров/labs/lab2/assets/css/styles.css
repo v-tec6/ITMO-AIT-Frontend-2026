@@ -240,3 +240,36 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+.organizer-sales-cell {
+  min-width: 140px;
+}
+
+.organizer-sales-meta {
+  flex-wrap: nowrap;
+}
+
+.organizer-sales-volume {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.organizer-sales-percent {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.toast-container {
+  z-index: 1095;
+}
+
+.toast {
+  background-color: var(--bg-surface);
+  border-color: var(--border-soft) !important;
+  color: var(--text-primary);
+}
+
+.toast-header {
+  color: var(--text-primary);
+}

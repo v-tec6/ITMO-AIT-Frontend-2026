@@ -21,8 +21,10 @@
   }
 
   async function updateEventTickets(eventId, newAvailableTickets) {
-    const response = await apiClient.patch(`/events/${eventId}`, {
-      availableTickets: newAvailableTickets
+    const currentEventResponse = await apiClient.get(`/events/${eventId}`);
+    const response = await apiClient.put(`/events/${eventId}`, {
+      ...currentEventResponse.data,
+      availableTickets: Number(newAvailableTickets)
     });
 
     return response.data;

@@ -1,16 +1,26 @@
 (function (global) {
   const pageContainer = document.getElementById('eventDetailsPage');
+  const reviewModalElement = document.getElementById('reviewModal');
+  const reviewForm = document.getElementById('reviewForm');
+  const reviewRatingInput = document.getElementById('reviewRating');
+  const reviewTextInput = document.getElementById('reviewText');
+  const reviewMessage = document.getElementById('reviewMessage');
+  const reviewSubmitButton = document.getElementById('reviewSubmitButton');
 
-  if (!pageContainer || !global.KontramarkaEventsService || !global.KontramarkaOrdersService) {
+  if (!pageContainer || !global.KontramarkaEventsService) {
     return;
   }
 
   const { getEventById } = global.KontramarkaEventsService;
-  const { createOrder, updateEventTickets } = global.KontramarkaOrdersService;
+  const authService = global.KontramarkaAuth;
+  const favoritesService = global.KontramarkaFavoritesService;
+  const reviewsService = global.KontramarkaReviewsService;
   let currentEvent = null;
+  let currentReviews = [];
+  let currentFavorite = null;
   let pageMessage = null;
-  let isPurchasing = false;
   let pageMessageTimeoutId = null;
+  let isReviewSubmitting = false;
 
   function getEventIdFromQuery() {
     const params = new URLSearchParams(global.location.search);
@@ -37,6 +47,61 @@
     });
   }
 
+  function formatReviewDate(date) {
+    const parsedDate = new Date(date);
+
+    if (Number.isNaN(parsedDate.getTime())) {
+      return 'Недавно';
+    }
+
+    return parsedDate.toLocaleDateString('ru-RU', {
+      day: 'numeric',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  function getEventStatus(event) {
+    return event?.status || 'Опубликовано';
+  }
+
+  function isPublishedEvent(event) {
+    return getEventStatus(event) === 'Опубликовано';
+  }
+
+  function isEventPurchasable(event) {
+    return isPublishedEvent(event) && Number(event?.availableTickets || 0) > 0;
+  }
+
+  function getStatusInfo(event) {
+    const status = getEventStatus(event);
+
+    if (status === 'Приостановлено') {
+      return {
+        badgeClass: 'text-bg-warning',
+        badgeText: 'Продажи приостановлены',
+        message: 'Продажа билетов временно приостановлена организатором.'
+      };
+    }
+
+    if (status === 'Черновик') {
+      return {
+        badgeClass: 'text-bg-secondary',
+        badgeText: 'Снято с публикации',
+        message: 'Это мероприятие снято с публикации и временно недоступно для покупки.'
+      };
+    }
+
+    return {
+      badgeClass: 'bg-body-tertiary border',
+      badgeText: Number(event?.availableTickets || 0) > 0
+        ? `Доступно: ${event.availableTickets}`
+        : 'Билеты закончились',
+      message: ''
+    };
+  }
+
   function renderState(title, message, stateClass) {
     pageContainer.innerHTML = `
       <div class="border rounded-4 p-4 p-lg-5 text-center ${stateClass}">
@@ -47,11 +112,17 @@
   }
 
   function getAvailabilityMarkup(event) {
-    if (event.availableTickets <= 0) {
-      return '<span class="badge text-bg-danger">Билеты закончились</span>';
+    const statusInfo = getStatusInfo(event);
+
+    if (!isPublishedEvent(event)) {
+      return `<span class="badge ${statusInfo.badgeClass}" id="eventAvailableTicketsBadge">${statusInfo.badgeText}</span>`;
     }
 
-    return `<span class="badge bg-body-tertiary border">Доступно: ${event.availableTickets}</span>`;
+    if (event.availableTickets <= 0) {
+      return '<span class="badge text-bg-danger" id="eventAvailableTicketsBadge">Билеты закончились</span>';
+    }
+
+    return `<span class="badge bg-body-tertiary border" id="eventAvailableTicketsBadge">Доступно: ${event.availableTickets}</span>`;
   }
 
   function getLoginRedirectUrl() {
@@ -82,10 +153,7 @@
       return;
     }
 
-    pageMessage = {
-      type,
-      text
-    };
+    pageMessage = { type, text };
   }
 
   function scheduleMessageClear(delay = 2800) {
@@ -97,18 +165,74 @@
       pageMessage = null;
       pageMessageTimeoutId = null;
 
-      if (currentEvent && !isPurchasing) {
+      if (currentEvent) {
         renderEvent(currentEvent);
       }
     }, delay);
   }
 
+  function getBuyButtonAttributes(event) {
+    if (!isEventPurchasable(event)) {
+      return 'class="btn btn-secondary" type="button" disabled';
+    }
+
+    return `class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#buyModal" data-buy="e${event.id}" data-event-id="${event.id}" data-title="${event.title}" data-price="${event.price}" data-available-tickets="${event.availableTickets}"`;
+  }
+
+  function getFavoriteButtonMarkup() {
+    const isAuthenticated = authService?.isAuthenticated();
+    const isFavorite = Boolean(currentFavorite);
+
+    return `
+      <button
+        class="btn ${isFavorite ? 'btn-primary' : 'btn-outline-secondary'}"
+        type="button"
+        id="favoriteToggleButton"
+        ${!isAuthenticated ? 'title="Для добавления в избранное нужно войти"' : ''}
+      >
+        ${isFavorite ? '★ В избранном' : '☆ В избранное'}
+      </button>
+    `;
+  }
+
+  function getReviewsMarkup() {
+    if (!currentReviews.length) {
+      return `
+        <div class="text-secondary">
+          Пока нет отзывов. Вы можете стать первым, кто поделится впечатлением.
+        </div>
+      `;
+    }
+
+    return currentReviews.map((review, index) => `
+      <div class="d-flex gap-3">
+        <div class="rounded-circle bg-body-tertiary border d-flex align-items-center justify-content-center fw-semibold" style="width:40px;height:40px;">
+          ${review.userName ? review.userName.trim().charAt(0).toUpperCase() : 'К'}
+        </div>
+        <div class="flex-grow-1">
+          <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
+            <div class="fw-semibold">${review.userName || 'Пользователь Контрамарки'}</div>
+            <div class="text-secondary small">${formatReviewDate(review.createdAt)}</div>
+          </div>
+          <div class="text-warning small">${'★'.repeat(Number(review.rating || 0))}${'☆'.repeat(5 - Number(review.rating || 0))}</div>
+          <div class="text-secondary mt-1">
+            ${review.text}
+          </div>
+        </div>
+      </div>
+      ${index < currentReviews.length - 1 ? '<hr>' : ''}
+    `).join('');
+  }
+
   function renderEvent(event) {
-    const isSoldOut = event.availableTickets <= 0;
-    const buyButtonText = isSoldOut ? 'Билеты закончились' : (isPurchasing ? 'Оформляем...' : 'Купить билет');
-    const buyButtonAttributes = isSoldOut
-      ? 'class="btn btn-secondary" type="button" disabled'
-      : `class="btn btn-primary" type="button" data-action="buy-ticket" data-buy="e${event.id}" data-title="${event.title}"${isPurchasing ? ' disabled' : ''}`;
+    const status = getEventStatus(event);
+    const isSoldOut = Number(event.availableTickets) <= 0;
+    const isPurchasable = isEventPurchasable(event);
+    const statusInfo = getStatusInfo(event);
+    const buyButtonText = !isPublishedEvent(event)
+      ? (status === 'Приостановлено' ? 'Продажи приостановлены' : 'Недоступно')
+      : (isSoldOut ? 'Билеты закончились' : 'Купить билет');
+    const buyButtonAttributes = getBuyButtonAttributes(event);
 
     document.title = `Контрамарка — ${event.title}`;
 
@@ -136,6 +260,12 @@
               ${event.description}
             </p>
 
+            ${!isPublishedEvent(event) ? `
+              <div class="alert alert-warning mt-3 mb-0" role="alert">
+                ${statusInfo.message}
+              </div>
+            ` : ''}
+
             <hr>
 
             <div class="d-flex flex-column flex-sm-row gap-2">
@@ -145,50 +275,19 @@
               <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#shareModal">
                 Поделиться
               </button>
-              <button class="btn btn-outline-secondary" type="button">
-                ❤ В избранное
-              </button>
+              ${getFavoriteButtonMarkup()}
             </div>
           </div>
 
           <div class="border rounded-4 p-3 p-lg-4 mt-4">
-            <h2 class="h6 mb-3">Отзывы</h2>
-
-            <div class="d-flex gap-3">
-              <div class="rounded-circle bg-body-tertiary border" style="width:40px;height:40px;"></div>
-              <div class="flex-grow-1">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="fw-semibold">Мария Андреева</div>
-                  <div class="text-secondary small">1 день назад</div>
-                </div>
-                <div class="text-warning small">★★★★★</div>
-                <div class="text-secondary mt-1">
-                  Удобная площадка и хорошая организация. Событие оставило приятное впечатление.
-                </div>
-              </div>
+            <div class="d-flex justify-content-between align-items-center gap-3 mb-3 flex-wrap">
+              <h2 class="h6 mb-0">Отзывы</h2>
+              <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                Оставить отзыв
+              </button>
             </div>
 
-            <hr>
-
-            <div class="d-flex gap-3">
-              <div class="rounded-circle bg-body-tertiary border" style="width:40px;height:40px;"></div>
-              <div class="flex-grow-1">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="fw-semibold">Илья Громов</div>
-                  <div class="text-secondary small">3 дня назад</div>
-                </div>
-                <div class="text-warning small">★★★★☆</div>
-                <div class="text-secondary mt-1">
-                  Понравилась атмосфера и понятная навигация на площадке. На вход лучше приходить заранее.
-                </div>
-              </div>
-            </div>
-
-            <hr>
-
-            <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#reviewModal">
-              Оставить отзыв
-            </button>
+            ${getReviewsMarkup()}
           </div>
         </div>
 
@@ -226,7 +325,7 @@
               </div>
               <div class="d-flex justify-content-between small mt-2">
                 <span class="text-secondary">Билеты</span>
-                <span>${event.availableTickets > 0 ? `${event.availableTickets} шт.` : 'Нет в наличии'}</span>
+                <span id="eventAvailableTicketsValue">${event.availableTickets > 0 ? `${event.availableTickets} шт.` : 'Нет в наличии'}</span>
               </div>
             </div>
 
@@ -238,7 +337,7 @@
                 <div class="h5 mb-0 fw-semibold">от ${event.price.toLocaleString('ru-RU')} ₽</div>
               </div>
               <button ${buyButtonAttributes}>
-                ${isSoldOut ? 'Нет билетов' : (isPurchasing ? 'Оформляем...' : 'Купить')}
+                ${!isPurchasable ? buyButtonText : 'Купить'}
               </button>
             </div>
           </div>
@@ -253,60 +352,267 @@
     }
   }
 
-  async function handleBuyTicket() {
-    if (!currentEvent || isPurchasing) {
+  function applyPurchaseResult(updatedEvent) {
+    if (!updatedEvent || !currentEvent || String(updatedEvent.id) !== String(currentEvent.id)) {
       return;
     }
 
-    if (currentEvent.availableTickets <= 0) {
-      setPageMessage('warning', 'Билеты на это мероприятие закончились.');
-      renderEvent(currentEvent);
+    currentEvent = {
+      ...currentEvent,
+      ...updatedEvent,
+      availableTickets: Number(updatedEvent.availableTickets)
+    };
+
+    setPageMessage('success', `Заказ успешно оформлен. Осталось билетов: ${currentEvent.availableTickets}.`);
+    renderEvent(currentEvent);
+    updatePurchaseUi(currentEvent);
+    scheduleMessageClear(7000);
+  }
+
+  function updatePurchaseUi(event) {
+    const badge = document.getElementById('eventAvailableTicketsBadge');
+    const value = document.getElementById('eventAvailableTicketsValue');
+    const buyButtons = pageContainer.querySelectorAll('[data-event-id]');
+    const isSoldOut = Number(event.availableTickets) <= 0;
+    const status = getEventStatus(event);
+    const isPurchasable = isEventPurchasable(event);
+
+    if (badge) {
+      if (status === 'Приостановлено') {
+        badge.className = 'badge text-bg-warning';
+        badge.textContent = 'Продажи приостановлены';
+      } else if (status === 'Черновик') {
+        badge.className = 'badge text-bg-secondary';
+        badge.textContent = 'Снято с публикации';
+      } else if (isSoldOut) {
+        badge.className = 'badge text-bg-danger';
+        badge.textContent = 'Билеты закончились';
+      } else {
+        badge.className = 'badge bg-body-tertiary border';
+        badge.textContent = `Доступно: ${event.availableTickets}`;
+      }
+    }
+
+    if (value) {
+      value.textContent = isSoldOut ? 'Нет в наличии' : `${event.availableTickets} шт.`;
+    }
+
+    buyButtons.forEach((button) => {
+      button.setAttribute('data-available-tickets', String(event.availableTickets));
+
+      if (!isPurchasable) {
+        button.disabled = true;
+        button.textContent = status === 'Приостановлено'
+          ? 'Продажи приостановлены'
+          : (status === 'Черновик'
+            ? 'Недоступно'
+            : (button.textContent.includes('Купить билет') ? 'Билеты закончились' : 'Нет билетов'));
+        button.classList.remove('btn-primary');
+        button.classList.add('btn-secondary');
+        button.removeAttribute('data-bs-toggle');
+        button.removeAttribute('data-bs-target');
+      } else {
+        button.disabled = false;
+        button.classList.remove('btn-secondary');
+        button.classList.add('btn-primary');
+        button.setAttribute('data-bs-toggle', 'modal');
+        button.setAttribute('data-bs-target', '#buyModal');
+      }
+    });
+  }
+
+  function hideReviewMessage() {
+    if (!reviewMessage) {
       return;
     }
 
-    if (!global.KontramarkaAuth || !global.KontramarkaAuth.isAuthenticated()) {
+    reviewMessage.className = 'alert d-none mt-3 mb-0';
+    reviewMessage.textContent = '';
+  }
+
+  function showReviewMessage(type, text) {
+    if (!reviewMessage) {
+      return;
+    }
+
+    reviewMessage.className = `alert alert-${type} mt-3 mb-0`;
+    reviewMessage.textContent = text;
+  }
+
+  function setReviewSubmittingState(submitting) {
+    isReviewSubmitting = submitting;
+
+    if (!reviewSubmitButton) {
+      return;
+    }
+
+    reviewSubmitButton.disabled = submitting;
+    reviewSubmitButton.textContent = submitting ? 'Публикуем...' : 'Опубликовать';
+  }
+
+  async function loadEventRelatedData(eventId) {
+    const currentUser = authService?.getCurrentUser();
+    const promises = [
+      getEventById(eventId),
+      reviewsService ? reviewsService.getReviewsByEvent(eventId) : Promise.resolve([])
+    ];
+
+    if (currentUser && favoritesService) {
+      promises.push(favoritesService.getFavoriteByUserAndEvent(currentUser.id, eventId));
+    } else {
+      promises.push(Promise.resolve(null));
+    }
+
+    const [event, reviews, favorite] = await Promise.all(promises);
+    currentEvent = event;
+    currentReviews = Array.isArray(reviews) ? reviews : [];
+    currentFavorite = favorite;
+  }
+
+  async function handleFavoriteToggle() {
+    if (!currentEvent || !favoritesService || !authService) {
+      return;
+    }
+
+    if (!authService.isAuthenticated()) {
       global.location.href = getLoginRedirectUrl();
       return;
     }
 
-    isPurchasing = true;
-    setPageMessage(null, null);
-    renderEvent(currentEvent);
+    const currentUser = authService.getCurrentUser();
 
     try {
-      const currentUser = global.KontramarkaAuth.getCurrentUser();
+      if (currentFavorite) {
+        await favoritesService.removeFavorite(currentFavorite.id);
+        currentFavorite = null;
+        setPageMessage('info', 'Мероприятие удалено из избранного.');
+      } else {
+        currentFavorite = await favoritesService.addFavorite({
+          userId: currentUser.id,
+          eventId: currentEvent.id
+        });
+        setPageMessage('success', 'Мероприятие добавлено в избранное.');
+      }
 
-      await createOrder({
-        userId: currentUser.id,
-        eventId: currentEvent.id,
-        quantity: 1,
-        totalPrice: currentEvent.price,
-        createdAt: new Date().toISOString(),
-        status: 'confirmed'
-      });
-
-      const updatedEvent = await updateEventTickets(currentEvent.id, currentEvent.availableTickets - 1);
-      currentEvent = updatedEvent;
-      setPageMessage('success', 'Покупка оформлена. Заказ создан, а билет добавлен в ваши покупки.');
-      scheduleMessageClear();
-    } catch (error) {
-      console.error('Ticket purchase failed.', error);
-      setPageMessage('danger', 'Не удалось оформить билет. Попробуйте ещё раз.');
-    } finally {
-      isPurchasing = false;
       renderEvent(currentEvent);
+      scheduleMessageClear(6000);
+    } catch (error) {
+      console.error('Favorite toggle failed.', error);
+      setPageMessage('danger', 'Не удалось обновить избранное. Попробуйте позже.');
+      renderEvent(currentEvent);
+      scheduleMessageClear(6000);
     }
   }
 
-  pageContainer.addEventListener('click', (event) => {
-    const buyButton = event.target.closest('[data-action="buy-ticket"]');
+  async function handleReviewSubmit(event) {
+    event.preventDefault();
 
-    if (!buyButton) {
+    if (!currentEvent || !reviewsService || !authService || isReviewSubmitting) {
       return;
     }
 
-    handleBuyTicket();
+    if (!authService.isAuthenticated()) {
+      global.location.href = getLoginRedirectUrl();
+      return;
+    }
+
+    const text = reviewTextInput?.value.trim() || '';
+    const rating = Number(reviewRatingInput?.value || 5);
+
+    if (text.length < 10) {
+      showReviewMessage('warning', 'Напишите отзыв чуть подробнее: минимум 10 символов.');
+      return;
+    }
+
+    const currentUser = authService.getCurrentUser();
+    setReviewSubmittingState(true);
+    hideReviewMessage();
+
+    try {
+      const review = await reviewsService.createReview({
+        eventId: currentEvent.id,
+        userId: currentUser.id,
+        userName: currentUser.name,
+        rating,
+        text
+      });
+
+      currentReviews = await reviewsService.getReviewsByEvent(currentEvent.id);
+      setPageMessage('success', 'Отзыв успешно опубликован.');
+      renderEvent(currentEvent);
+      scheduleMessageClear(6000);
+
+      if (reviewForm) {
+        reviewForm.reset();
+      }
+
+      if (reviewRatingInput) {
+        reviewRatingInput.value = '5';
+      }
+
+      const modalInstance = global.bootstrap?.Modal.getOrCreateInstance(reviewModalElement);
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+    } catch (error) {
+      console.error('Review creation failed.', error);
+      showReviewMessage('danger', 'Не удалось опубликовать отзыв. Попробуйте позже.');
+    } finally {
+      setReviewSubmittingState(false);
+    }
+  }
+
+  document.addEventListener('click', (event) => {
+    const favoriteButton = event.target.closest('#favoriteToggleButton');
+
+    if (favoriteButton) {
+      handleFavoriteToggle();
+    }
   });
+
+  document.addEventListener('kontramarka:ticket-purchased', async (event) => {
+    if (!currentEvent || String(event.detail.eventId) !== String(currentEvent.id)) {
+      return;
+    }
+
+    try {
+      const updatedEvent = await getEventById(currentEvent.id);
+      applyPurchaseResult(updatedEvent);
+      return;
+    } catch (error) {
+      applyPurchaseResult({
+        ...currentEvent,
+        availableTickets: event.detail.availableTickets
+      });
+      return;
+    }
+  });
+
+  if (reviewForm) {
+    reviewForm.addEventListener('submit', handleReviewSubmit);
+  }
+
+  if (reviewModalElement) {
+    reviewModalElement.addEventListener('show.bs.modal', () => {
+      if (!authService?.isAuthenticated()) {
+        global.location.href = getLoginRedirectUrl();
+        return;
+      }
+
+      hideReviewMessage();
+    });
+
+    reviewModalElement.addEventListener('hidden.bs.modal', () => {
+      hideReviewMessage();
+      setReviewSubmittingState(false);
+      if (reviewForm) {
+        reviewForm.reset();
+      }
+      if (reviewRatingInput) {
+        reviewRatingInput.value = '5';
+      }
+    });
+  }
 
   async function initEventPage() {
     renderState('Загрузка мероприятия...', 'Получаем данные события из mock API.', 'text-secondary');
@@ -319,9 +625,8 @@
     }
 
     try {
-      const event = await getEventById(eventId);
-      currentEvent = event;
-      renderEvent(event);
+      await loadEventRelatedData(eventId);
+      renderEvent(currentEvent);
     } catch (error) {
       console.error('Event loading failed.', error);
 
@@ -333,6 +638,10 @@
       renderState('Ошибка загрузки', 'Не удалось загрузить данные мероприятия. Попробуйте позже.', 'text-danger');
     }
   }
+
+  global.KontramarkaEventPage = {
+    applyPurchaseResult
+  };
 
   initEventPage();
 })(window);

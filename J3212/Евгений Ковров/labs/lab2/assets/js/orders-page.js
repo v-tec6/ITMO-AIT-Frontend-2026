@@ -5,7 +5,8 @@
     !pageContent ||
     !global.KontramarkaAuth ||
     !global.KontramarkaOrdersService ||
-    !global.KontramarkaEventsService
+    !global.KontramarkaEventsService ||
+    !global.KontramarkaFavoritesService
   ) {
     return;
   }
@@ -13,6 +14,7 @@
   const { getCurrentUser, isAuthenticated } = global.KontramarkaAuth;
   const { getOrdersByUser } = global.KontramarkaOrdersService;
   const { getEventById } = global.KontramarkaEventsService;
+  const { getFavoritesByUser } = global.KontramarkaFavoritesService;
 
   function getLoginRedirectUrl() {
     return `login.html?redirect=${encodeURIComponent('orders.html')}`;
@@ -113,11 +115,84 @@
     `;
   }
 
-  function renderOrders(ordersWithEvents) {
-    pageContent.innerHTML = `
-      <div class="d-grid gap-3">
-        ${ordersWithEvents.map(createOrderCard).join('')}
+  function createFavoriteCard(favoriteWithEvent) {
+    const { favorite, event } = favoriteWithEvent;
+
+    if (!event) {
+      return `
+        <div class="border rounded-4 p-3 p-lg-4">
+          <div class="fw-semibold">Информация о мероприятии недоступна</div>
+          <div class="text-secondary small mt-1">Событие было удалено или временно недоступно.</div>
+          <div class="text-secondary small mt-3">Добавлено в избранное: ${formatDateTime(favorite.createdAt)}</div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="col">
+        <div class="card card-hover h-100 rounded-4 overflow-hidden">
+          <img
+            src="${event.image}"
+            class="card-img-top"
+            alt="${event.title}"
+            style="height: 180px; object-fit: cover;"
+          >
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start gap-3">
+              <div>
+                <h3 class="h6 mb-1">${event.title}</h3>
+                <div class="text-secondary small">${event.city} • ${event.venue}</div>
+                <div class="text-secondary small mt-1">${formatEventDate(event.date)} • ${event.time}</div>
+              </div>
+              <span class="badge bg-body-tertiary border">${event.category}</span>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent border-top-0 pt-0 pb-3">
+            <div class="d-flex justify-content-between align-items-center gap-3">
+              <div>
+                <div class="fw-semibold">от ${event.price.toLocaleString('ru-RU')} ₽</div>
+                <div class="text-secondary small">Добавлено: ${formatDateTime(favorite.createdAt)}</div>
+              </div>
+              <a class="btn btn-sm btn-outline-secondary" href="event.html?id=${event.id}">Открыть</a>
+            </div>
+          </div>
+        </div>
       </div>
+    `;
+  }
+
+  function renderSection(title, subtitle, content) {
+    return `
+      <section class="mb-4">
+        <div class="mb-3">
+          <h2 class="h5 fw-semibold mb-1">${title}</h2>
+          <div class="text-secondary">${subtitle}</div>
+        </div>
+        ${content}
+      </section>
+    `;
+  }
+
+  function renderEmptySection(message) {
+    return `
+      <div class="border rounded-4 p-4 text-center text-secondary">
+        ${message}
+      </div>
+    `;
+  }
+
+  function renderOrdersAndFavorites(ordersWithEvents, favoritesWithEvents) {
+    const ordersContent = ordersWithEvents.length
+      ? `<div class="d-grid gap-3">${ordersWithEvents.map(createOrderCard).join('')}</div>`
+      : renderEmptySection('Пока нет заказов. После покупки билетов они появятся в этом разделе.');
+
+    const favoritesContent = favoritesWithEvents.length
+      ? `<div class="row row-cols-1 row-cols-md-2 g-3">${favoritesWithEvents.map(createFavoriteCard).join('')}</div>`
+      : renderEmptySection('В избранном пока пусто. Добавляйте интересные события со страницы мероприятия.');
+
+    pageContent.innerHTML = `
+      ${renderSection('Заказы', 'Ваши покупки и статусы заказов.', ordersContent)}
+      ${renderSection('Избранное', 'События, которые вы сохранили на потом.', favoritesContent)}
     `;
   }
 
@@ -134,28 +209,43 @@
     }
   }
 
+  async function loadFavoriteEvent(favorite) {
+    try {
+      const event = await getEventById(favorite.eventId);
+      return { favorite, event };
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        return { favorite, event: null };
+      }
+
+      throw error;
+    }
+  }
+
   async function initOrdersPage() {
     if (!isAuthenticated()) {
       global.location.href = getLoginRedirectUrl();
       return;
     }
 
-    renderState('Загрузка заказов...', 'Получаем ваши покупки и данные мероприятий.', 'text-secondary');
+    renderState('Загрузка данных...', 'Получаем ваши заказы и избранные мероприятия.', 'text-secondary');
 
     try {
       const currentUser = getCurrentUser();
-      const orders = await getOrdersByUser(currentUser.id);
+      const [orders, favorites] = await Promise.all([
+        getOrdersByUser(currentUser.id),
+        getFavoritesByUser(currentUser.id)
+      ]);
 
-      if (!orders.length) {
-        renderState('Пока нет заказов', 'После покупки билетов они появятся на этой странице.', 'text-secondary');
-        return;
-      }
+      const [ordersWithEvents, favoritesWithEvents] = await Promise.all([
+        Promise.all(orders.map(loadOrderEvent)),
+        Promise.all(favorites.map(loadFavoriteEvent))
+      ]);
 
-      const ordersWithEvents = await Promise.all(orders.map(loadOrderEvent));
-      renderOrders(ordersWithEvents);
+      renderOrdersAndFavorites(ordersWithEvents, favoritesWithEvents);
     } catch (error) {
-      console.error('Orders loading failed.', error);
-      renderState('Ошибка загрузки', 'Не удалось загрузить ваши заказы. Попробуйте позже.', 'text-danger');
+      console.error('Orders page loading failed.', error);
+      renderState('Ошибка загрузки', 'Не удалось загрузить ваши данные. Попробуйте позже.', 'text-danger');
     }
   }
 

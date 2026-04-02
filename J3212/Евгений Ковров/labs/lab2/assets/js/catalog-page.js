@@ -45,6 +45,11 @@
     };
   }
 
+  function isPublishedEvent(event) {
+    const status = event.status || 'Опубликовано';
+    return status === 'Опубликовано';
+  }
+
   function formatEventDate(date) {
     const parsedDate = new Date(date);
 
@@ -180,6 +185,10 @@
     const filters = getCurrentFilters();
 
     return sortEvents(events.filter((event) => {
+      if (!isPublishedEvent(event)) {
+        return false;
+      }
+
       if (!matchesSearch(event, filters.search)) {
         return false;
       }
@@ -240,7 +249,10 @@
                   data-bs-toggle="modal"
                   data-bs-target="#buyModal"
                   data-buy="e${event.id}"
+                  data-event-id="${event.id}"
                   data-title="${event.title}"
+                  data-price="${event.price}"
+                  data-available-tickets="${event.availableTickets}"
                 >
                   Купить
                 </button>

@@ -17,7 +17,11 @@
 
   async function getEventById(id) {
     try {
-      const response = await apiClient.get(`/events/${id}`);
+      const response = await apiClient.get(`/events/${id}`, {
+        params: {
+          _ts: Date.now()
+        }
+      });
       return response.data;
     } catch (error) {
       console.error(`Failed to load event with id ${id}.`, error);
