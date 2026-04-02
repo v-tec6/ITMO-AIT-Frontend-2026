@@ -12,11 +12,12 @@
     <div class="bg-blob-2"></div>
 
     <header>
-        <nav class="navbar glass m-3 px-4 py-2" aria-label="Навигация по уроку">
-            <div class="container-fluid">
+        <nav class="navbar glass m-3 px-4 py-2 d-flex justify-content-between" aria-label="Навигация по уроку">
+            <div>
                 <a class="navbar-brand text-white fw-bold fs-6" href="profile.html"><span class="fs-4 align-middle me-2" aria-hidden="true">←</span> Вернуться в кабинет</a>
-                <span class="text-white-50 d-none d-md-block fw-bold">Шаблон: Просмотр курса</span>
+                <span class="text-white-50 d-none d-md-inline fw-bold ms-3">Шаблон: Просмотр курса</span>
             </div>
+            <button id="themeToggle" class="btn btn-sm btn-outline-secondary rounded-pill" aria-label="Переключить тему">🌓 Тема</button>
         </nav>
     </header>
 
@@ -88,6 +89,7 @@
         </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
     <script>
         const tabs = document.querySelectorAll('button[data-bs-toggle="tab"]');
         tabs.forEach(tab => {

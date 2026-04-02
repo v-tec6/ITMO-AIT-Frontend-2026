@@ -1,3 +1,16 @@
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+}
+initTheme();
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+}
+
 const API_URL = "http://localhost:3000";
 let allCourses = []; 
 
@@ -123,6 +136,11 @@ function applyFilters(event) {
 document.addEventListener("DOMContentLoaded", () => {
     const isProfile = window.location.pathname.includes('profile.html');
     checkAuth(isProfile);
+
+    const themeToggleBtn = document.getElementById('themeToggle');
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', toggleTheme);
+    }
 
     if (isProfile && localStorage.user) {
         const user = JSON.parse(localStorage.user);
