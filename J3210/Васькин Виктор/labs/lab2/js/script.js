@@ -1,4 +1,28 @@
+const initTheme = () => {
+    const savedTheme = localStorage.getItem('posimax-theme') || 'dark';
+    document.documentElement.setAttribute('data-bs-theme', savedTheme);
+    document.body.setAttribute('data-theme', savedTheme);
+};
+initTheme();
+
 document.addEventListener('DOMContentLoaded', () => {
+
+    const themeBtn = document.getElementById('themeToggleBtn');
+    if (themeBtn) {
+        const currentTheme = localStorage.getItem('posimax-theme') || 'dark';
+        themeBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+
+        themeBtn.addEventListener('click', () => {
+            const theme = document.body.getAttribute('data-theme');
+            const newTheme = theme === 'dark' ? 'light' : 'dark';
+            
+            document.body.setAttribute('data-theme', newTheme);
+            document.documentElement.setAttribute('data-bs-theme', newTheme);
+            localStorage.setItem('posimax-theme', newTheme);
+            
+            themeBtn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        });
+    }
 
     const coursesGrid = document.getElementById('coursesGrid');
 
@@ -171,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const userJson = localStorage.getItem('user');
     const token = localStorage.getItem('accessToken');
-    const navButtonsBlock = document.querySelector('.navbar-collapse .d-flex');
+    const navButtonsBlock = document.getElementById('authBlock');
     const navList = document.querySelector('.navbar-nav');
 
     if (userJson && token) {
@@ -181,10 +205,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (navButtonsBlock) {
             navButtonsBlock.innerHTML = `
-                <div class="dropdown mt-3 mt-lg-0">
+                <div class="dropdown">
                     <a class="text-decoration-none d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="${avatarUrl}" class="rounded-circle border border-secondary" width="40" height="40" alt="Аватар">
-                        <span class="text-white ms-2 d-none d-md-inline fw-bold">${shortName}</span>
+                        <span class="text-white ms-2 d-none d-md-inline fw-bold theme-text">${shortName}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark mt-2 border-secondary shadow-lg">
                         <li><a class="dropdown-item" href="profile.html">Личный кабинет</a></li>
