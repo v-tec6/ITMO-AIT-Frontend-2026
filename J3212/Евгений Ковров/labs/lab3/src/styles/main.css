@@ -200,6 +200,15 @@ code {
   line-height: 1.65;
 }
 
+.state-box__actions,
+.not-found-actions,
+.profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
 .button-link {
   display: inline-flex;
   align-items: center;
@@ -225,6 +234,43 @@ code {
 
 .button-link--ghost:hover {
   background-color: var(--surface-alt-color);
+}
+
+.catalog-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) repeat(2, minmax(160px, 0.8fr)) auto auto;
+  gap: 1rem;
+  align-items: end;
+  margin-top: 1.5rem;
+}
+
+.catalog-filters__field,
+.catalog-filters__checkbox {
+  margin: 0;
+}
+
+.catalog-filters__select {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  background-color: var(--surface-alt-color);
+  color: var(--text-color);
+  font: inherit;
+}
+
+.catalog-filters__select:focus {
+  outline: 2px solid rgba(201, 120, 59, 0.35);
+  outline-offset: 2px;
+}
+
+.catalog-filters__checkbox {
+  align-self: center;
+  padding-top: 1.6rem;
+}
+
+.catalog-filters__reset {
+  margin-top: 0;
 }
 
 .state-box {
@@ -813,6 +859,19 @@ code {
   gap: 0.6rem;
 }
 
+.auth-view__hint {
+  margin: 1rem 0 0;
+  color: var(--muted-text-color);
+}
+
+.auth-view__link {
+  color: var(--accent-color);
+}
+
+.auth-view__link:hover {
+  color: var(--accent-hover-color);
+}
+
 .auth-form__submit {
   width: 100%;
 }
@@ -848,6 +907,14 @@ code {
 
   .organizer-form__grid {
     grid-template-columns: 1fr;
+  }
+
+  .catalog-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .catalog-filters__checkbox {
+    padding-top: 0;
   }
 
   .purchase-panel {

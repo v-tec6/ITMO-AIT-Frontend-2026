@@ -9,6 +9,9 @@
     <div v-else-if="error" class="state-box state-box--error">{{ error }}</div>
     <div v-else-if="!orderEntries.length" class="state-box">
       Пока нет заказов. После покупки билетов они появятся в этом разделе.
+      <div class="state-box__actions">
+        <RouterLink class="button-link button-link--ghost" to="/">Перейти в каталог</RouterLink>
+      </div>
     </div>
     <div v-else class="orders-list">
       <OrderCard v-for="entry in orderEntries" :key="entry.order.id" :entry="entry" />
@@ -18,6 +21,7 @@
 
 <script setup>
 import { onMounted } from 'vue';
+import { RouterLink } from 'vue-router';
 import OrderCard from '../components/OrderCard.vue';
 import { useAuth } from '../composables/useAuth';
 import { useOrders } from '../composables/useOrders';

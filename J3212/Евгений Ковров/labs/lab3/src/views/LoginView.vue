@@ -23,12 +23,17 @@
         {{ isLoading ? 'Входим...' : 'Войти' }}
       </button>
     </form>
+
+    <p class="auth-view__hint">
+      Нет аккаунта?
+      <RouterLink class="auth-view__link" :to="registerLink">Создать аккаунт</RouterLink>
+    </p>
   </section>
 </template>
 
 <script setup>
 import { reactive, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { useAuth } from '../composables/useAuth';
 
 const route = useRoute();
@@ -39,6 +44,10 @@ const form = reactive({
   password: ''
 });
 const errorMessage = ref('');
+const registerLink = {
+  name: 'register',
+  query: route.query.redirect ? { redirect: String(route.query.redirect) } : undefined
+};
 
 async function handleSubmit() {
   clearError();

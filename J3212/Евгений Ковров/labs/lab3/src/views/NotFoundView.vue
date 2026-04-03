@@ -5,7 +5,10 @@
     <p class="view-description">
       Проверьте адрес или вернитесь в каталог мероприятий.
     </p>
-    <RouterLink class="button-link" to="/">На главную</RouterLink>
+    <div class="not-found-actions">
+      <RouterLink class="button-link" to="/">На главную</RouterLink>
+      <RouterLink class="button-link button-link--ghost" to="/orders">Мои билеты</RouterLink>
+    </div>
   </section>
 </template>
 

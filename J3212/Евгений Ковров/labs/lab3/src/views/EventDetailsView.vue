@@ -2,7 +2,12 @@
   <section class="view-section">
     <p class="eyebrow">Мероприятие</p>
     <div v-if="isLoading" class="state-box">Загрузка мероприятия...</div>
-    <div v-else-if="error" class="state-box state-box--error">{{ error }}</div>
+    <div v-else-if="error" class="state-box state-box--error">
+      {{ error }}
+      <div class="state-box__actions">
+        <RouterLink class="button-link button-link--ghost" to="/">Вернуться в каталог</RouterLink>
+      </div>
+    </div>
     <template v-else-if="event">
       <div class="event-layout">
         <div class="event-layout__main">
@@ -67,7 +72,7 @@
 
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
 import PurchasePanel from '../components/PurchasePanel.vue';
 import { useAuth } from '../composables/useAuth';
 import { useEvents } from '../composables/useEvents';
