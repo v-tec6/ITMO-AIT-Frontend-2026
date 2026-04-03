@@ -1,21 +1,44 @@
 import { ref } from 'vue';
-import { fetchEventById, fetchEvents } from '../api/events';
+import {
+  createEvent as createEventRequest,
+  fetchEventById,
+  fetchEvents,
+  updateEvent as updateEventRequest
+} from '../api/events';
+
+function normalizeEvent(event) {
+  const capacity = Number(event?.capacity || Math.max(Number(event?.availableTickets || 0), 100));
+
+  return {
+    ...event,
+    capacity,
+    availableTickets: Number(event?.availableTickets || 0),
+    price: Number(event?.price || 0),
+    status: event?.status || 'Опубликовано'
+  };
+}
 
 export function useEvents() {
   const events = ref([]);
   const currentEvent = ref(null);
   const isLoading = ref(false);
+  const isSubmitting = ref(false);
   const error = ref('');
 
-  async function loadEvents() {
+  async function loadEvents(options = {}) {
     isLoading.value = true;
     error.value = '';
 
     try {
       const loadedEvents = await fetchEvents();
-      events.value = Array.isArray(loadedEvents)
-        ? loadedEvents.filter((event) => (event.status || 'Опубликовано') === 'Опубликовано')
+      const normalizedEvents = Array.isArray(loadedEvents)
+        ? loadedEvents.map(normalizeEvent)
         : [];
+
+      events.value = options.includeAll
+        ? normalizedEvents
+        : normalizedEvents.filter((event) => event.status === 'Опубликовано');
+
       return events.value;
     } catch (requestError) {
       console.error('Events loading failed.', requestError);
@@ -32,8 +55,8 @@ export function useEvents() {
 
     try {
       const loadedEvent = await fetchEventById(id);
-      currentEvent.value = loadedEvent;
-      return loadedEvent;
+      currentEvent.value = normalizeEvent(loadedEvent);
+      return currentEvent.value;
     } catch (requestError) {
       console.error(`Event loading failed for id ${id}.`, requestError);
       error.value = requestError.response?.status === 404
@@ -45,12 +68,54 @@ export function useEvents() {
     }
   }
 
+  async function createEvent(payload) {
+    isSubmitting.value = true;
+    error.value = '';
+
+    try {
+      const createdEvent = normalizeEvent(await createEventRequest(payload));
+      events.value = [...events.value, createdEvent];
+      return createdEvent;
+    } catch (requestError) {
+      console.error('Event creation failed.', requestError);
+      error.value = 'Не удалось сохранить событие. Попробуйте позже.';
+      throw requestError;
+    } finally {
+      isSubmitting.value = false;
+    }
+  }
+
+  async function updateEvent(id, payload) {
+    isSubmitting.value = true;
+    error.value = '';
+
+    try {
+      const updatedEvent = normalizeEvent(await updateEventRequest(id, payload));
+      events.value = events.value.map((event) => String(event.id) === String(id) ? updatedEvent : event);
+
+      if (String(currentEvent.value?.id) === String(id)) {
+        currentEvent.value = updatedEvent;
+      }
+
+      return updatedEvent;
+    } catch (requestError) {
+      console.error(`Event update failed for id ${id}.`, requestError);
+      error.value = 'Не удалось сохранить событие. Попробуйте позже.';
+      throw requestError;
+    } finally {
+      isSubmitting.value = false;
+    }
+  }
+
   return {
     events,
     currentEvent,
     isLoading,
+    isSubmitting,
     error,
     loadEvents,
-    loadEventById
+    loadEventById,
+    createEvent,
+    updateEvent
   };
 }

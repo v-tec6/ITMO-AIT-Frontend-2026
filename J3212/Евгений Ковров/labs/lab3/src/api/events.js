@@ -14,3 +14,13 @@ export async function fetchEventById(id) {
 
   return response.data;
 }
+
+export async function createEvent(payload) {
+  const response = await apiClient.post('/events', payload);
+  return response.data;
+}
+
+export async function updateEvent(id, payload) {
+  const response = await apiClient.put(`/events/${id}`, payload);
+  return response.data;
+}
