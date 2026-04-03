@@ -21,7 +21,12 @@
       : 'btn btn-outline-primary';
 
     container.innerHTML = `
-      <span class="navbar-text text-secondary small me-1">${user.name}</span>
+      <span class="navbar-text text-secondary small me-1 icon-text">
+        <svg class="icon" aria-hidden="true">
+          <use href="assets/icons/sprite.svg#icon-user"></use>
+        </svg>
+        <span>${user.name}</span>
+      </span>
       <a class="${ticketsLinkClass}" href="orders.html">Мои билеты</a>
       <button class="btn btn-outline-secondary" type="button" data-auth-logout>Выйти</button>
     `;

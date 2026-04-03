@@ -270,7 +270,12 @@
 
             <div class="d-flex flex-column flex-sm-row gap-2">
               <button ${buyButtonAttributes}>
-                ${buyButtonText}
+                <span class="icon-text">
+                  <svg class="icon" aria-hidden="true">
+                    <use href="assets/icons/sprite.svg#icon-ticket"></use>
+                  </svg>
+                  <span>${buyButtonText}</span>
+                </span>
               </button>
               <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#shareModal">
                 Поделиться
@@ -337,7 +342,12 @@
                 <div class="h5 mb-0 fw-semibold">от ${event.price.toLocaleString('ru-RU')} ₽</div>
               </div>
               <button ${buyButtonAttributes}>
-                ${!isPurchasable ? buyButtonText : 'Купить'}
+                <span class="icon-text">
+                  <svg class="icon" aria-hidden="true">
+                    <use href="assets/icons/sprite.svg#icon-ticket"></use>
+                  </svg>
+                  <span>${!isPurchasable ? buyButtonText : 'Купить'}</span>
+                </span>
               </button>
             </div>
           </div>

@@ -50,6 +50,9 @@
     button.setAttribute('aria-label', `Переключить тему. Сейчас выбрана тема ${themeLabel}`);
     button.setAttribute('title', `Переключить на ${nextTheme === 'classic' ? 'classic' : 'neon'} тему`);
     button.innerHTML = `
+      <svg class="icon" aria-hidden="true">
+        <use href="assets/icons/sprite.svg#icon-moon"></use>
+      </svg>
       <span class="theme-toggle-btn__label">Тема</span>
       <span class="theme-toggle-btn__value">${themeLabel}</span>
     `;

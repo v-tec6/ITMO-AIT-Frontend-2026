@@ -231,7 +231,20 @@
             <div class="d-flex justify-content-between align-items-start gap-3">
               <div>
                 <h3 class="h6 mb-1">${event.title}</h3>
-                <div class="text-secondary small">${event.city} • ${event.venue} • ${formatEventDate(event.date)} • ${event.time}</div>
+                <div class="text-secondary small event-card-meta">
+                  <span class="event-card-meta__item">
+                    <svg class="icon" aria-hidden="true">
+                      <use href="assets/icons/sprite.svg#icon-location"></use>
+                    </svg>
+                    <span>${event.city} • ${event.venue}</span>
+                  </span>
+                  <span class="event-card-meta__item">
+                    <svg class="icon" aria-hidden="true">
+                      <use href="assets/icons/sprite.svg#icon-calendar"></use>
+                    </svg>
+                    <span>${formatEventDate(event.date)} • ${event.time}</span>
+                  </span>
+                </div>
               </div>
               <span class="badge bg-body-tertiary border">${event.category}</span>
             </div>
