@@ -57,23 +57,23 @@
 
                     <!-- Email -->
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="regEmail" placeholder="name@example.com" required>
+                        <input type="email" class="form-control" id="regEmail" placeholder="name@example.com" required aria-describedby="emailError">
                         <label for="regEmail">Email адрес</label>
-                        <div class="invalid-feedback">Ввердите корректный email</div>
+                        <div class="invalid-feedback" id="emailError" aria-live="assertive">Ввердите корректный email</div>
                     </div>
 
                     <!-- Пароль -->
                      <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="regPassword" placeholder="Пароль" required minlength="6">
+                        <input type="password" class="form-control" id="regPassword" placeholder="Пароль" required minlength="6" aria-describedby="passwordError">
                         <label for="regPassword">Пароль (минимум 6 символов)</label>
-                        <div class="invalid-feedback">Пароль должен быть не короче 6 символов.</div>
+                        <div class="invalid-feedback" id="passwordError" aria-live="assertive">Пароль должен быть не короче 6 символов.</div>
                     </div>
 
                     <!-- Повтор пароля -->
                     <div class="form-floating mb-4">
-                        <input type="password" class="form-control" id="regPasswordConfirm" placeholder="Повторите пароль" required>
+                        <input type="password" class="form-control" id="regPasswordConfirm" placeholder="Повторите пароль" required aria-describedby="passwordMatchError">
                         <label for="regPasswordConfirm">Повторите пароль</label>
-                        <div class="invalid-feedback" id="passwordMatchError">Пароли не совпадают!</div>
+                        <div class="invalid-feedback" id="passwordMatchError" aria-live="assertive">Пароли не совпадают!</div>
                     </div>
 
                     <!-- Чекбокс согласия -->

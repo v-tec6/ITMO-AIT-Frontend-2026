@@ -50,23 +50,27 @@ export async function initFilters() {
         }
         coursesContainer.innerHTML = courses.map(course => `
             <div class="col-md-6 col-xl-4">
-                <div class="card h-100 course-card shadow-sm border-0">
-                    <img src="${course.imgSrc}" class="card-img-top" alt="${course.title}" style="height: 160px; object-fit: cover;">
+                <article class="card h-100 course-card shadow-sm border-0">
+                    <img src="${course.imgSrc}" class="card-img-top" alt="Обложка курса: ${course.title}" style="height: 160px; object-fit: cover;">
                     <div class="card-body d-flex flex-column">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1">${course.category}</span>
-                            <span class="text-warning small"><i class="bi bi-star-fill"></i> ${course.rating}</span>
+                            <span class="badge bg-dark text-white px-2 py-1 text-capitalize">${course.category}</span>
+                            
+                            <span class="text-rating-dark small fw-bold" aria-label="Рейтинг: ${course.rating} из 5">
+                                <i class="bi bi-star-fill" aria-hidden="true"></i> ${course.rating}
+                            </span>
                         </div>
-                        <h6 class="card-title fw-bold">${course.title}</h6>
-                        <p class="card-text text-muted small">${course.level === 'beginner' ? 'Для начинающих' : 'Для профи'}</p>
+                        <h3 class="h6 card-title fw-bold m-0">${course.title}</h3>
+                        <p class="card-text text-secondary small mt-2">${course.level === 'beginner' ? 'Для начинающих' : 'Для профи'}</p>
                         <div class="mt-auto pt-3 d-flex justify-content-between align-items-center">
-                            <span class="fw-bold">${course.price.toLocaleString()} ₽</span>
+                            <span class="fw-bold fs-5">${course.price.toLocaleString()} ₽</span>
                             <button class="btn btn-sm btn-outline-dark buy-btn" 
                                 data-course-name="${course.title}" 
-                                data-course-price="${course.price.toLocaleString()}">Записаться</button>
+                                data-course-price="${course.price.toLocaleString()}"
+                                aria-label="Записаться на курс ${course.title}">Записаться</button>
                         </div>
                     </div>
-                </div>
+                </article>
             </div>
         `).join('');
     }

@@ -57,18 +57,18 @@
         <!-- Навигация по вкладкам -->
         <ul class="nav nav-tabs mb-4 custom-tabs" id="dashboardTabs" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active fw-bold" data-bs-toggle="tab" data-bs-target="#courses-pane" type="button">
-                    <i class="bi bi-play-circle me-1"></i> Мои курсы
+                <button class="nav-link active fw-bold" id="courses-tab" data-bs-toggle="tab" data-bs-target="#courses-pane" type="button" role="tab" aria-controls="courses-pane" aria-selected="true">
+                    <i class="bi bi-play-circle me-1" aria-hidden="true"></i> Мои курсы
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link fw-bold" data-bs-toggle="tab" data-bs-target="#certs-pane" type="button">
-                    <i class="bi bi-patch-check me-1"></i> Сертификаты
+                <button class="nav-link fw-bold" id="certs-tab" data-bs-toggle="tab" data-bs-target="#certs-pane" type="button" role="tab" aria-controls="certs-pane" aria-selected="false">
+                    <i class="bi bi-patch-check me-1" aria-hidden="true"></i> Сертификаты
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link fw-bold" data-bs-toggle="tab" data-bs-target="#settings-pane" type="button">
-                    <i class="bi bi-person-gear me-1"></i> Настройки профиля
+                <button class="nav-link fw-bold" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings-pane" type="button" role="tab" aria-controls="settings-pane" aria-selected="false">
+                    <i class="bi bi-person-gear me-1" aria-hidden="true"></i> Настройки профиля
                 </button>
             </li>
         </ul>
@@ -76,14 +76,14 @@
         <!-- Содержимое вкладок -->
         <div class="tab-content" id="dashboardTabContent">
             <!-- Вкладка курсов -->
-            <div class="tab-pane fade show active" id="courses-pane" role="tabpanel">
+            <div class="tab-pane fade show active" id="courses-pane" role="tabpanel" aria-labelledby="courses-tab" tabindex="0">
                 <div class="row g-4" id="coursesContainer">
                     <!-- Сюда карточки курсов js -->
                 </div>
             </div>
 
             <!-- Вкладка сертификатов -->
-            <div class="tab-pane fade" id="certs-pane" role="tabpanel">
+            <div class="tab-pane fade" id="certs-pane" role="tabpanel" aria-labelledby="courses-tab" tabindex="0">
                 <div class="row g-4" id="certsContainer">
                     <!-- Сюда сертификаты js -->
                 </div>

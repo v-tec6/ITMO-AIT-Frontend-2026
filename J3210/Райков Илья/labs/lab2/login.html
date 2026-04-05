@@ -40,16 +40,16 @@
                     
                     <!-- Email -->
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="loginEmail" placeholder="name@example.com" required>
+                        <input type="email" class="form-control" id="loginEmail" placeholder="name@example.com" required aria-describedby="emailError">
                         <label for="loginEmail">Email адрес</label>
-                        <div class="invalid-feedback">Пожалуйста, введите корректный email.</div>
+                        <div class="invalid-feedback" id="emailError" aria-live="assertive">Пожалуйста, введите корректный email.</div>
                     </div>
 
                     <!-- Пароль -->
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="loginPassword" placeholder="Пароль" required>
+                        <input type="password" class="form-control" id="loginPassword" placeholder="Пароль" required aria-describedby="passwordError">
                         <label for="loginPassword">Пароль</label>
-                        <div class="invalid-feedback">Введите пароль.</div>
+                        <div class="invalid-feedback" id="passwordError" aria-live="assertive">Введите пароль.</div>
                     </div>
 
                     <!-- Чекбокс "Запомнить меня" и ссылка "Забыли пароль" -->

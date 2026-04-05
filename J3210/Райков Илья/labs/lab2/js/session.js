@@ -8,10 +8,12 @@ export function initSession() {
         const user = JSON.parse(localStorage.getItem('user'));
         
         navAuthButtons.innerHTML = `
-            <span class="text-light me-auto d-none d-md-inline">
+            <span class="text-light me-auto d-none d-md-inline" aria-live="polite">
                 Привет, <strong class="text-warning">${user.firstName}</strong>!
             </span>
-            <a href="#" class="btn btn-outline-danger btn-sm ms-2" id="globalLogoutBtn"><i class="bi bi-box-arrow-right"></i> Выйти</a>
+            <a href="#" class="btn btn-outline-danger btn-sm ms-2" id="globalLogoutBtn" aria-label="Выйти из учетной записи">
+                <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Выйти
+            </a>
         `;
 
         const globalLogoutBtn = document.getElementById("globalLogoutBtn");

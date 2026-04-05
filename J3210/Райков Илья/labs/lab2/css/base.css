@@ -5,3 +5,11 @@ html {
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+.text-rating-dark {
+    color: #856404;
+}
+
+.text-secondary {
+    color: #5a5a5a !important;
+}

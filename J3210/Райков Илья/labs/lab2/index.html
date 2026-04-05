@@ -15,7 +15,7 @@
 <body class="bg-light">
 
     <!-- Навбар -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow" aria-label="Основная навигация сайта">
         <div class="container">
             <a class="navbar-brand fw-bold" href="index.html">
                 <i class="bi bi-mortarboard-fill text-warning me-2"></i>EduPlatform
@@ -54,7 +54,7 @@
             <aside class="col-lg-3 mb-4">
                 <div class="card shadow-sm filter-sidebar">
                     <div class="card-body">
-                        <h5 class="card-title mb-4"><i class="bi bi-funnel"></i> Фильтры</h5>
+                        <h2 class="h5 card-title mb-4"><i class="bi bi-funnel"></i> Фильтры</h5>
                         
                         <form id="filterForm">
                             <!-- Поиск по тексту -->
@@ -62,7 +62,7 @@
                                 <label class="form-label text-muted small fw-bold text-uppercase">Поиск</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-                                    <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Название...">
+                                    <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Название..." aria-label="Поиск курсов по названию">
                                 </div>
                             </div>
 
@@ -94,8 +94,8 @@
                                 </div>
                                 <div class="range-slider">
                                     <div class="slider-track"></div>
-                                    <input type="range" id="minPriceInput" min="0" max="50000" value="0" step="500">
-                                    <input type="range" id="maxPriceInput" min="0" max="50000" value="50000" step="500">
+                                    <input type="range" id="minPriceInput" min="0" max="50000" value="0" step="500" aria-label="Минимальная цена">
+                                    <input type="range" id="maxPriceInput" min="0" max="50000" value="50000" step="500" aria-label="Максимальная цена">
                                 </div>
                             </div>
 
@@ -120,7 +120,7 @@
             </aside>
 
             <!-- Каталог курсов -->
-            <main class="col-lg-9">
+            <main class="col-lg-9" aria-label="Каталог доступных курсов">
                 <div class="row g-4">
                     <!-- Вставит js -->
                 </div>
@@ -129,7 +129,7 @@
     </div>
 
     <!-- Модальное окно -->
-    <div class="modal fade" id="purchaseModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="purchaseModal" tabindex="-1" aria-labelledby="modalCourseTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-dark text-white">
