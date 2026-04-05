@@ -57,7 +57,7 @@ export async function initFilters() {
                             <span class="badge bg-dark text-white px-2 py-1 text-capitalize">${course.category}</span>
                             
                             <span class="text-rating-dark small fw-bold" aria-label="Рейтинг: ${course.rating} из 5">
-                                <i class="bi bi-star-fill" aria-hidden="true"></i> ${course.rating}
+                                <svg class="icon text-warning" aria-hidden="true"><use href="img/sprite.svg#star-fill"></use></svg> ${course.rating}
                             </span>
                         </div>
                         <h3 class="h6 card-title fw-bold m-0">${course.title}</h3>

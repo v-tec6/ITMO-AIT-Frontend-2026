@@ -62,7 +62,7 @@ input[type="range"]::-webkit-slider-thumb {
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     appearance: none;
     -webkit-appearance: none;
-    border: 2px solid white;
+    border: 2px solid var(--text-color);
 }
 
 input[type="range"]::-moz-range-thumb {
@@ -72,7 +72,7 @@ input[type="range"]::-moz-range-thumb {
     background: #0d6efd;
     pointer-events: auto;
     cursor: pointer;
-    border: 2px solid white;
+    border: 2px solid var(--text-color);
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 

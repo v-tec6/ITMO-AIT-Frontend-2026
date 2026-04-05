@@ -8,8 +8,10 @@ export function initTheme() {
         
         localStorage.setItem('site_theme', theme);
 
-        if (themeIcon) {
-            themeIcon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';
+        const themeIconUse = document.getElementById('themeIconUse')
+        if (themeIconUse) {
+            const iconPath = theme === 'dark' ? 'img/sprite.svg#sun-fill' : 'img/sprite.svg#moon-stars-fill';
+            themeIconUse.setAttribute('href', iconPath);
         }
     };
 

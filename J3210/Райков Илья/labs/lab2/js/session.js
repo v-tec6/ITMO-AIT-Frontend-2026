@@ -12,7 +12,7 @@ export function initSession() {
                 Привет, <strong class="text-warning">${user.firstName}</strong>!
             </span>
             <a href="#" class="btn btn-outline-danger btn-sm ms-2" id="globalLogoutBtn" aria-label="Выйти из учетной записи">
-                <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Выйти
+                <svg class="icon" aria-hidden="true"><use href="img/sprite.svg#box-arrow-right"></use></svg> Выйти
             </a>
         `;
 
