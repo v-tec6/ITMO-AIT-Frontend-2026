@@ -15,13 +15,15 @@ function renderTransactions(transactions) {
     const date = new Date(t.date).toLocaleString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
     return `<tr>
       <td>
-        <span class="rounded bg-light d-inline-flex align-items-center justify-content-center me-2" style="width:36px;height:36px">${emoji}</span>
-        <div class="d-inline-block">
-          <span class="fw-medium">${t.name}</span><br>
-          <span class="small text-muted">${t.counterparty || ''}</span>
+        <div class="d-flex align-items-center gap-2">
+          <span class="transaction-icon rounded d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width:36px;height:36px">${emoji}</span>
+          <div>
+            <span class="fw-medium">${t.name}</span><br>
+            <span class="small text-muted">${t.counterparty || ''}</span>
+          </div>
         </div>
       </td>
-      <td><span class="badge bg-light text-dark">${t.category}</span></td>
+      <td><span class="transaction-badge badge">${t.category}</span></td>
       <td class="${amountClass}">${amountStr}</td>
       <td>${date}</td>
       <td>${t.accountId || '—'}</td>

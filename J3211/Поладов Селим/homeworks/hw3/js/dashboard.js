@@ -57,8 +57,8 @@ async function loadRecentTransactions() {
       : `+ ${t.amount.toLocaleString('ru-RU')} ₽`
     const date = new Date(t.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' })
     return `<tr>
-      <td><span class="rounded bg-light d-inline-flex align-items-center justify-content-center me-2" style="width:36px;height:36px">${emoji}</span> ${t.name}</td>
-      <td><span class="badge bg-light text-dark">${t.category}</span></td>
+      <td><span class="transaction-icon rounded d-inline-flex align-items-center justify-content-center me-2" style="width:36px;height:36px">${emoji}</span> ${t.name}</td>
+      <td><span class="transaction-badge badge">${t.category}</span></td>
       <td class="${amountClass}">${amountStr}</td>
       <td>${date}</td>
     </tr>`
