@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/auth.css">
 </head>
-<body class="bg-light auth-page">
+<body>
 
     <!-- Навбар -->
     <nav class="navbar navbar-dark bg-dark shadow-sm">
@@ -19,9 +19,14 @@
             <a class="navbar-brand fw-bold" href="index.html">
                 <i class="bi bi-mortarboard-fill text-warning me-2"></i>EduPlatform
             </a>
-            <a href="index.html" class="btn btn-sm btn-outline-light d-none d-md-block">
-                <i class="bi bi-arrow-left"></i> На главную
-            </a>
+            <div class="d-flex gap-2 align-items-center">
+                <a href="index.html" class="btn btn-sm btn-outline-light d-none d-md-block">
+                    <i class="bi bi-arrow-left"></i> На главную
+                </a>
+                <button class="btn btn-outline-light btn-sm ms-3" id="themeToggleBtn" aria-label="Переключить тему">
+                    <i class="bi bi-moon-stars-fill" id="themeIcon" aria-hidden="true"></i>
+                </button>
+            </div>
         </div>
     </nav>
 

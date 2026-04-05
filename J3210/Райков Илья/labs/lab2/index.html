@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/cards.css">
 </head>
-<body class="bg-light">
+<body>
 
     <!-- Навбар -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow" aria-label="Основная навигация сайта">
@@ -36,6 +36,9 @@
                     <a href="login.html " class="btn btn-outline-light">Войти</a>
                     <a href="register.html" class="btn btn-warning">Регистрация</a>
                 </div>
+                <button class="btn btn-outline-light btn-sm ms-3" id="themeToggleBtn" aria-label="Переключить тему">
+                    <i class="bi bi-moon-stars-fill" id="themeIcon" aria-hidden="true"></i>
+                </button>
             </div>
         </div>
     </nav>
@@ -61,7 +64,7 @@
                             <div class="mb-4">
                                 <label class="form-label text-muted small fw-bold text-uppercase">Поиск</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                                    <span class="input-group-text border-end-0"><i class="bi bi-search"></i></span>
                                     <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Название..." aria-label="Поиск курсов по названию">
                                 </div>
                             </div>

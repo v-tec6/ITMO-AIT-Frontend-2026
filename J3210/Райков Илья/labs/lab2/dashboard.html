@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="css/cards.css">
     <link rel="stylesheet" href="css/dashboard.css">
 </head>
-<body class="bg-light">
+<body>
 
     <!-- Набор для аторизованного пользователя -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
@@ -35,6 +35,9 @@
                 <div class="d-flex align-items-center gap-2" id="navAuthButtons">
                     <!-- Сюда вставит js -->
                 </div>
+                <button class="btn btn-outline-light btn-sm ms-3" id="themeToggleBtn" aria-label="Переключить тему">
+                    <i class="bi bi-moon-stars-fill" id="themeIcon" aria-hidden="true"></i>
+                </button>
             </div>
         </div>
     </nav>
@@ -43,7 +46,7 @@
 
         <!-- Шапка профиля -->
         <div class="profile-header shadow-sm mb-4 d-flex flex-column flex-md-row align-items-center text-center text-md-start">
-            <img src="" id="profileAvatar" alt="Аватар" class="profile-avatar mb-3 mb-md-0 me-md-4 bg-white">
+            <img src="" id="profileAvatar" alt="Аватар" class="profile-avatar mb-3 mb-md-0 me-md-4">
             <div>
                 <h2 class="fw-bold mb-1" id="profileName">Загрузка...</h2>
                 <p class="mb-2 opacity-75"><i class="bi bi-envelope"></i> <span id="profileEmail">...</span></p>

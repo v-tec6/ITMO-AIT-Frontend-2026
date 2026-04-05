@@ -64,7 +64,7 @@ export async function initFilters() {
                         <p class="card-text text-secondary small mt-2">${course.level === 'beginner' ? 'Для начинающих' : 'Для профи'}</p>
                         <div class="mt-auto pt-3 d-flex justify-content-between align-items-center">
                             <span class="fw-bold fs-5">${course.price.toLocaleString()} ₽</span>
-                            <button class="btn btn-sm btn-outline-dark buy-btn" 
+                            <button class="buy-btn" 
                                 data-course-name="${course.title}" 
                                 data-course-price="${course.price.toLocaleString()}"
                                 aria-label="Записаться на курс ${course.title}">Записаться</button>
