@@ -2,7 +2,6 @@
   <section class="view-section">
     <p class="eyebrow">Главная</p>
     <h1>Каталог мероприятий</h1>
-    <p class="view-description home-view__intro">Актуальные события из mock API с базовой фильтрацией по мотивам lab2.</p>
 
     <div class="catalog-filters">
       <label class="auth-form__field catalog-filters__field">

@@ -1,5 +1,5 @@
 <template>
-  <section class="view-section">
+  <section class="view-section organizer-view-section">
     <div class="organizer-heading">
       <div>
         <p class="eyebrow">Организатор</p>

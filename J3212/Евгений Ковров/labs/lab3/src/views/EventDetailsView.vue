@@ -49,6 +49,15 @@
             </div>
           </div>
 
+          <div class="event-actions">
+            <button class="button-link button-link--ghost" type="button" @click="handleFavoriteToggle">
+              {{ currentFavorite ? '★ В избранном' : '☆ В избранное' }}
+            </button>
+          </div>
+
+          <div v-if="favoriteSuccessMessage" class="state-box state-box--success">{{ favoriteSuccessMessage }}</div>
+          <div v-if="favoriteError" class="state-box state-box--error">{{ favoriteError }}</div>
+
           <div class="event-banner">
             <img class="event-banner__image" :src="event.image" :alt="event.title" />
           </div>
@@ -60,6 +69,7 @@
           :is-authenticated="isAuthenticated"
           :is-submitting="isSubmitting"
           :error-message="purchaseError"
+          :processing-message="processingMessage"
           :success-message="purchaseSuccessMessage"
           :login-link="loginLink"
           @update:quantity="quantity = $event"
@@ -76,12 +86,21 @@ import { RouterLink, useRoute, useRouter } from 'vue-router';
 import PurchasePanel from '../components/PurchasePanel.vue';
 import { useAuth } from '../composables/useAuth';
 import { useEvents } from '../composables/useEvents';
+import { useFavorites } from '../composables/useFavorites';
 import { useOrders } from '../composables/useOrders';
 
 const router = useRouter();
 const route = useRoute();
 const { currentEvent: event, isLoading, error, loadEventById } = useEvents();
 const { currentUser, isAuthenticated } = useAuth();
+const {
+  currentFavorite,
+  error: favoriteError,
+  successMessage: favoriteSuccessMessage,
+  clearStatus: clearFavoriteStatus,
+  loadFavoriteByUserAndEvent,
+  toggleFavorite
+} = useFavorites();
 const {
   isSubmitting,
   error: purchaseError,
@@ -90,6 +109,7 @@ const {
   purchaseTickets
 } = useOrders();
 const quantity = ref(1);
+const processingMessage = ref('');
 
 const formattedDate = computed(() => {
   if (!event.value) {
@@ -121,10 +141,17 @@ const loginLink = computed(() => ({
 
 async function fetchCurrentEvent() {
   clearStatus();
+  clearFavoriteStatus();
   quantity.value = 1;
 
   try {
     await loadEventById(route.params.id);
+
+    if (currentUser.value?.id && event.value?.id) {
+      await loadFavoriteByUserAndEvent(currentUser.value.id, event.value.id);
+    } else {
+      currentFavorite.value = null;
+    }
   } catch (requestError) {
     // Error state is handled inside the composable.
   }
@@ -141,6 +168,10 @@ async function handlePurchase() {
   }
 
   try {
+    processingMessage.value = 'Перенаправляем на страницу оплаты...';
+    await new Promise((resolve) => window.setTimeout(resolve, 900));
+    processingMessage.value = 'Оплата подтверждена. Завершаем оформление билета...';
+
     const { updatedEvent } = await purchaseTickets({
       user: currentUser.value,
       event: event.value,
@@ -165,9 +196,34 @@ async function handlePurchase() {
         ...requestError.event
       };
     }
+  } finally {
+    processingMessage.value = '';
+  }
+}
+
+async function handleFavoriteToggle() {
+  if (!event.value) {
+    return;
+  }
+
+  if (!isAuthenticated.value) {
+    await router.push(loginLink.value);
+    return;
+  }
+
+  clearFavoriteStatus();
+
+  try {
+    await toggleFavorite({
+      user: currentUser.value,
+      event: event.value
+    });
+  } catch (requestError) {
+    // Error state is handled in the composable.
   }
 }
 
 onMounted(fetchCurrentEvent);
 watch(() => route.params.id, fetchCurrentEvent);
+watch(() => currentUser.value?.id, fetchCurrentEvent);
 </script>

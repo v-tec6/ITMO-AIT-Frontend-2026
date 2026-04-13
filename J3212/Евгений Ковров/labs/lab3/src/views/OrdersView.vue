@@ -16,18 +16,42 @@
     <div v-else class="orders-list">
       <OrderCard v-for="entry in orderEntries" :key="entry.order.id" :entry="entry" />
     </div>
+
+    <section class="orders-section">
+      <div class="orders-section__header">
+        <h2>Избранное</h2>
+        <p class="view-description">События, которые вы сохранили на потом.</p>
+      </div>
+
+      <div v-if="favoritesLoading" class="state-box">Загрузка избранного...</div>
+      <div v-else-if="favoritesError" class="state-box state-box--error">{{ favoritesError }}</div>
+      <div v-else-if="!favoriteEntries.length" class="state-box">
+        В избранном пока пусто. Добавляйте интересные события со страницы мероприятия.
+      </div>
+      <div v-else class="favorites-grid">
+        <FavoriteCard v-for="entry in favoriteEntries" :key="entry.favorite.id" :entry="entry" />
+      </div>
+    </section>
   </section>
 </template>
 
 <script setup>
 import { onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
+import FavoriteCard from '../components/FavoriteCard.vue';
 import OrderCard from '../components/OrderCard.vue';
 import { useAuth } from '../composables/useAuth';
+import { useFavorites } from '../composables/useFavorites';
 import { useOrders } from '../composables/useOrders';
 
 const { currentUser } = useAuth();
 const { orderEntries, isLoading, error, loadOrdersByUser } = useOrders();
+const {
+  favoriteEntries,
+  isLoading: favoritesLoading,
+  error: favoritesError,
+  loadFavoritesByUser
+} = useFavorites();
 
 onMounted(async () => {
   if (!currentUser.value?.id) {
@@ -35,7 +59,10 @@ onMounted(async () => {
   }
 
   try {
-    await loadOrdersByUser(currentUser.value.id);
+    await Promise.all([
+      loadOrdersByUser(currentUser.value.id),
+      loadFavoritesByUser(currentUser.value.id)
+    ]);
   } catch (requestError) {
     // Error state is handled in the composable.
   }

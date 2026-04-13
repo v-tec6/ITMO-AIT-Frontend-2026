@@ -5,8 +5,14 @@
       <div class="event-card__header">
         <div>
           <h2 class="event-card__title">{{ event.title }}</h2>
-          <p class="event-card__meta">{{ event.city }} · {{ event.venue }}</p>
-          <p class="event-card__meta">{{ formattedDate }} · {{ event.time }}</p>
+          <p class="event-card__meta event-card__meta--with-icon">
+            <SvgIcon name="icon-location" />
+            <span>{{ event.city }} · {{ event.venue }}</span>
+          </p>
+          <p class="event-card__meta event-card__meta--with-icon">
+            <SvgIcon name="icon-calendar" />
+            <span>{{ formattedDate }} · {{ event.time }}</span>
+          </p>
         </div>
         <span class="event-card__category">{{ event.category }}</span>
       </div>
@@ -26,6 +32,7 @@
 <script setup>
 import { computed } from 'vue';
 import { RouterLink } from 'vue-router';
+import SvgIcon from './SvgIcon.vue';
 
 const props = defineProps({
   event: {
