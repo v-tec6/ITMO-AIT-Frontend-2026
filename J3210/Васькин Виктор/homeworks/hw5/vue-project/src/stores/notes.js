@@ -31,7 +31,6 @@ const useNotesStore = defineStore('notes', {
 
      this.notes = response.data
 
-
      return response
    }
  }
