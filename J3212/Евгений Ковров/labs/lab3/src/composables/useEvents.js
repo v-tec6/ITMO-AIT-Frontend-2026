@@ -23,10 +23,6 @@ function buildEventsParams(options) {
   const filters = options.filters || {};
   const searchValue = filters.search?.trim();
 
-  if (!options.includeAll) {
-    where.status = { eq: 'Опубликовано' };
-  }
-
   if (filters.onlyAvailable) {
     where.availableTickets = { gt: 0 };
   }
