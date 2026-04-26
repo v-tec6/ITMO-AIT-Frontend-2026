@@ -1,7 +1,10 @@
 import apiClient from './axios';
 
-export async function fetchEvents() {
-  const response = await apiClient.get('/events');
+export async function fetchEvents(params = {}) {
+  const response = await apiClient.get('/events', {
+    params
+  });
+
   return response.data;
 }
 

@@ -18,6 +18,38 @@ function normalizeEvent(event) {
   };
 }
 
+function buildEventsParams(options) {
+  const where = {};
+  const filters = options.filters || {};
+  const searchValue = filters.search?.trim();
+
+  if (!options.includeAll) {
+    where.status = { eq: 'Опубликовано' };
+  }
+
+  if (filters.onlyAvailable) {
+    where.availableTickets = { gt: 0 };
+  }
+
+  if (filters.category && filters.category !== 'Все') {
+    where.category = { eq: filters.category };
+  }
+
+  if (filters.city && filters.city !== 'Все') {
+    where.city = { eq: filters.city };
+  }
+
+  if (searchValue) {
+    where.or = ['title', 'description', 'city', 'venue', 'category'].map((field) => ({
+      [field]: { contains: searchValue }
+    }));
+  }
+
+  return Object.keys(where).length
+    ? { _where: JSON.stringify(where) }
+    : {};
+}
+
 export function useEvents() {
   const events = ref([]);
   const currentEvent = ref(null);
@@ -30,14 +62,12 @@ export function useEvents() {
     error.value = '';
 
     try {
-      const loadedEvents = await fetchEvents();
+      const loadedEvents = await fetchEvents(buildEventsParams(options));
       const normalizedEvents = Array.isArray(loadedEvents)
         ? loadedEvents.map(normalizeEvent)
         : [];
 
-      events.value = options.includeAll
-        ? normalizedEvents
-        : normalizedEvents.filter((event) => event.status === 'Опубликовано');
+      events.value = normalizedEvents;
 
       return events.value;
     } catch (requestError) {

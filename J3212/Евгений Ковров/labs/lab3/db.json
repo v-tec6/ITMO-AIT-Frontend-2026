@@ -31,7 +31,7 @@
       "price": 1500,
       "image": "https://placehold.co/800x500/1f2633/e6edf6?text=%D0%94%D0%B6%D0%B0%D0%B7",
       "category": "Концерт",
-      "availableTickets": 86,
+      "availableTickets": 85,
       "capacity": 100,
       "age": "18+",
       "status": "Опубликовано"
@@ -780,6 +780,15 @@
       "createdAt": "2026-04-13T13:17:32.366Z",
       "status": "confirmed",
       "id": "ioDhHDocJ3c"
+    },
+    {
+      "userId": "8fAOn_ZAQb4",
+      "eventId": "1",
+      "quantity": 1,
+      "totalPrice": 1500,
+      "createdAt": "2026-04-13T14:12:13.438Z",
+      "status": "confirmed",
+      "id": "N_DggOwl0vU"
     }
   ],
   "favorites": [

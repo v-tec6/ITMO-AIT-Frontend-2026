@@ -37,18 +37,17 @@
 
     <div v-if="isLoading" class="state-box">Загрузка мероприятий...</div>
     <div v-else-if="error" class="state-box state-box--error">{{ error }}</div>
-    <div v-else-if="!events.length" class="state-box">Пока нет доступных мероприятий.</div>
-    <div v-else-if="!filteredEvents.length" class="state-box">
+    <div v-else-if="!events.length" class="state-box">
       По выбранным фильтрам ничего не найдено. Попробуйте изменить параметры поиска.
     </div>
     <div v-else class="events-grid">
-      <EventCard v-for="event in filteredEvents" :key="event.id" :event="event" />
+      <EventCard v-for="event in events" :key="event.id" :event="event" />
     </div>
   </section>
 </template>
 
 <script setup>
-import { computed, onMounted, reactive } from 'vue';
+import { computed, reactive, watch } from 'vue';
 import EventCard from '../components/EventCard.vue';
 import { useEvents } from '../composables/useEvents';
 
@@ -66,42 +65,14 @@ const filters = reactive({
 const categories = computed(() => [...new Set(events.value.map((event) => event.category).filter(Boolean))]);
 const cities = computed(() => [...new Set(events.value.map((event) => event.city).filter(Boolean))]);
 
-const filteredEvents = computed(() => {
-  const searchValue = filters.search.trim().toLowerCase();
-
-  return events.value.filter((event) => {
-    if (filters.onlyAvailable && Number(event.availableTickets || 0) <= 0) {
-      return false;
-    }
-
-    if (filters.category !== 'Все' && event.category !== filters.category) {
-      return false;
-    }
-
-    if (filters.city !== 'Все' && event.city !== filters.city) {
-      return false;
-    }
-
-    if (!searchValue) {
-      return true;
-    }
-
-    return [event.title, event.description, event.city, event.venue, event.category]
-      .join(' ')
-      .toLowerCase()
-      .includes(searchValue);
-  });
-});
-
 function resetFilters() {
   Object.assign(filters, defaultFilters);
 }
 
-onMounted(async () => {
+watch(filters, async () => {
   try {
-    await loadEvents();
-  } catch (requestError) {
-    // Error state is handled inside the composable.
+    await loadEvents({ filters });
+  } catch {
   }
-});
+}, { immediate: true });
 </script>
