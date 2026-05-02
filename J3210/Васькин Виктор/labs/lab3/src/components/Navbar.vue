@@ -2,11 +2,12 @@
 import { computed } from 'vue'
 import { useTheme } from '@/composables/useTheme'
 import { useAuthStore } from '@/stores/auth'
-import { RouterLink, useRouter } from 'vue-router'
+import { RouterLink, useRouter, useRoute } from 'vue-router'
 
 const { theme, toggleTheme } = useTheme()
 const authStore = useAuthStore()
 const router = useRouter()
+const route = useRoute()
 
 const userAvatar = computed(() => {
   if (!authStore.user) return ''
@@ -34,10 +35,10 @@ const handleLogout = () => {
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <RouterLink class="nav-link text-white fw-bold" to="/">Каталог</RouterLink>
+            <RouterLink class="nav-link" :class="route.path === '/' ? 'text-white fw-bold' : 'text-white-50'" to="/">Каталог</RouterLink>
           </li>
           <li class="nav-item" v-if="authStore.user">
-            <RouterLink class="nav-link text-white-50" to="/profile">Мой прогресс</RouterLink>
+            <RouterLink class="nav-link" :class="route.path === '/profile' ? 'text-white fw-bold' : 'text-white-50'" to="/profile">Мой прогресс</RouterLink>
           </li>
         </ul>
         

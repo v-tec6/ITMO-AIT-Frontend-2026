@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
+import instance from '@/api/instance'
 import { useAuthStore } from '@/stores/auth'
 import BaseLayout from '@/layouts/BaseLayout.vue'
 
@@ -15,13 +15,11 @@ const authStore = useAuthStore()
 const onSubmit = async () => {
   try {
     errorMsg.value = ''
-    const response = await axios.post('http://localhost:4000/login', {
+    const response = await instance.post('/login', {
       email: email.value,
       password: password.value
     })
-
     authStore.login(response.data.user, response.data.accessToken)
-    
     router.push('/')
   } catch (error) {
     errorMsg.value = 'Неверный email или пароль'
