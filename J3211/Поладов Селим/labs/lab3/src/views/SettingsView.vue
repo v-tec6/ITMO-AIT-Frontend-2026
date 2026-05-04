@@ -4,8 +4,8 @@
       <div class="row g-0">
         <div class="col-lg-4 settings-avatar-col">
           <div class="settings-avatar-wrap">
-            <div class="settings-avatar">
-              <svg width="56" height="56" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            <div class="settings-avatar" role="img" aria-label="Аватар пользователя">
+              <Icon name="user" :size="56" solid />
             </div>
             <div class="fw-bold fs-5 mt-3">{{ fullName || '—' }}</div>
             <div class="text-muted small mt-1">{{ user?.email || '—' }}</div>
@@ -41,6 +41,7 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import AppLayout from '../components/AppLayout.vue'
+import Icon from '../components/Icon.vue'
 import { useAuth } from '../composables/useAuth.js'
 import { usersApi } from '../api/resources.js'
 
