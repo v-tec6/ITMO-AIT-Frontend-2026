@@ -7,7 +7,7 @@
         </router-link>
         
         <button class="navbar-toggler border-0 shadow-none" type="button" @click="isMenuOpen = !isMenuOpen">
-          <svg width="26" height="26" class="me-2"><use href="#icon-menu"></use></svg>
+          <svg width="26" height="26"><use href="#icon-menu"></use></svg>
         </button>
         
         <div class="collapse navbar-collapse" :class="{ show: isMenuOpen }" id="navBar">
