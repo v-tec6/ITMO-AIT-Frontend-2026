@@ -1,4 +1,30 @@
+const initTheme = () => {
+    const savedTheme = localStorage.getItem('posimax-theme') || 'dark';
+    document.documentElement.setAttribute('data-bs-theme', savedTheme);
+    document.body.setAttribute('data-theme', savedTheme);
+};
+initTheme();
+
 document.addEventListener('DOMContentLoaded', () => {
+
+    const themeBtn = document.getElementById('themeToggleBtn');
+    const themeIconUse = document.getElementById('themeIconUse');
+    
+    if (themeBtn && themeIconUse) {
+        const currentTheme = localStorage.getItem('posimax-theme') || 'dark';
+        themeIconUse.setAttribute('href', currentTheme === 'dark' ? 'img/sprite.svg#sun' : 'img/sprite.svg#moon');
+
+        themeBtn.addEventListener('click', () => {
+            const theme = document.body.getAttribute('data-theme');
+            const newTheme = theme === 'dark' ? 'light' : 'dark';
+            
+            document.body.setAttribute('data-theme', newTheme);
+            document.documentElement.setAttribute('data-bs-theme', newTheme);
+            localStorage.setItem('posimax-theme', newTheme);
+            
+            themeIconUse.setAttribute('href', newTheme === 'dark' ? 'img/sprite.svg#sun' : 'img/sprite.svg#moon');
+        });
+    }
 
     const coursesGrid = document.getElementById('coursesGrid');
 
@@ -29,7 +55,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const cardHtml = `
                     <div class="col">
                         <div class="card course-card h-100 bg-dark text-white border-secondary rounded-4 overflow-hidden d-flex flex-column">
-                            <img src="${course.image}" class="card-img-top image-placeholder" alt="Обложка курса: ${course.title}" loading="lazy">
+                            <picture>
+                                <img src="${course.image}" class="card-img-top image-placeholder" alt="Обложка курса: ${course.title}" loading="lazy" style="width: 100%; height: 180px; object-fit: cover;">
+                            </picture>
                             <div class="card-body d-flex flex-column">
                                 <h2 class="card-title h5 fw-bold mb-1">${course.title}</h2>
                                 <div class="text-warning small mb-2" aria-label="Рейтинг: ${course.rating} из 5">
@@ -171,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const userJson = localStorage.getItem('user');
     const token = localStorage.getItem('accessToken');
-    const navButtonsBlock = document.querySelector('.navbar-collapse .d-flex');
+    const navButtonsBlock = document.getElementById('authBlock');
     const navList = document.querySelector('.navbar-nav');
 
     if (userJson && token) {
@@ -181,10 +209,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (navButtonsBlock) {
             navButtonsBlock.innerHTML = `
-                <div class="dropdown mt-3 mt-lg-0">
+                <div class="dropdown">
                     <a class="text-decoration-none d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="${avatarUrl}" class="rounded-circle border border-secondary" width="40" height="40" alt="Аватар">
-                        <span class="text-white ms-2 d-none d-md-inline fw-bold">${shortName}</span>
+                        <span class="text-white ms-2 d-none d-md-inline fw-bold theme-text">${shortName}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark mt-2 border-secondary shadow-lg">
                         <li><a class="dropdown-item" href="profile.html">Личный кабинет</a></li>

@@ -10,25 +10,33 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg custom-navbar py-3" data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg custom-navbar py-3" aria-label="Главная навигация">
         <div class="container">
-            <a class="navbar-brand fw-bold fs-3 text-white" href="index.html">
+            <a class="navbar-brand fw-bold fs-3 text-white" href="index.html" aria-label="На главную PosiMax">
                 Posi<span class="neon-text">Max</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            
+            <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Открыть меню навигации">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link text-white fw-bold" href="index.html">Каталог</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white-50" href="profile.html">Мой прогресс</a>
+                        <a class="nav-link text-white fw-bold" href="index.html" aria-current="page">Каталог</a>
                     </li>
                 </ul>
-                <div class="d-flex flex-column flex-lg-row gap-3 mt-3 mt-lg-0">
-                    <a href="profile.html" class="btn btn-outline-light rounded-pill px-4 fw-bold">Личный кабинет</a>
+                
+                <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
+                    <button id="themeToggleBtn" class="btn btn-outline-secondary rounded-circle p-1 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;" aria-label="Сменить тему">
+                        <svg width="20" height="20">
+                            <use id="themeIconUse" href="img/sprite.svg#sun"></use>
+                        </svg>
+                    </button>
+                    <div id="authBlock" class="d-flex flex-column flex-lg-row gap-2">
+                        <a href="login.html" class="btn btn-outline-light rounded-pill px-4 fw-bold">Войти</a>
+                        <a href="register.html" class="btn btn-neon rounded-pill px-4 fw-bold">Регистрация</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -50,7 +58,11 @@
                 <div class="ratio ratio-16x9 rounded-4 overflow-hidden mb-5 border border-secondary shadow-lg">
                     <img src="" id="courseImg" alt="Обложка курса" class="object-fit-cover bg-dark">
                     <div class="d-flex justify-content-center align-items-center position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50">
-                        <button class="btn btn-neon rounded-circle d-flex justify-content-center align-items-center" style="width: 80px; height: 80px;" aria-label="Воспроизвести видео-превью"><span class="fs-1 ms-2" aria-hidden="true">▶</span></button>
+                        <button class="btn btn-neon rounded-circle d-flex justify-content-center align-items-center" style="width: 80px; height: 80px;" aria-label="Воспроизвести видео-превью">
+                            <svg width="36" height="36" class="ms-1">
+                                <use href="img/sprite.svg#play"></use>
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
@@ -79,7 +91,7 @@
                             </div>
                         </div>
                         <div class="card bg-dark border-secondary rounded-4 p-3 mb-3">
-                            <p class="text-light mb-0">Отличный курс! Наконец-то понял, как работают классы иду Сеньором в сберчик</p>
+                            <p class="text-white mb-0">Отличный курс! Наконец-то понял, как работают классы иду Сеньором в сберчик</p>
                         </div>
                     </div>
                 </div>
