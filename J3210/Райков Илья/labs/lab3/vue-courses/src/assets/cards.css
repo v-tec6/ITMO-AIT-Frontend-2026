@@ -5,10 +5,6 @@
     overflow: hidden;
 }
 
-.course-card .card-body h3,
-.course-card .card-body p {
-    color: var(--text-color) !important;
-}
 
 .buy-btn {
     background-color: transparent !important;
